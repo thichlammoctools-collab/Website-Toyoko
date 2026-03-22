@@ -48,7 +48,7 @@ export default function Footer() {
             <ul className={styles.contact_list}>
               <li>
                 <span className={styles.icon}>📍</span>
-                <span>123 Đường Lý Thường Kiệt, Q.10, TP.HCM</span>
+                <span>234 Bình Thới, Phường Bình Thới, HCM</span>
               </li>
               <li>
                 <span className={styles.icon}>📞</span>
