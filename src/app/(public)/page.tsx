@@ -33,14 +33,15 @@ export default async function HomePage() {
         <div className={styles.heroBg} />
         <div className={`container ${styles.heroContent}`}>
           <div className={styles.heroLeft}>
-            <span className={styles.heroBadge}>🇻🇳 Nhà nhập khẩu chính thức tại Việt Nam</span>
+            <span className={styles.heroBadge}>🇻🇳 Nhà sản xuất & nhập khẩu chính thức tại Việt Nam</span>
             <h1 className={styles.heroTitle}>
-              Máy cầm tay<br />
-              <span className={styles.heroAccent}>TOYOKO</span><br />
-              Chính hãng
+              <span className={styles.heroAccent}>TOYOKO</span> – An tâm đồng hành<br />
+              Máy cầm tay chất lượng, bền bỉ, giá phải chăng
             </h1>
             <p className={styles.heroDesc}>
-              Quang Phú phân phối toàn dòng máy cầm tay điện Toyoko – bền bỉ, mạnh mẽ, giá tốt. Bảo hành 12 tháng chính hãng.
+              <strong>Công ty Quang Phú</strong> là nhà sản xuất và phân phối thương hiệu <strong>Toyoko</strong> – thương hiệu OEM hướng đến giải quyết nhu cầu máy móc cầm tay chất lượng, ổn định, bền bỉ, giá phải chăng cho thợ thầy tại Việt Nam.<br/>
+              <em>Slogan: "An tâm đồng hành"</em>.<br/>
+              Hơn <strong>400 đại lý</strong> phủ sóng toàn quốc. Giao hàng nhanh chóng, bảo hành gọn lẹ, phục vụ tận tình.
             </p>
             <div className={styles.heroCtas}>
               <Link href="/products" className="btn btn-white">Xem sản phẩm</Link>
@@ -87,15 +88,13 @@ export default async function HomePage() {
             </div>
             <div className={styles.aboutText}>
               <span className="section-label">Về chúng tôi</span>
-              <h2 className="section-title">Hơn 10 năm đồng hành cùng người thợ Việt</h2>
+              <h2 className="section-title">Toyoko – An tâm đồng hành cùng người thợ Việt</h2>
               <div className="divider-red" />
               <p className="section-subtitle">
-                Công ty TNHH Quang Phú được thành lập từ năm 2013, chuyên nhập khẩu và phân phối
-                máy cầm tay điện thương hiệu <strong>Toyoko</strong> – thương hiệu công cụ điện uy tín đến từ Nhật Bản.
+                <strong>Công ty TNHH Quang Phú</strong> là nhà sản xuất và phân phối độc quyền thương hiệu <strong>Toyoko</strong> tại Việt Nam. Toyoko là thương hiệu OEM chuyên cung cấp máy móc cầm tay chất lượng, ổn định, bền bỉ, giá phải chăng, đáp ứng nhu cầu của thợ thầy trên khắp cả nước.
               </p>
               <p style={{ marginTop: 16, color: 'var(--gray)', lineHeight: 1.8 }}>
-                Với hệ thống đại lý phủ khắp 63 tỉnh thành, Quang Phú tự hào là đối tác tin cậy của hàng nghìn
-                thợ cơ khí, xưởng sản xuất và nhà thầu xây dựng trên toàn quốc.
+                <strong>Hơn 400 đại lý</strong> phủ sóng toàn quốc, giao hàng nhanh chóng, bảo hành gọn lẹ, phục vụ tận tình. Chúng tôi cam kết đồng hành cùng khách hàng với dịch vụ tận tâm và sản phẩm chất lượng vượt trội.
               </p>
               <div style={{ marginTop: 32, display: 'flex', gap: 16 }}>
                 <Link href="/products" className="btn btn-primary">Xem sản phẩm</Link>

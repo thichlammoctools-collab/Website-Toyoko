@@ -9,7 +9,7 @@ export default function Footer() {
           {/* Brand */}
           <div className={styles.brand}>
             <div className={styles.logoText}>QUANG PHÚ</div>
-            <p className={styles.tagline}>Nhà nhập khẩu & phân phối<br />máy cầm tay Toyoko chính hãng</p>
+            <p className={styles.tagline}><strong>Toyoko – An tâm đồng hành</strong><br />Nhà sản xuất & phân phối máy cầm tay Toyoko chính hãng, chất lượng, bền bỉ, giá phải chăng cho thợ thầy Việt Nam.<br/>Hơn 400 đại lý toàn quốc. Giao hàng nhanh, bảo hành gọn lẹ, phục vụ tận tình.</p>
             <div className={styles.socials}>
               <a href="https://zalo.me" target="_blank" rel="noopener noreferrer" className={styles.social} aria-label="Zalo">
                 <svg width="20" height="20" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="8" fill="#0068FF"/><text x="20" y="27" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">Z</text></svg>
