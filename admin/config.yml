@@ -34,7 +34,7 @@ collections:
       - name: images
         label: "Ảnh sản phẩm"
         widget: list
-        field: {name: src, label: "URL ảnh", widget: string}
+        field: {name: src, label: "Ảnh", widget: image}
       - {name: visible, label: "Hiển thị", widget: boolean, default: true}
 
   - name: posts
