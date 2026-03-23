@@ -1,4 +1,7 @@
 {
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": ".",
   "cleanUrls": false,
   "rewrites": [
     { "source": "/images/:path*", "destination": "/public/images/:path*" },
