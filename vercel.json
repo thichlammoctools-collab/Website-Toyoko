@@ -1,6 +1,7 @@
 {
   "cleanUrls": false,
   "rewrites": [
+    { "source": "/images/:path*", "destination": "/public/images/:path*" },
     { "source": "/product/(.*)", "destination": "/product.html" },
     { "source": "/post/(.*)", "destination": "/post.html" }
   ],
