@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liên hệ – Toyoko Quang Phú</title>
+  <meta name="description" content="Liên hệ Công ty Quang Phú – đặt hàng, tư vấn sản phẩm Toyoko, trở thành đại lý. Hotline: 0901 234 567.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <div class="logo-mark">T</div>
+        <div><div class="logo-text">TOYOKO</div><div class="logo-sub">Quang Phú</div></div>
+      </a>
+      <nav>
+        <a href="/">Trang chủ</a>
+        <a href="/products.html">Sản phẩm</a>
+        <a href="/blog.html">Tuyển dụng</a>
+        <a href="/contact.html">Liên hệ</a>
+        <a href="/contact.html" class="nav-cta">📞 Liên hệ ngay</a>
+      </nav>
+      <div class="hamburger"><span></span><span></span><span></span></div>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <span class="mobile-nav-close">✕</span>
+    <a href="/">Trang chủ</a>
+    <a href="/products.html">Sản phẩm</a>
+    <a href="/blog.html">Tuyển dụng</a>
+    <a href="/contact.html">Liên hệ</a>
+  </div>
+
+  <main>
+    <div class="page-header">
+      <div class="container">
+        <span class="section-label">Liên hệ</span>
+        <h1 class="section-title" style="color:#fff">Liên hệ & Đặt hàng</h1>
+        <p style="color:rgba(255,255,255,.75);font-size:16px">Chúng tôi sẵn sàng hỗ trợ bạn 24/7</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div class="contact-grid">
+          <!-- Contact info -->
+          <div class="contact-info">
+            <span class="section-label">Thông tin liên hệ</span>
+            <h2 class="section-title">Hãy liên hệ ngay với chúng tôi</h2>
+            <div class="divider-red"></div>
+            <p class="section-subtitle" style="margin-bottom:32px">
+              Đội ngũ tư vấn của Quang Phú luôn sẵn sàng hỗ trợ bạn về sản phẩm,
+              đặt hàng, chính sách đại lý và bảo hành.
+            </p>
+
+            <div class="contact-item">
+              <div class="contact-icon">📞</div>
+              <div>
+                <div class="contact-label">Hotline</div>
+                <div class="contact-value"><a href="tel:0901234567">0901 234 567</a></div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">✉️</div>
+              <div>
+                <div class="contact-label">Email</div>
+                <div class="contact-value"><a href="mailto:info@quangphugroup.com">info@quangphugroup.com</a></div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">📍</div>
+              <div>
+                <div class="contact-label">Địa chỉ</div>
+                <div class="contact-value">TP. Hồ Chí Minh, Việt Nam</div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">🕒</div>
+              <div>
+                <div class="contact-label">Giờ làm việc</div>
+                <div class="contact-value">Thứ 2 – Thứ 7: 7:30 – 17:30</div>
+              </div>
+            </div>
+
+            <div class="map-wrap">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d250788.17893800396!2d106.36541445!3d10.8141963!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529292e8d3dd1%3A0xf15f5aad773c112b!2zVHAuIEjhu5MgQ2jDrSBNaW5o!5e0!3m2!1svi!2svn!4v1679000000000"
+                width="100%" height="240" style="border:0;border-radius:12px" allowfullscreen loading="lazy"></iframe>
+            </div>
+          </div>
+
+          <!-- Contact form -->
+          <div class="contact-form">
+            <h3>Gửi yêu cầu tư vấn</h3>
+            <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+              <div class="form-group">
+                <label for="name">Họ và tên *</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Nguyễn Văn A" required>
+              </div>
+              <div class="form-group">
+                <label for="phone">Số điện thoại *</label>
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="0901 234 567" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="email@example.com">
+              </div>
+              <div class="form-group">
+                <label for="message">Nội dung *</label>
+                <textarea id="message" name="message" class="form-input" rows="5"
+                  placeholder="Tôi muốn hỏi về sản phẩm..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">
+                📨 Gửi yêu cầu
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-logo">
+            <div class="logo-mark">T</div>
+            <div><div class="logo-text" style="color:#fff">TOYOKO</div><div class="logo-sub">Quang Phú</div></div>
+          </div>
+          <p class="footer-desc">Nhà sản xuất và phân phối độc quyền thương hiệu Toyoko tại Việt Nam.</p>
+        </div>
+        <div>
+          <div class="footer-title">Điều hướng</div>
+          <ul class="footer-links">
+            <li><a href="/">Trang chủ</a></li>
+            <li><a href="/products.html">Sản phẩm</a></li>
+            <li><a href="/blog.html">Tuyển dụng</a></li>
+            <li><a href="/contact.html">Liên hệ</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">Liên hệ</div>
+          <ul class="footer-links">
+            <li><a href="tel:0901234567">📞 0901 234 567</a></li>
+            <li><a href="mailto:info@quangphugroup.com">✉️ info@quangphugroup.com</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom"><span>© 2024 Công ty TNHH Quang Phú. Tất cả quyền được bảo lưu.</span></div>
+    </div>
+  </footer>
+
+  <div class="zalo-chat">
+    <a href="https://zalo.me/0901234567" target="_blank" rel="noopener" class="zalo-btn">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/48px-Icon_of_Zalo.svg.png" alt="Zalo">
+      Chat Zalo
+    </a>
+  </div>
+  <script src="/js/main.js"></script>
+</body>
+</html>

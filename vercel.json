@@ -1,0 +1,16 @@
+{
+  "cleanUrls": false,
+  "rewrites": [
+    { "source": "/product/(.*)", "destination": "/product.html" },
+    { "source": "/post/(.*)", "destination": "/post.html" }
+  ],
+  "headers": [
+    {
+      "source": "/_data/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=60" }
+      ]
+    }
+  ]
+}
