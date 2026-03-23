@@ -42,6 +42,7 @@ function productCardHTML(p) {
       <div class="product-card-body">
         <div class="product-card-cat">${p.category}</div>
         <div class="product-card-name">${p.name}</div>
+        ${p.sku ? `<div class="product-card-sku">SKU: ${p.sku}</div>` : ''}
         <div class="product-card-price">${fmtPrice(p.price)}</div>
       </div>
     </a>`;
@@ -147,6 +148,7 @@ async function initProductDetail() {
       <div class="product-info">
         <div class="product-info-cat">${p.category}</div>
         <h1 class="product-info-name">${p.name}</h1>
+        ${p.sku ? `<div class="product-info-sku">Mã hàng (SKU): <strong>${p.sku}</strong></div>` : ''}
         <div class="product-info-price">${fmtPrice(p.price)}</div>
         <p class="product-info-desc">${p.description || ''}</p>
         ${specsHTML ? `<table class="specs-table"><tbody>${specsHTML}</tbody></table>` : ''}

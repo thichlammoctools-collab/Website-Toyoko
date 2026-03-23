@@ -3,9 +3,10 @@
   "slug": "my-ra-xe-cao-p-3000w",
   "name": "MÁY RỬA XE CAO ÁP 3000W",
   "category": "Khác",
-  "price": 1900000,
+  "price": 2660000,
   "unit": "máy",
-  "description": "3000W, 220 bar, Dây 15m, Súng + phụ kiện (2 máy/thùng) - Mã hàng: T3000WM",
+  "description": "3000W, 220 bar, Dây 15m, Súng + phụ kiện (2 máy/thùng)",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "T3000WM"
 }

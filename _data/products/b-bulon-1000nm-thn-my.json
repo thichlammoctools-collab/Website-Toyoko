@@ -3,9 +3,10 @@
   "slug": "b-bulon-1000nm-thn-my",
   "name": "BỘ BULON 1000Nm (THÂN MÁY)",
   "category": "Máy siết bulon/vít",
-  "price": 1850000,
+  "price": 2590000,
   "unit": "thân máy",
-  "description": "Biến thể THÂN MÁY của BỘ BULON 1000Nm - Mã hàng: 1000SL",
+  "description": "Biến thể THÂN MÁY của BỘ BULON 1000Nm",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "1000SL"
 }

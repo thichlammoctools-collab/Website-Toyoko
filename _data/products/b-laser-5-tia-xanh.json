@@ -3,9 +3,10 @@
   "slug": "b-laser-5-tia-xanh",
   "name": "BỘ LASER 5 TIA XANH",
   "category": "Khác",
-  "price": 960000,
+  "price": 1344000,
   "unit": "bộ",
-  "description": "5 tia xanh, 2 pin 3000mah + chân 1.2m (10 bộ/thùng) - Mã hàng: TYK5LP",
+  "description": "5 tia xanh, 2 pin 3000mah + chân 1.2m (10 bộ/thùng)",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "TYK5LP"
 }

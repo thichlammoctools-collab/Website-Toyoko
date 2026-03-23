@@ -3,9 +3,10 @@
   "slug": "b-khoan-pin-168v",
   "name": "BỘ KHOAN PIN 16.8V",
   "category": "Máy khoan",
-  "price": 880000,
+  "price": 1232000,
   "unit": "bộ",
-  "description": "Lực siết 50Nm, Autolock 10mm, 2 Pin 4 cells + sạc (10 bộ/thùng) - Mã hàng: T0250G",
+  "description": "Lực siết 50Nm, Autolock 10mm, 2 Pin 4 cells + sạc (10 bộ/thùng)",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "T0250G"
 }

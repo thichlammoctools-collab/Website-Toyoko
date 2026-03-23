@@ -3,9 +3,10 @@
   "slug": "b-bulon-380nm",
   "name": "BỘ BULON 380N.m",
   "category": "Máy siết bulon/vít",
-  "price": 1460000,
+  "price": 2044000,
   "unit": "bộ",
-  "description": "Lực 380Nm, Đầu 2 trong 1, 2 Pin 10 cells + sạc (6 bộ/thùng) - Mã hàng: T380G",
+  "description": "Lực 380Nm, Đầu 2 trong 1, 2 Pin 10 cells + sạc (6 bộ/thùng)",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "T380G"
 }

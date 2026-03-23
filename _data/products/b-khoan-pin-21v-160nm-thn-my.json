@@ -3,9 +3,10 @@
   "slug": "b-khoan-pin-21v-160nm-thn-my",
   "name": "BỘ KHOAN PIN 21V (160Nm) (THÂN MÁY)",
   "category": "Máy khoan",
-  "price": 1150000,
+  "price": 1610000,
   "unit": "thân máy",
-  "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (160Nm) - Mã hàng: 13160SL",
+  "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (160Nm)",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "13160SL"
 }

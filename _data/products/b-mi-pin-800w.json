@@ -3,9 +3,10 @@
   "slug": "b-mi-pin-800w",
   "name": "BỘ MÀI PIN 800W",
   "category": "Máy mài",
-  "price": 1760000,
+  "price": 2464000,
   "unit": "bộ",
-  "description": "800W, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng) - Mã hàng: T01100G",
+  "description": "800W, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng)",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "T01100G"
 }

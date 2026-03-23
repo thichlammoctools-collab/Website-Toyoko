@@ -22,6 +22,7 @@ collections:
     fields:
       - {name: id, label: "ID", widget: string}
       - {name: name, label: "Tên sản phẩm", widget: string}
+      - {name: sku, label: "Mã hàng (SKU)", widget: string}
       - {name: slug, label: "Slug URL", widget: string}
       - name: category
         label: "Danh mục"

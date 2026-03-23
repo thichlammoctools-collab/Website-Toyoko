@@ -1,11 +1,12 @@
 {
   "unit": "thân máy",
-  "price": 1100000,
+  "price": 1540000,
   "name": "Thân máy khoan bê tông pin 2.9J 2629SL",
   "slug": "b-b-tng-pin-29j-thn-my",
   "visible": true,
   "images": [],
   "id": "32",
-  "description": "Biến thể THÂN MÁY của BỘ BÊ TÔNG PIN 2.9J - Mã hàng: 2629SL",
-  "category": "Khác"
+  "description": "Biến thể THÂN MÁY của BỘ BÊ TÔNG PIN 2.9J",
+  "category": "Khác",
+  "sku": "2629SL"
 }

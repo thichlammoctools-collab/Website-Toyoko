@@ -3,9 +3,10 @@
   "slug": "b-mi-pin-850w",
   "name": "BỘ MÀI PIN 850W",
   "category": "Máy mài",
-  "price": 1880000,
+  "price": 2632000,
   "unit": "bộ",
-  "description": "850W, Công tắc bóp, 2 Pin 15 cells + sạc đế (6 bộ/thùng) - Mã hàng: T04850G",
+  "description": "850W, Công tắc bóp, 2 Pin 15 cells + sạc đế (6 bộ/thùng)",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "T04850G"
 }

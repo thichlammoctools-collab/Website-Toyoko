@@ -3,9 +3,10 @@
   "slug": "b-khoan-pin-21v-pin-5-cells",
   "name": "BỘ KHOAN PIN 21V (Pin 5 cells)",
   "category": "Máy khoan",
-  "price": 1130000,
+  "price": 1582000,
   "unit": "bộ",
-  "description": "Lực 60Nm, 3 chức năng, 2 Pin 5 cells + sạc (8 bộ/thùng) - Mã hàng: T0260G5",
+  "description": "Lực 60Nm, 3 chức năng, 2 Pin 5 cells + sạc (8 bộ/thùng)",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "T0260G5"
 }

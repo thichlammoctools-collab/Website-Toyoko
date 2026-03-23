@@ -3,9 +3,10 @@
   "slug": "b-mi-pin-800w-thn-my",
   "name": "BỘ MÀI PIN 800W (THÂN MÁY)",
   "category": "Máy mài",
-  "price": 770000,
+  "price": 1078000,
   "unit": "thân máy",
-  "description": "Biến thể THÂN MÁY của BỘ MÀI PIN 800W - Mã hàng: 01100-LR",
+  "description": "Biến thể THÂN MÁY của BỘ MÀI PIN 800W",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "01100-LR"
 }

@@ -3,9 +3,10 @@
   "slug": "b-my-laser-2-tia-xanh",
   "name": "BỘ MÁY LASER 2 TIA XANH",
   "category": "Khác",
-  "price": 700000,
+  "price": 980000,
   "unit": "bộ",
-  "description": "Tia siêu sáng, 2 pin tiểu, giá treo tường (10 bộ/thùng) - Mã hàng: TYK22LD",
+  "description": "Tia siêu sáng, 2 pin tiểu, giá treo tường (10 bộ/thùng)",
   "images": [],
-  "visible": true
+  "visible": true,
+  "sku": "TYK22LD"
 }
