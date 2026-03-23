@@ -17,7 +17,8 @@ collections:
     files:
       - name: products
         label: "Sản phẩm"
-        file: _data/products.json
+        file: "_data/products.json"
+        format: json
         fields:
           - name: data
             label: "Danh sách sản phẩm"
@@ -42,7 +43,8 @@ collections:
 
       - name: posts
         label: "Bài viết / Tuyển dụng"
-        file: _data/posts.json
+        file: "_data/posts.json"
+        format: json
         fields:
           - name: data
             label: "Danh sách bài viết"
