@@ -1,108 +1,101 @@
 // Vercel Serverless Function – GitHub OAuth for Decap CMS
-// CommonJS format required for Vercel Node.js runtime
-
 const https = require('https');
 
-function httpsPost(options, body) {
-  return new Promise((resolve, reject) => {
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => { data += chunk; });
-      res.on('end', () => {
-        try { resolve(JSON.parse(data)); }
-        catch(e) { resolve(data); }
-      });
-    });
-    req.on('error', reject);
-    if (body) req.write(body);
-    req.end();
-  });
-}
-
 module.exports = async function handler(req, res) {
-  const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-  const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+  const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
+  const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+  
+  if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
+    return res.status(500).send('OAuth not configured on server');
+  }
+
+  // Set highly permissive CORS for Decap CMS popup communication
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
   const { code } = req.query;
 
-  // Step 1: No code yet → redirect to GitHub
+  // Step 1: Initial redirect to GitHub
   if (!code) {
-    const params = new URLSearchParams({
-      client_id: CLIENT_ID,
-      scope: 'repo,user',
-      allow_signup: 'false',
-    });
-    return res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
+    const redirectUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=repo,user`;
+    return res.redirect(redirectUrl);
   }
 
   // Step 2: Exchange code for token
   try {
-    const body = JSON.stringify({
-      client_id: CLIENT_ID,
-      client_secret: CLIENT_SECRET,
-      code,
+    const postData = JSON.stringify({
+      client_id: GITHUB_CLIENT_ID,
+      client_secret: GITHUB_CLIENT_SECRET,
+      code: code
     });
 
-    const tokenData = await httpsPost({
+    const options = {
       hostname: 'github.com',
       path: '/login/oauth/access_token',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Content-Length': Buffer.byteLength(body),
-      },
-    }, body);
-
-    if (tokenData.error) {
-      return res.status(400).send(`
-        <html><body><script>
-          (window.opener || window.parent).postMessage(
-            'authorization:github:error:${encodeURIComponent(tokenData.error_description || tokenData.error)}',
-            '*'
-          );
-        <\/script></body></html>
-      `);
-    }
-
-    // Step 3: Map GitHub token to Decap CMS expected format
-    // GitHub returns: { access_token, token_type, scope }
-    // Decap CMS expects: { token, provider }
-    const cmsToken = {
-      token: tokenData.access_token,
-      provider: 'github',
-    };
-    const content = JSON.stringify(cmsToken);
-    const html = `<!DOCTYPE html>
-<html><body>
-<p>Đang đăng nhập, vui lòng đợi...</p>
-<script>
-  (function() {
-    function sendToken() {
-      var payload = ${JSON.stringify(content)};
-      var message = 'authorization:github:success:' + payload;
-      if (window.opener) {
-        window.opener.postMessage(message, '*');
-      } else if (window.parent !== window) {
-        window.parent.postMessage(message, '*');
+        'Content-Length': Buffer.byteLength(postData)
       }
-      setTimeout(function() { window.close(); }, 1500);
+    };
+
+    const tokenResponse = await new Promise((resolve, reject) => {
+      const gReq = https.request(options, (gRes) => {
+        let data = '';
+        gRes.on('data', chunk => data += chunk);
+        gRes.on('end', () => {
+          try { resolve(JSON.parse(data)); } catch (e) { resolve(data); }
+        });
+      });
+      gReq.on('error', reject);
+      gReq.write(postData);
+      gReq.end();
+    });
+
+    if (tokenResponse.error) {
+       return res.send(`<html><body><script>
+        window.opener.postMessage('authorization:github:error:${JSON.stringify(tokenResponse)}', '*');
+        window.close();
+      </script></body></html>`);
     }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', sendToken);
-    } else {
-      sendToken();
-    }
-  })();
-<\/script>
-</body></html>`;
+
+    // Decap expects exactly this format
+    // Match the official react-netlify-identity / decap-oauth pattern
+    const message = {
+      token: tokenResponse.access_token,
+      provider: 'github'
+    };
+
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Ghi nhận đăng nhập...</title>
+</head>
+<body>
+    <script>
+      const receiveMessage = (message) => {
+          const payload = message.data;
+          window.opener.postMessage(
+            'authorization:github:success:${JSON.stringify(message)}',
+            message.origin
+          );
+          window.removeEventListener("message", receiveMessage, false);
+          window.close();
+      }
+      window.addEventListener("message", receiveMessage, false);
+      window.opener.postMessage("authorizing:github", "*");
+    </script>
+</body>
+</html>`;
 
     res.setHeader('Content-Type', 'text/html');
-    return res.send(html);
+    return res.end(html);
 
-  } catch (err) {
-    console.error('OAuth error:', err);
-    return res.status(500).send(`
-      <html><body><p>Lỗi xác thực: ${err.message}</p></body></html>
-    `);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Authentication failed');
   }
 };
