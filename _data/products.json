@@ -1,0 +1,54 @@
+[
+  {
+    "id": "1",
+    "slug": "may-khoan-pin-toyoko-cd01",
+    "name": "Máy Khoan Pin Toyoko CD-01",
+    "category": "Máy khoan",
+    "price": 850000,
+    "unit": "cái",
+    "description": "Máy khoan pin không dây Toyoko CD-01, động cơ brushless mạnh mẽ, pin Lithium 18V dung lượng cao. Phù hợp cho thợ mộc, thợ điện, sửa chữa dân dụng.",
+    "specs": {
+      "Điện áp pin": "18V",
+      "Tốc độ không tải": "0-400 / 0-1500 rpm",
+      "Mô-men xoắn tối đa": "50 Nm",
+      "Khả năng khoan bê tông": "Ø13mm",
+      "Trọng lượng": "1.8 kg"
+    },
+    "images": ["/images/products/cd01-1.jpg"],
+    "visible": true
+  },
+  {
+    "id": "2",
+    "slug": "may-mai-goc-toyoko-ag01",
+    "name": "Máy Mài Góc Toyoko AG-01",
+    "category": "Máy mài",
+    "price": 650000,
+    "unit": "cái",
+    "description": "Máy mài góc Toyoko AG-01, công suất 850W, đĩa mài 125mm. Thiết kế chắc chắn, chống bụi tốt, phù hợp cho các công trình nặng.",
+    "specs": {
+      "Công suất": "850W",
+      "Đường kính đĩa": "125mm",
+      "Tốc độ không tải": "11.000 rpm",
+      "Trọng lượng": "2.1 kg"
+    },
+    "images": ["/images/products/ag01-1.jpg"],
+    "visible": true
+  },
+  {
+    "id": "3",
+    "slug": "may-cuia-xich-toyoko-cs01",
+    "name": "Máy Cưa Xích Toyoko CS-01",
+    "category": "Máy cưa",
+    "price": 1950000,
+    "unit": "cái",
+    "description": "Máy cưa xích điện Toyoko CS-01, lưỡi 16-inch, động cơ 2000W. Lý tưởng cho cắt gỗ lớn, cành cây, công trình xây dựng.",
+    "specs": {
+      "Công suất": "2000W",
+      "Chiều dài thanh": "400mm (16\")",
+      "Tốc độ xích": "14m/s",
+      "Trọng lượng": "4.8 kg"
+    },
+    "images": ["/images/products/cs01-1.jpg"],
+    "visible": true
+  }
+]
