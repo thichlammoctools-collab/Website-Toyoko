@@ -51,7 +51,7 @@ function productCardHTML(p) {
 async function initHome() {
   const featuredEl = $('#featured-products');
   if (!featuredEl) return;
-  const products = await fetchJSON('/_data/products.json');
+  const products = await fetchJSON('/api/products');
   const visible = products.filter(p => p.visible).slice(0, 6);
   if (visible.length === 0) {
     featuredEl.closest('section')?.remove();
@@ -65,7 +65,7 @@ async function initProducts() {
   const gridEl = $('#products-grid');
   if (!gridEl) return;
 
-  const products = await fetchJSON('/_data/products.json');
+  const products = await fetchJSON('/api/products');
   let allProducts = products.filter(p => p.visible);
   let currentCat = 'Tất cả';
   let searchTerm = '';
@@ -114,7 +114,7 @@ async function initProductDetail() {
   const slug = new URLSearchParams(location.search).get('slug');
   if (!slug) { container.innerHTML = '<div class="empty-state"><h3>Không tìm thấy sản phẩm</h3></div>'; return; }
 
-  const products = await fetchJSON('/_data/products.json');
+  const products = await fetchJSON('/api/products');
   const p = products.find(prod => prod.slug === slug);
   if (!p) { container.innerHTML = '<div class="empty-state"><h3>Không tìm thấy sản phẩm</h3></div>'; return; }
 
@@ -172,7 +172,7 @@ async function initBlog() {
   const listEl = $('#post-list');
   if (!listEl) return;
 
-  const posts = await fetchJSON('/_data/posts.json');
+  const posts = await fetchJSON('/api/posts');
   const visible = posts.filter(p => p.visible);
   if (!visible.length) {
     listEl.innerHTML = '<div class="empty-state"><h3>Hiện chưa có thông báo tuyển dụng</h3><p>Vui lòng quay lại sau hoặc liên hệ trực tiếp công ty.</p></div>';
@@ -206,7 +206,7 @@ async function initPost() {
   const slug = new URLSearchParams(location.search).get('slug');
   if (!slug) { bodyEl.innerHTML = '<div class="empty-state"><h3>Không tìm thấy bài viết</h3></div>'; return; }
 
-  const posts = await fetchJSON('/_data/posts.json');
+  const posts = await fetchJSON('/api/posts');
   const p = posts.find(post => post.slug === slug);
   if (!p) { bodyEl.innerHTML = '<div class="empty-state"><h3>Không tìm thấy bài viết</h3></div>'; return; }
 
