@@ -20,7 +20,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Roboto Condensed', 'Roboto', Arial, sans-serif;
+  font-family: var(--font-roboto-condensed), var(--font-roboto), Arial, sans-serif;
   background: var(--white);
   color: var(--dark);
   line-height: 1.6;

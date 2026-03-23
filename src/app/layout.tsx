@@ -1,5 +1,18 @@
 import type { Metadata } from 'next'
+import { Roboto, Roboto_Condensed } from 'next/font/google'
 import './globals.css'
+
+const roboto = Roboto({
+  subsets: ['latin', 'vietnamese'],
+  variable: '--font-roboto',
+  weight: ['400', '500', '700'],
+})
+
+const robotoCondensed = Roboto_Condensed({
+  subsets: ['latin', 'vietnamese'],
+  variable: '--font-roboto-condensed',
+  weight: ['400', '700', '900'],
+})
 
 export const metadata: Metadata = {
   title: 'Quang Phú – Nhà nhập khẩu máy cầm tay Toyoko',
@@ -10,13 +23,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
-        <link rel="icon" href="/favicon.ico" />
-      </head>
-      <body>{children}</body>
+      <body className={`${roboto.variable} ${robotoCondensed.variable}`}>{children}</body>
     </html>
   )
 }

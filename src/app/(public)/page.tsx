@@ -40,7 +40,7 @@ export default async function HomePage() {
             </h1>
             <p className={styles.heroDesc}>
               <strong>Công ty Quang Phú</strong> là nhà sản xuất và phân phối thương hiệu <strong>Toyoko</strong> – thương hiệu OEM hướng đến giải quyết nhu cầu máy móc cầm tay chất lượng, ổn định, bền bỉ, giá phải chăng cho thợ thầy tại Việt Nam.<br/>
-              <em>Slogan: "An tâm đồng hành"</em>.<br/>
+              <em>Slogan: &quot;An tâm đồng hành&quot;</em>.<br/>
               Hơn <strong>400 đại lý</strong> phủ sóng toàn quốc. Giao hàng nhanh chóng, bảo hành gọn lẹ, phục vụ tận tình.
             </p>
             <div className={styles.heroCtas}>
