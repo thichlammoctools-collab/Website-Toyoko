@@ -5,57 +5,46 @@ backend:
   base_url: https://quangphugroup.com
   auth_endpoint: api/auth
 
-# Uploaded media go to /images/uploads
+local_backend: false
+
 media_folder: images/uploads
 public_folder: /images/uploads
 
 collections:
-  # ─── PRODUCTS ────────────────────────────────────────────────────
-  - name: "products"
+  - name: products
     label: "Sản phẩm"
-    folder: "_data/products"
+    folder: _data/products
     create: true
     slug: "{{slug}}"
-    format: "json"
-    identifier_field: "name"
-    summary: "{{name}} – {{category}}"
+    format: json
+    identifier_field: name
     fields:
-      - { name: "name", label: "Tên sản phẩm", widget: "string" }
-      - { name: "slug", label: "Slug (URL)", widget: "string",
-          hint: "Ví dụ: may-khoan-pin-toyoko-cd01" }
-      - name: "category"
+      - {name: name, label: "Tên sản phẩm", widget: string}
+      - {name: slug, label: "Slug (URL)", widget: string}
+      - name: category
         label: "Danh mục"
-        widget: "select"
+        widget: select
         options: ["Máy khoan", "Máy mài", "Máy cưa", "Khác"]
-      - { name: "price", label: "Giá (VNĐ, 0 = Liên hệ)", widget: "number", value_type: "int", default: 0 }
-      - { name: "unit", label: "Đơn vị tính", widget: "string", default: "cái" }
-      - { name: "description", label: "Mô tả sản phẩm", widget: "markdown" }
-      - name: "images"
+      - {name: price, label: "Giá (VNĐ, 0=Liên hệ)", widget: number, value_type: int, default: 0}
+      - {name: unit, label: "Đơn vị", widget: string, default: "cái"}
+      - {name: description, label: "Mô tả", widget: markdown}
+      - name: images
         label: "Ảnh sản phẩm"
-        widget: "list"
-        field: { name: "src", label: "Ảnh", widget: "image" }
-      - name: "specs"
-        label: "Thông số kỹ thuật"
-        widget: "list"
-        summary: "{{fields.key}}: {{fields.value}}"
-        fields:
-          - { name: "key", label: "Tên thông số", widget: "string" }
-          - { name: "value", label: "Giá trị", widget: "string" }
-      - { name: "visible", label: "Hiển thị trên website", widget: "boolean", default: true }
+        widget: list
+        field: {name: src, label: "Ảnh", widget: image}
+      - {name: visible, label: "Hiển thị", widget: boolean, default: true}
 
-  # ─── POSTS ───────────────────────────────────────────────────────
-  - name: "posts"
+  - name: posts
     label: "Bài viết / Tuyển dụng"
-    folder: "_data/posts"
+    folder: _data/posts
     create: true
     slug: "{{slug}}"
-    format: "json"
-    identifier_field: "title"
-    summary: "{{title}} ({{date}})"
+    format: json
+    identifier_field: title
     fields:
-      - { name: "title", label: "Tiêu đề", widget: "string" }
-      - { name: "slug", label: "Slug (URL)", widget: "string" }
-      - { name: "date", label: "Ngày đăng", widget: "datetime", format: "YYYY-MM-DD" }
-      - { name: "excerpt", label: "Tóm tắt ngắn", widget: "text" }
-      - { name: "content", label: "Nội dung chi tiết", widget: "markdown" }
-      - { name: "visible", label: "Hiển thị trên website", widget: "boolean", default: true }
+      - {name: title, label: "Tiêu đề", widget: string}
+      - {name: slug, label: "Slug (URL)", widget: string}
+      - {name: date, label: "Ngày đăng", widget: datetime, format: "YYYY-MM-DD"}
+      - {name: excerpt, label: "Tóm tắt", widget: text}
+      - {name: content, label: "Nội dung", widget: markdown}
+      - {name: visible, label: "Hiển thị", widget: boolean, default: true}
