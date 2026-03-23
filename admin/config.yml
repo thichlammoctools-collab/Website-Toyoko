@@ -11,50 +11,50 @@ media_folder: images/uploads
 public_folder: /images/uploads
 
 collections:
-  # ─── PRODUCTS (single file) ──────────────────────────────────────
-  - name: data
-    label: "Dữ liệu website"
-    files:
-      - name: products
-        label: "Sản phẩm"
-        file: "_data/products.json"
-        format: json
+  - name: products_file
+    label: "📦 Quản lý Sản phẩm"
+    file: "_data/products.json"
+    format: "json"
+    description: "Chỉnh sửa danh sách sản phẩm hiển thị trên website"
+    fields:
+      - name: data
+        label: "Danh sách sản phẩm"
+        widget: list
+        add_to_top: true
+        summary: "{{fields.name}} ({{fields.price}})"
         fields:
-          - name: data
-            label: "Danh sách sản phẩm"
+          - {name: id, label: "ID", widget: string}
+          - {name: name, label: "Tên sản phẩm", widget: string}
+          - {name: slug, label: "Slug URL", widget: string}
+          - name: category
+            label: "Danh mục"
+            widget: select
+            options: ["Máy khoan", "Máy mài", "Máy cưa", "Máy siết bulon/vít", "Khác"]
+          - {name: price, label: "Giá (VNĐ, 0=Liên hệ)", widget: number, value_type: int, default: 0}
+          - {name: unit, label: "Đơn vị", widget: string, default: "cái"}
+          - {name: description, label: "Mô tả", widget: text}
+          - name: images
+            label: "Ảnh sản phẩm"
             widget: list
-            summary: "{{fields.name}}"
-            fields:
-              - {name: id, label: "ID", widget: string}
-              - {name: name, label: "Tên sản phẩm", widget: string}
-              - {name: slug, label: "Slug URL", widget: string}
-              - name: category
-                label: "Danh mục"
-                widget: select
-                options: ["Máy khoan", "Máy mài", "Máy cưa", "Khác"]
-              - {name: price, label: "Giá (VNĐ, 0=Liên hệ)", widget: number, value_type: int, default: 0}
-              - {name: unit, label: "Đơn vị", widget: string, default: "cái"}
-              - {name: description, label: "Mô tả", widget: text}
-              - name: images
-                label: "Ảnh sản phẩm"
-                widget: list
-                field: {name: src, label: "URL ảnh", widget: string}
-              - {name: visible, label: "Hiển thị", widget: boolean, default: true}
+            field: {name: src, label: "URL ảnh", widget: string}
+          - {name: visible, label: "Hiển thị", widget: boolean, default: true}
 
-      - name: posts
-        label: "Bài viết / Tuyển dụng"
-        file: "_data/posts.json"
-        format: json
+  - name: posts_file
+    label: "📝 Quản lý Bài viết"
+    file: "_data/posts.json"
+    format: "json"
+    description: "Chỉnh sửa tin tức và tin tuyển dụng"
+    fields:
+      - name: data
+        label: "Danh sách bài viết"
+        widget: list
+        add_to_top: true
+        summary: "{{fields.title}}"
         fields:
-          - name: data
-            label: "Danh sách bài viết"
-            widget: list
-            summary: "{{fields.title}}"
-            fields:
-              - {name: id, label: "ID", widget: string}
-              - {name: title, label: "Tiêu đề", widget: string}
-              - {name: slug, label: "Slug URL", widget: string}
-              - {name: date, label: "Ngày đăng", widget: string}
-              - {name: excerpt, label: "Tóm tắt", widget: text}
-              - {name: content, label: "Nội dung", widget: markdown}
-              - {name: visible, label: "Hiển thị", widget: boolean, default: true}
+          - {name: id, label: "ID", widget: string}
+          - {name: title, label: "Tiêu đề", widget: string}
+          - {name: slug, label: "Slug URL", widget: string}
+          - {name: date, label: "Ngày đăng", widget: string}
+          - {name: excerpt, label: "Tóm tắt", widget: text}
+          - {name: content, label: "Nội dung", widget: markdown}
+          - {name: visible, label: "Hiển thị", widget: boolean, default: true}
