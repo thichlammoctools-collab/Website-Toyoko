@@ -154,7 +154,7 @@ async function initProductDetail() {
         ${specsHTML ? `<table class="specs-table"><tbody>${specsHTML}</tbody></table>` : ''}
         <div class="product-ctas">
           <a href="/contact.html?product=${encodeURIComponent(p.name)}" class="btn btn-primary">📞 Liên hệ đặt hàng</a>
-          <a href="https://zalo.me/0901234567" target="_blank" class="btn btn-outline">💬 Chat Zalo</a>
+          <a href="https://zalo\.me/0938895934" target="_blank" class="btn btn-outline">💬 Chat Zalo</a>
         </div>
       </div>
     </div>`;
