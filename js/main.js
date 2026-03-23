@@ -5,8 +5,11 @@ const fmtPrice = p => p > 0
   ? p.toLocaleString('vi-VN') + ' ₫'
   : 'Liên hệ';
 
-// Fetch JSON data
-const fetchJSON = url => fetch(url).then(r => r.ok ? r.json() : []).catch(() => []);
+// Fetch JSON data – supports both array root and {data:[...]} wrapped
+const fetchJSON = url => fetch(url)
+  .then(r => r.ok ? r.json() : [])
+  .then(json => Array.isArray(json) ? json : (json.data || []))
+  .catch(() => []);
 
 // Mark active nav link
 function setActiveNav() {

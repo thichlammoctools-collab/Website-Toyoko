@@ -1,11 +1,13 @@
-[
-  {
-    "id": "1",
-    "slug": "tuyen-dung-ky-thuat-2024",
-    "title": "Tuyển Dụng Kỹ Thuật Viên Bảo Hành 2024",
-    "date": "2024-03-15",
-    "excerpt": "Công ty Quang Phú tuyển dụng kỹ thuật viên bảo hành máy cầm tay điện tại TP.HCM và các tỉnh lân cận. Ưu tiên ứng viên có kinh nghiệm ngành điện - cơ khí.",
-    "content": "## Mô tả công việc\n\nCông ty TNHH Quang Phú đang tuyển dụng **Kỹ thuật viên Bảo hành** cho các vị trí tại TP.HCM.\n\n### Yêu cầu\n- Trốt nghiệp Trung cấp/Cao đẳng ngành Điện - Cơ khí\n- Có kinh nghiệm sửa chữa máy cầm tay điện (ưu tiên)\n- Chăm chỉ, cẩn thận, có tinh thần học hỏi\n\n### Quyền lợi\n- Lương: 8-15 triệu/tháng (thỏa thuận)\n- Đóng đầy đủ BHXH, BHYT\n- Được đào tạo kỹ thuật chuyên sâu\n- Môi trường làm việc chuyên nghiệp\n\n### Liên hệ\nGửi CV qua email: hr@quangphugroup.com hoặc liên hệ Zalo: 0901 234 567",
-    "visible": true
-  }
-]
+{
+  "data": [
+    {
+      "id": "1",
+      "slug": "tuyen-dung-ky-thuat-2024",
+      "title": "Tuyển Dụng Kỹ Thuật Viên Bảo Hành 2024",
+      "date": "2024-03-15",
+      "excerpt": "Công ty Quang Phú tuyển dụng kỹ thuật viên bảo hành máy cầm tay điện tại TP.HCM và các tỉnh lân cận.",
+      "content": "## Mô tả công việc\n\nCông ty TNHH Quang Phú đang tuyển dụng **Kỹ thuật viên Bảo hành** cho các vị trí tại TP.HCM.\n\n### Yêu cầu\n- Tốt nghiệp Trung cấp/Cao đẳng ngành Điện - Cơ khí\n- Có kinh nghiệm sửa chữa máy cầm tay điện (ưu tiên)\n\n### Quyền lợi\n- Lương: 8-15 triệu/tháng\n- Đóng đầy đủ BHXH, BHYT",
+      "visible": true
+    }
+  ]
+}
