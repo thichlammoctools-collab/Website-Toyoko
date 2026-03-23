@@ -8,6 +8,13 @@
     { "source": "/product/(.*)", "destination": "/product.html" },
     { "source": "/post/(.*)", "destination": "/post.html" }
   ],
+  "redirects": [
+    { "source": "/admin", "destination": "/admin/index.html", "permanent": false }
+  ],
+  "routes": [
+    { "src": "^/$", "dest": "/index.html" },
+    { "src": "^/admin/?$", "dest": "/admin/index.html" }
+  ],
   "headers": [
     {
       "source": "/_data/(.*)",
