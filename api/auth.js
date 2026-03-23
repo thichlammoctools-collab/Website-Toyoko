@@ -64,21 +64,28 @@ module.exports = async function handler(req, res) {
       `);
     }
 
-    // Step 3: Send token back to CMS via postMessage
-    const content = JSON.stringify(tokenData);
+    // Step 3: Map GitHub token to Decap CMS expected format
+    // GitHub returns: { access_token, token_type, scope }
+    // Decap CMS expects: { token, provider }
+    const cmsToken = {
+      token: tokenData.access_token,
+      provider: 'github',
+    };
+    const content = JSON.stringify(cmsToken);
     const html = `<!DOCTYPE html>
 <html><body>
 <p>Đang đăng nhập, vui lòng đợi...</p>
 <script>
   (function() {
     function sendToken() {
-      var message = 'authorization:github:success:' + ${JSON.stringify(content)};
+      var payload = ${JSON.stringify(content)};
+      var message = 'authorization:github:success:' + payload;
       if (window.opener) {
         window.opener.postMessage(message, '*');
       } else if (window.parent !== window) {
         window.parent.postMessage(message, '*');
       }
-      setTimeout(function() { window.close(); }, 1000);
+      setTimeout(function() { window.close(); }, 1500);
     }
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', sendToken);
