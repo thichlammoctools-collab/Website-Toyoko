@@ -1,53 +1,101 @@
-// Vercel Serverless Function – GitHub OAuth callback for Decap CMS
-// Deploy at: api/auth.js → accessible as /api/auth
+// Vercel Serverless Function – GitHub OAuth for Decap CMS
+// CommonJS format required for Vercel Node.js runtime
 
-const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+const https = require('https');
 
-export default async function handler(req, res) {
+function httpsPost(options, body) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => { data += chunk; });
+      res.on('end', () => {
+        try { resolve(JSON.parse(data)); }
+        catch(e) { resolve(data); }
+      });
+    });
+    req.on('error', reject);
+    if (body) req.write(body);
+    req.end();
+  });
+}
+
+module.exports = async function handler(req, res) {
+  const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
+  const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
   const { code } = req.query;
 
+  // Step 1: No code yet → redirect to GitHub
   if (!code) {
-    // Step 1: Redirect to GitHub auth
     const params = new URLSearchParams({
       client_id: CLIENT_ID,
       scope: 'repo,user',
+      allow_signup: 'false',
     });
-    return res.redirect(`https://github.com/login/oauth/authorize?${params}`);
+    return res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
   }
 
   // Step 2: Exchange code for token
   try {
-    const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+    const body = JSON.stringify({
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+      code,
+    });
+
+    const tokenData = await httpsPost({
+      hostname: 'github.com',
+      path: '/login/oauth/access_token',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Accept: 'application/json',
+        'Accept': 'application/json',
+        'Content-Length': Buffer.byteLength(body),
       },
-      body: JSON.stringify({
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-        code,
-      }),
-    });
-    const tokenData = await tokenRes.json();
+    }, body);
 
     if (tokenData.error) {
-      return res.status(401).send(`OAuth error: ${tokenData.error_description}`);
+      return res.status(400).send(`
+        <html><body><script>
+          (window.opener || window.parent).postMessage(
+            'authorization:github:error:${encodeURIComponent(tokenData.error_description || tokenData.error)}',
+            '*'
+          );
+        <\/script></body></html>
+      `);
     }
 
-    // Step 3: Return postMessage to CMS
-    const script = `
-      <script>
-        window.opener.postMessage(
-          'authorization:github:success:${JSON.stringify(tokenData)}',
-          '*'
-        );
-      </script>
-    `;
+    // Step 3: Send token back to CMS via postMessage
+    const content = JSON.stringify(tokenData);
+    const html = `<!DOCTYPE html>
+<html><body>
+<p>Đang đăng nhập, vui lòng đợi...</p>
+<script>
+  (function() {
+    function sendToken() {
+      var message = 'authorization:github:success:' + ${JSON.stringify(content)};
+      if (window.opener) {
+        window.opener.postMessage(message, '*');
+      } else if (window.parent !== window) {
+        window.parent.postMessage(message, '*');
+      }
+      setTimeout(function() { window.close(); }, 1000);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', sendToken);
+    } else {
+      sendToken();
+    }
+  })();
+<\/script>
+</body></html>`;
+
     res.setHeader('Content-Type', 'text/html');
-    return res.send(script);
+    return res.send(html);
+
   } catch (err) {
-    return res.status(500).send('Server error: ' + err.message);
+    console.error('OAuth error:', err);
+    return res.status(500).send(`
+      <html><body><p>Lỗi xác thực: ${err.message}</p></body></html>
+    `);
   }
-}
+};
