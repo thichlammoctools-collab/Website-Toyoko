@@ -1034,6 +1034,12 @@
           <textarea id="post-excerpt" placeholder="Mô tả ngắn xuất hiện ở trang danh sách..." rows="3"></textarea>
         </div>
         <div class="hint">Tag an toàn khi lưu: strong, em, u, br, a.</div>
+
+        <div class="preview-wrap" id="post-preview-wrap" style="display:none">
+          <div class="preview-title">Xem trước tóm tắt bài viết</div>
+          <div class="preview-note">Preview đã lọc whitelist HTML an toàn trước khi lưu.</div>
+          <div class="preview-block" id="post-preview-content"></div>
+        </div>
       </div>
       <div class="field">
         <label>Nội dung (Markdown)</label>
@@ -1047,6 +1053,7 @@
       </div>
     </div>
     <div class="modal-footer">
+      <button class="btn btn-secondary" id="post-preview-btn">Preview HTML</button>
       <button class="btn btn-secondary" id="post-modal-cancel">Hủy</button>
       <button class="btn btn-primary" id="post-save-btn">Lưu lại</button>
     </div>
@@ -1224,6 +1231,11 @@ function renderFooterPreview() {
   document.getElementById('footer-preview-link-products').textContent = document.getElementById('footer-link-products-input').value.trim() || 'Sản phẩm';
   document.getElementById('footer-preview-link-blog').textContent = document.getElementById('footer-link-blog-input').value.trim() || 'Tuyển dụng';
   document.getElementById('footer-preview-link-contact').textContent = document.getElementById('footer-link-contact-input').value.trim() || 'Liên hệ';
+}
+
+function renderPostPreview() {
+  const html = sanitizeHtml(document.getElementById('post-excerpt').value.trim()) || '<span style="color:var(--muted)">Chưa có nội dung tóm tắt.</span>';
+  document.getElementById('post-preview-content').innerHTML = html;
 }
 
 function renderHeroPreview() {
@@ -2243,6 +2255,8 @@ function openPostModal(post = null) {
   document.getElementById('post-excerpt').value = post?.excerpt || '';
   document.getElementById('post-content').value = post?.content || '';
   setToggle('post-visible', post ? post.visible !== false : true);
+  document.getElementById('post-preview-wrap').style.display = 'none';
+  document.getElementById('post-preview-btn').textContent = 'Preview HTML';
   document.getElementById('post-modal').style.display = 'flex';
 }
 
@@ -2254,6 +2268,24 @@ document.getElementById('post-modal-cancel').addEventListener('click', () => { d
 
 document.getElementById('post-title').addEventListener('input', function() {
   if (!editingPost) document.getElementById('post-slug').value = slugify(this.value);
+});
+
+document.getElementById('post-excerpt').addEventListener('input', () => {
+  const wrap = document.getElementById('post-preview-wrap');
+  if (wrap.style.display !== 'none') renderPostPreview();
+});
+
+document.getElementById('post-preview-btn').addEventListener('click', () => {
+  const wrap = document.getElementById('post-preview-wrap');
+  const btn = document.getElementById('post-preview-btn');
+  if (wrap.style.display === 'none') {
+    renderPostPreview();
+    wrap.style.display = '';
+    btn.textContent = 'Ẩn Preview';
+  } else {
+    wrap.style.display = 'none';
+    btn.textContent = 'Preview HTML';
+  }
 });
 
 document.getElementById('post-save-btn').addEventListener('click', async () => {
