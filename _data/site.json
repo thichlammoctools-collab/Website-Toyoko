@@ -6,5 +6,19 @@
     "description": "Công ty Quang Phú là nhà sản xuất và phân phối thương hiệu Toyoko. Hơn 400 đại lý phủ sóng toàn quốc, giao hàng nhanh chóng, bảo hành gọn lẹ.",
     "image": "/images/hero-machine.png",
     "imageAlt": "Máy cầm tay Toyoko"
+  },
+  "about": {
+    "sectionLabel": "Về chúng tôi",
+    "title": "Toyoko – An tâm đồng hành cùng người thợ Việt",
+    "description1": "<strong>Công ty TNHH Quang Phú</strong> là nhà sản xuất và phân phối độc quyền thương hiệu <strong>Toyoko</strong> tại Việt Nam. Toyoko là thương hiệu OEM chuyên cung cấp máy móc cầm tay chất lượng, ổn định, bền bỉ, giá phải chăng, đáp ứng nhu cầu của thợ thầy trên khắp cả nước.",
+    "description2": "<strong>Hơn 400 đại lý</strong> phủ sóng toàn quốc, giao hàng nhanh chóng, bảo hành gọn lẹ, phục vụ tận tình.",
+    "image": "/images/about.jpg",
+    "imageAlt": "Kho hàng Quang Phú",
+    "badgeTitle": "Chứng nhận nhập khẩu",
+    "badgeSubtitle": "Toyoko Official Importer VN",
+    "primaryButtonText": "Xem sản phẩm",
+    "primaryButtonHref": "/products.html",
+    "secondaryButtonText": "Liên hệ",
+    "secondaryButtonHref": "/contact.html"
   }
 }
