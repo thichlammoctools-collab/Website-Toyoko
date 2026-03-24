@@ -169,15 +169,24 @@ async function initProducts() {
   const liveCats = allProducts.map(p => p.category).filter(Boolean);
   const cats = ['Tất cả', ...new Set([...configuredCats, ...liveCats])];
   const catSlugMap = Object.fromEntries(cats.map(name => [slugify(name), name]));
-  if (initialCatSlug && catSlugMap[initialCatSlug]) {
-    currentCat = catSlugMap[initialCatSlug];
+  const initialCatSlugNormalized = slugify(initialCatSlug || '');
+  if (initialCatSlug && catSlugMap[initialCatSlugNormalized]) {
+    currentCat = catSlugMap[initialCatSlugNormalized];
   }
 
   function syncCategoryQuery() {
     const url = new URL(location.href);
     if (currentCat === 'Tất cả') url.searchParams.delete('cat');
     else url.searchParams.set('cat', slugify(currentCat));
-    history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    const nextPath = `${url.pathname}${url.search}${url.hash}`;
+    const curPath = `${location.pathname}${location.search}${location.hash}`;
+    if (nextPath !== curPath) {
+      history.replaceState(null, '', nextPath);
+    }
+  }
+
+  if (initialCatSlug) {
+    syncCategoryQuery();
   }
 
   const catEl = $('#categories');

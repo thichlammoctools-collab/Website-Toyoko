@@ -1,6 +1,21 @@
 const fs = require('fs');
 const path = require('path');
 
+function normalizeProductCategories(categories) {
+  const seen = new Set();
+  const out = [];
+  (Array.isArray(categories) ? categories : []).forEach(item => {
+    const name = (typeof item === 'string' ? item : (item && item.name)) || '';
+    const clean = String(name).trim();
+    const key = clean.toLowerCase();
+    if (!clean || seen.has(key)) return;
+    seen.add(key);
+    out.push(clean);
+  });
+  if (!out.some(c => c.toLowerCase() === 'khác')) out.push('Khác');
+  return out;
+}
+
 module.exports = function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
@@ -9,7 +24,10 @@ module.exports = function handler(req, res) {
     const filePath = path.join(process.cwd(), '_data', 'site.json');
     const raw = fs.readFileSync(filePath, 'utf8');
     const json = JSON.parse(raw);
-    return res.status(200).json(json);
+    return res.status(200).json({
+      ...json,
+      productCategories: normalizeProductCategories(json.productCategories || ['Máy khoan', 'Máy mài', 'Máy cưa', 'Máy siết bulon/vít', 'Khác'])
+    });
   } catch {
     return res.status(200).json({
       productCategories: ['Máy khoan', 'Máy mài', 'Máy cưa', 'Máy siết bulon/vít', 'Khác'],

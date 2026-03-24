@@ -98,11 +98,21 @@
     .products-toolbar {
       margin-bottom: 14px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .products-search-wrap {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex: 1;
+      min-width: 260px;
     }
     .products-search {
       width: 100%;
-      max-width: 360px;
+      max-width: 420px;
       padding: 10px 12px;
       border: 1.5px solid var(--border);
       border-radius: var(--radius);
@@ -112,6 +122,28 @@
       background: #fff;
     }
     .products-search:focus { border-color: var(--primary); }
+    .products-filter {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .products-filter select {
+      padding: 9px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      background: #fff;
+      color: var(--text);
+      min-width: 170px;
+      outline: none;
+    }
+    .products-filter select:focus { border-color: var(--primary); }
+    .search-hit {
+      background: #fef08a;
+      border-radius: 4px;
+      padding: 0 2px;
+    }
 
     /* Buttons */
     .btn {
@@ -138,6 +170,7 @@
     }
     .badge-green { background: #dcfce7; color: #166534; }
     .badge-gray  { background: #f1f5f9; color: #64748b; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
     .product-img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; background: var(--bg); }
     .no-img { width: 48px; height: 48px; border-radius: 6px; background: var(--bg); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 20px; }
 
@@ -311,7 +344,20 @@
         </div>
         <div class="content">
           <div class="products-toolbar">
-            <input type="search" id="products-search-input" class="products-search" placeholder="Tìm theo tên sản phẩm hoặc mã SKU..." autocomplete="off">
+            <div class="products-search-wrap">
+              <input type="search" id="products-search-input" class="products-search" placeholder="Tìm theo tên sản phẩm hoặc mã SKU..." autocomplete="off">
+              <button class="btn btn-secondary" id="products-search-clear" type="button">Xóa</button>
+            </div>
+            <div class="products-filter">
+              <select id="products-category-filter">
+                <option value="all">Tất cả danh mục</option>
+              </select>
+              <select id="products-status-filter">
+                <option value="all">Tất cả trạng thái</option>
+                <option value="visible">Hiển thị</option>
+                <option value="hidden">Ẩn</option>
+              </select>
+            </div>
           </div>
           <div id="products-body"><div class="loading-state">Đang tải...</div></div>
         </div>
@@ -646,6 +692,8 @@ let categoryOptions = [];
 let cachedProducts = [];
 let editingCategoryIndex = -1;
 let productSearchKeyword = '';
+let productCategoryFilter = 'all';
+let productStatusFilter = 'all';
 
 const DEFAULT_PRODUCT_CATEGORIES = ['Máy khoan', 'Máy mài', 'Máy cưa', 'Máy siết bulon/vít', 'Khác'];
 const SYSTEM_CATEGORIES = ['Khác'];
@@ -680,6 +728,15 @@ function formatPrice(p) {
   return Number(p).toLocaleString('vi-VN') + ' ₫';
 }
 
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function normalizeCategoryName(name) {
   return String(name || '').trim().replace(/\s+/g, ' ');
 }
@@ -710,6 +767,21 @@ function ensureSystemCategoriesLast(list) {
   const normal = categories.filter(c => !isSystemCategory(c));
   const system = SYSTEM_CATEGORIES.filter(sys => categories.some(c => c.toLowerCase() === sys.toLowerCase()));
   return [...normal, ...system];
+}
+
+function getCategorySlugCountMap(list = categoryOptions) {
+  const counts = {};
+  list.forEach(name => {
+    const slug = categorySlug(name);
+    if (!slug) return;
+    counts[slug] = (counts[slug] || 0) + 1;
+  });
+  return counts;
+}
+
+function getDuplicateCategorySlugs(list = categoryOptions) {
+  const counts = getCategorySlugCountMap(list);
+  return Object.keys(counts).filter(slug => counts[slug] > 1);
 }
 
 function renderProductCategorySelect(selected = '') {
@@ -861,6 +933,7 @@ async function loadProducts() {
 
   const searchInput = document.getElementById('products-search-input');
   if (searchInput) searchInput.value = productSearchKeyword;
+  renderProductsFilterControls();
 
   renderProductsTable();
 }
@@ -872,20 +945,68 @@ function searchText(input) {
     .replace(/[\u0300-\u036f]/g, '');
 }
 
-function getFilteredProducts(items, keyword) {
+function getFilteredProducts(items, keyword, categoryFilter, statusFilter) {
   const term = searchText(keyword).trim();
-  if (!term) return items;
+  const categoryTerm = String(categoryFilter || 'all').toLowerCase();
+  const statusTerm = String(statusFilter || 'all').toLowerCase();
 
   return items.filter(p => {
+    if (categoryTerm !== 'all') {
+      const category = normalizeCategoryName(p.category).toLowerCase();
+      if (category !== categoryTerm) return false;
+    }
+
+    if (statusTerm !== 'all') {
+      const visible = Boolean(p.visible);
+      if (statusTerm === 'visible' && !visible) return false;
+      if (statusTerm === 'hidden' && visible) return false;
+    }
+
+    if (!term) return true;
+
     const name = searchText(p.name);
     const sku = searchText(p.sku);
     return name.includes(term) || sku.includes(term);
   });
 }
 
+function highlightText(text, keyword) {
+  const source = String(text || '');
+  const term = String(keyword || '').trim();
+  if (!term) return escapeHtml(source);
+
+  const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${escapedTerm})`, 'ig');
+  const escapedSource = escapeHtml(source);
+  return escapedSource.replace(regex, '<mark class="search-hit">$1</mark>');
+}
+
+function renderProductsFilterControls() {
+  const categorySelect = document.getElementById('products-category-filter');
+  if (!categorySelect) return;
+
+  const options = [
+    '<option value="all">Tất cả danh mục</option>',
+    ...uniqueCategories(cachedProducts.map(p => p.category).filter(Boolean)).map(cat =>
+      `<option value="${escapeHtml(cat)}">${escapeHtml(cat)}</option>`
+    )
+  ];
+
+  categorySelect.innerHTML = options.join('');
+  if ([...categorySelect.options].some(opt => opt.value.toLowerCase() === productCategoryFilter.toLowerCase())) {
+    categorySelect.value = productCategoryFilter;
+  } else {
+    productCategoryFilter = 'all';
+    categorySelect.value = 'all';
+  }
+
+  const statusSelect = document.getElementById('products-status-filter');
+  if (statusSelect) statusSelect.value = productStatusFilter;
+}
+
 function renderProductsTable() {
   const el = document.getElementById('products-body');
-  const filteredItems = getFilteredProducts(cachedProducts, productSearchKeyword);
+  const filteredItems = getFilteredProducts(cachedProducts, productSearchKeyword, productCategoryFilter, productStatusFilter);
 
   if (!cachedProducts.length) {
     el.innerHTML = '<div class="empty-state"><div class="ico">📦</div><p>Chưa có sản phẩm nào. Nhấn "+ Thêm sản phẩm" để bắt đầu.</p></div>';
@@ -893,7 +1014,7 @@ function renderProductsTable() {
   }
 
   if (!filteredItems.length) {
-    el.innerHTML = '<div class="empty-state"><div class="ico">🔎</div><p>Không tìm thấy sản phẩm phù hợp với từ khóa hiện tại.</p></div>';
+    el.innerHTML = '<div class="empty-state"><div class="ico">🔎</div><p>Không tìm thấy sản phẩm phù hợp với bộ lọc hiện tại.</p></div>';
     return;
   }
 
@@ -908,9 +1029,9 @@ function renderProductsTable() {
           ${filteredItems.map(p => `
             <tr>
               <td>${p.images && p.images.length ? `<img class="product-img" src="${p.images[0]}" onerror="this.parentNode.innerHTML='<div class=no-img>📷</div>'">` : '<div class="no-img">📷</div>'}</td>
-              <td><strong>${p.name || ''}</strong></td>
-              <td>${p.sku || ''}</td>
-              <td>${p.category || ''}</td>
+              <td><strong>${highlightText(p.name, productSearchKeyword)}</strong></td>
+              <td>${highlightText(p.sku, productSearchKeyword)}</td>
+              <td>${escapeHtml(p.category || '')}</td>
               <td>${formatPrice(p.price)}</td>
               <td><span class="badge ${p.visible ? 'badge-green' : 'badge-gray'}">${p.visible ? 'Hiển thị' : 'Ẩn'}</span></td>
               <td>
@@ -963,6 +1084,21 @@ document.getElementById('product-modal-close').addEventListener('click', closePr
 document.getElementById('product-modal-cancel').addEventListener('click', closeProductModal);
 document.getElementById('products-search-input').addEventListener('input', function() {
   productSearchKeyword = this.value || '';
+  renderProductsTable();
+});
+document.getElementById('products-search-clear').addEventListener('click', function() {
+  productSearchKeyword = '';
+  const input = document.getElementById('products-search-input');
+  input.value = '';
+  input.focus();
+  renderProductsTable();
+});
+document.getElementById('products-category-filter').addEventListener('change', function() {
+  productCategoryFilter = this.value || 'all';
+  renderProductsTable();
+});
+document.getElementById('products-status-filter').addEventListener('change', function() {
+  productStatusFilter = this.value || 'all';
   renderProductsTable();
 });
 
@@ -1119,6 +1255,7 @@ function renderCategories() {
   }
 
   const usageMap = {};
+  const slugCountMap = getCategorySlugCountMap(categoryOptions);
   cachedProducts.forEach(p => {
     const key = normalizeCategoryName(p.category);
     if (!key) return;
@@ -1130,18 +1267,22 @@ function renderCategories() {
       <table>
         <thead><tr><th style="width:52px"></th><th>Danh mục</th><th>Slug</th><th>Số sản phẩm</th><th>Thao tác</th></tr></thead>
         <tbody>
-          ${categoryOptions.map((cat, idx) => `
-            <tr data-category-row="${idx}" draggable="${!isSystemCategory(cat)}">
-              <td>${isSystemCategory(cat) ? '<span class="drag-handle" style="opacity:.4;cursor:not-allowed">☰</span>' : '<span class="drag-handle" title="Kéo để đổi thứ tự">☰</span>'}</td>
-              <td><strong>${cat}</strong>${isSystemCategory(cat) ? ' <span class="badge badge-gray">Hệ thống</span>' : ''}</td>
-              <td><code>${categorySlug(cat)}</code></td>
-              <td>${usageMap[cat] || 0}</td>
-              <td>
-                <button class="btn btn-secondary btn-sm" ${isSystemCategory(cat) ? 'disabled' : ''} onclick="editCategory(${idx})">Sửa</button>
-                <button class="btn btn-danger btn-sm" ${isSystemCategory(cat) ? 'disabled' : ''} onclick="deleteCategory('${cat.replace(/'/g, "\\'")}')">Xóa</button>
-              </td>
-            </tr>
-          `).join('')}
+          ${categoryOptions.map((cat, idx) => {
+            const slug = categorySlug(cat);
+            const hasDuplicateSlug = (slugCountMap[slug] || 0) > 1;
+            return `
+              <tr data-category-row="${idx}" draggable="${!isSystemCategory(cat)}">
+                <td>${isSystemCategory(cat) ? '<span class="drag-handle" style="opacity:.4;cursor:not-allowed">☰</span>' : '<span class="drag-handle" title="Kéo để đổi thứ tự">☰</span>'}</td>
+                <td><strong>${cat}</strong>${isSystemCategory(cat) ? ' <span class="badge badge-gray">Hệ thống</span>' : ''}</td>
+                <td><code>${slug}</code>${hasDuplicateSlug ? ' <span class="badge badge-amber">Trùng slug</span>' : ''}</td>
+                <td>${usageMap[cat] || 0}</td>
+                <td>
+                  <button class="btn btn-secondary btn-sm" ${isSystemCategory(cat) ? 'disabled' : ''} onclick="editCategory(${idx})">Sửa</button>
+                  <button class="btn btn-danger btn-sm" ${isSystemCategory(cat) ? 'disabled' : ''} onclick="deleteCategory('${cat.replace(/'/g, "\\'")}')">Xóa</button>
+                </td>
+              </tr>
+            `;
+          }).join('')}
         </tbody>
       </table>
     </div>`;
@@ -1298,7 +1439,12 @@ document.getElementById('category-save-btn').addEventListener('click', async () 
     await saveCategoryOptions(nextCategories);
     resetCategoryForm();
     renderCategories();
-    showToast('Đã lưu danh mục');
+    const duplicateSlugs = getDuplicateCategorySlugs();
+    if (duplicateSlugs.length) {
+      showToast(`Đã lưu danh mục. Cảnh báo: ${duplicateSlugs.length} slug đang bị trùng`, 'error');
+    } else {
+      showToast('Đã lưu danh mục');
+    }
     if (document.getElementById('page-products').style.display !== 'none') loadProducts();
   } catch (err) {
     showToast(err.message, 'error');
