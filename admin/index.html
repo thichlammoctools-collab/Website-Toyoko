@@ -182,7 +182,7 @@
       padding: 40px 16px; overflow-y: auto;
     }
     .modal {
-      background: var(--card); border-radius: 12px; width: 100%; max-width: 640px;
+      background: var(--card); border-radius: 12px; width: 100%; max-width: 900px;
       box-shadow: 0 25px 60px rgba(0,0,0,.3); position: relative;
     }
     .modal-header {
@@ -329,6 +329,35 @@
     }
     tr.dragging td { opacity: 0.55; background: #fff7ed; }
     tr.drag-over td { background: #ffedd5; }
+
+    /* Large desktop tuning */
+    @media (min-width: 1500px) {
+      .sidebar {
+        width: 260px;
+        min-width: 260px;
+      }
+      .topbar {
+        padding: 20px 44px;
+      }
+      .content {
+        padding: 30px 44px;
+      }
+      .modal {
+        max-width: 980px;
+      }
+    }
+
+    @media (min-width: 1800px) {
+      .topbar {
+        padding: 22px 56px;
+      }
+      .content {
+        padding: 34px 56px;
+      }
+      .modal {
+        max-width: 1100px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -431,7 +460,7 @@
           </div>
         </div>
         <div class="content">
-          <div class="table-wrap" style="padding:20px;max-width:900px;margin-bottom:16px">
+          <div class="table-wrap" style="padding:20px;max-width:1280px;margin-bottom:16px">
             <div class="form-row" style="grid-template-columns:1fr auto auto">
               <div class="field" style="margin:0">
                 <label>Tên danh mục</label>
@@ -469,7 +498,7 @@
           </div>
         </div>
         <div class="content">
-          <div class="table-wrap" style="padding:20px;max-width:900px">
+          <div class="table-wrap" style="padding:20px;max-width:1280px">
             <div class="field">
               <label>Badge</label>
               <input type="text" id="hero-badge-input" placeholder="Nhà sản xuất và nhập khẩu chính thức tại Việt Nam">
@@ -516,7 +545,7 @@
           </div>
         </div>
         <div class="content">
-          <div class="table-wrap" style="padding:20px;max-width:980px">
+          <div class="table-wrap" style="padding:20px;max-width:1400px">
             <div class="field">
               <label>Nhãn section</label>
               <input type="text" id="about-section-label-input" placeholder="Về chúng tôi">
@@ -623,7 +652,7 @@
           </div>
         </div>
         <div class="content">
-          <div class="table-wrap" style="padding:20px;max-width:980px">
+          <div class="table-wrap" style="padding:20px;max-width:1400px">
             <div class="field">
               <label>Nhãn section</label>
               <input type="text" id="why-section-label-input" placeholder="Tại sao chọn chúng tôi">
@@ -654,7 +683,7 @@
             </div>
           </div>
           <div class="content">
-            <div class="table-wrap" style="padding:20px;max-width:900px">
+            <div class="table-wrap" style="padding:20px;max-width:1280px">
               <div class="field">
                 <label>Mô tả ngắn (dưới logo)</label>
                 <div class="html-editor">
