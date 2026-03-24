@@ -63,6 +63,15 @@ const DEFAULT_SITE = {
       { icon: '📞', title: 'Hỗ trợ kỹ thuật', description: 'Đội ngũ kỹ thuật tư vấn miễn phí qua Zalo và điện thoại.' },
       { icon: '🤝', title: 'Đại lý chính thức', description: 'Chính sách đại lý hấp dẫn, hỗ trợ trưng bày và marketing.' }
     ]
+  },
+  footer: {
+    desc: 'Công ty TNHH Quang Phú - Nhà sản xuất và phân phối độc quyền thương hiệu Toyoko tại Việt Nam.',
+    phone: '0938 895 934',
+    email: 'info@quangphugroup.com',
+    address: '234 Bình Thới, Phường 10, Quận 11, HCM',
+    hours: 'T2-T6: 8h-17h, T7: 8h-12h',
+    copyright: '© 2024 Công ty TNHH Quang Phú. Tất cả quyền được bảo lưu.',
+    tagline: 'Thương hiệu Toyoko – An tâm đồng hành cùng thợ Việt'
   }
 };
 
@@ -117,6 +126,11 @@ module.exports = async function handler(req, res) {
           ...DEFAULT_SITE.why,
           ...(current.why || {}),
           ...(data.why || {}),
+        },
+        footer: {
+          ...DEFAULT_SITE.footer,
+          ...(current.footer || {}),
+          ...(data.footer || {}),
         },
       };
 
