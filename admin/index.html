@@ -262,6 +262,74 @@
       gap: 8px 14px;
       margin-top: 8px;
     }
+    .hero-preview-badge {
+      display: inline-block;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    .hero-preview-title {
+      font-size: 20px;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .hero-preview-title strong {
+      color: var(--primary);
+    }
+    .hero-preview-desc {
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .hero-preview-img {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-preview-img img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      max-height: 260px;
+    }
+    .why-preview-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .why-preview-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #fff;
+    }
+    .why-preview-head {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .why-preview-icon {
+      font-size: 16px;
+      width: 22px;
+      text-align: center;
+    }
+    .why-preview-desc {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
     .toggle-row { display: flex; align-items: center; gap: 10px; }
     .toggle { width: 40px; height: 22px; background: var(--border); border-radius: 100px; position: relative; cursor: pointer; border: none; transition: background .2s; }
     .toggle.on { background: var(--success); }
@@ -529,7 +597,7 @@
           </div>
         </div>
         <div class="content">
-          <div class="table-wrap" style="padding:20px;max-width:1280px">
+          <div class="table-wrap ultra-two-col" style="padding:20px;max-width:1280px">
             <div class="field">
               <label>Badge</label>
               <input type="text" id="hero-badge-input" placeholder="Nhà sản xuất và nhập khẩu chính thức tại Việt Nam">
@@ -561,6 +629,14 @@
               </div>
               <input type="text" id="hero-image-input" placeholder="/images/hero-machine.png">
               <div class="hint">Sau khi upload, đường dẫn sẽ tự động điền vào ô trên.</div>
+            </div>
+
+            <div class="preview-wrap" id="hero-preview-wrap" style="display:none">
+              <div class="preview-title">Xem trước khối Hero</div>
+              <div class="preview-note">Preview tự động cập nhật khi chỉnh sửa trên màn hình rộng.</div>
+              <div class="preview-block">
+                <div id="hero-preview-content"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -683,7 +759,7 @@
           </div>
         </div>
         <div class="content">
-          <div class="table-wrap" style="padding:20px;max-width:1400px">
+          <div class="table-wrap ultra-two-col" style="padding:20px;max-width:1400px">
             <div class="field">
               <label>Nhãn section</label>
               <input type="text" id="why-section-label-input" placeholder="Tại sao chọn chúng tôi">
@@ -700,6 +776,19 @@
             </div>
 
             <div id="why-cards-form"></div>
+
+            <div class="preview-wrap" id="why-preview-wrap" style="display:none">
+              <div class="preview-title">Xem trước khối Lợi ích</div>
+              <div class="preview-note">Preview tự động cập nhật khi chỉnh sửa trên màn hình rộng.</div>
+              <div class="preview-block">
+                <div class="preview-mini-label">Section</div>
+                <div id="why-preview-section"></div>
+              </div>
+              <div class="preview-block">
+                <div class="preview-mini-label">Danh sách thẻ</div>
+                <div id="why-preview-cards" class="why-preview-grid"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -933,7 +1022,18 @@
       </div>
       <div class="field">
         <label>Tóm tắt</label>
-        <textarea id="post-excerpt" placeholder="Mô tả ngắn xuất hiện ở trang danh sách..." rows="3"></textarea>
+        <div class="html-editor">
+          <div class="html-toolbar" data-target="post-excerpt">
+            <button type="button" class="html-btn" data-cmd="strong"><b>B</b></button>
+            <button type="button" class="html-btn" data-cmd="em"><i>I</i></button>
+            <button type="button" class="html-btn" data-cmd="u"><u>U</u></button>
+            <button type="button" class="html-btn" data-cmd="br">BR</button>
+            <button type="button" class="html-btn" data-cmd="a">Link</button>
+            <button type="button" class="html-btn" data-cmd="clear">Clear</button>
+          </div>
+          <textarea id="post-excerpt" placeholder="Mô tả ngắn xuất hiện ở trang danh sách..." rows="3"></textarea>
+        </div>
+        <div class="hint">Tag an toàn khi lưu: strong, em, u, br, a.</div>
       </div>
       <div class="field">
         <label>Nội dung (Markdown)</label>
@@ -1126,14 +1226,72 @@ function renderFooterPreview() {
   document.getElementById('footer-preview-link-contact').textContent = document.getElementById('footer-link-contact-input').value.trim() || 'Liên hệ';
 }
 
+function renderHeroPreview() {
+  const badge = document.getElementById('hero-badge-input').value.trim();
+  const prefix = document.getElementById('hero-title-prefix-input').value.trim() || 'TOYOKO';
+  const rest = document.getElementById('hero-title-rest-input').value.trim();
+  const desc = document.getElementById('hero-desc-input').value.trim();
+  const image = document.getElementById('hero-image-input').value.trim() || '/images/hero-machine.png';
+  const imageAlt = document.getElementById('hero-image-alt-input').value.trim() || 'Máy cầm tay Toyoko';
+
+  const html = `
+    ${badge ? `<div class="hero-preview-badge">${escapeHtml(badge)}</div>` : ''}
+    <div class="hero-preview-title"><strong>${escapeHtml(prefix)}</strong>${rest ? ' - ' + escapeHtml(rest).replace(/\n/g, '<br>') : ''}</div>
+    <div class="hero-preview-desc">${escapeHtml(desc).replace(/\n/g, '<br>')}</div>
+    <div class="hero-preview-img">
+      <img src="${escapeHtml(image)}" alt="${escapeHtml(imageAlt)}" onerror="this.src='/images/placeholder.jpg'">
+    </div>
+  `;
+  document.getElementById('hero-preview-content').innerHTML = html;
+}
+
+function renderWhyPreview() {
+  const label = document.getElementById('why-section-label-input').value.trim() || 'Tại sao chọn chúng tôi';
+  const title = document.getElementById('why-section-title-input').value.trim() || 'Lợi ích khi mua hàng tại Quang Phú';
+  document.getElementById('why-preview-section').innerHTML = `
+    <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${escapeHtml(label)}</div>
+    <div style="font-weight:700">${escapeHtml(title)}</div>
+  `;
+
+  const icons = [...document.querySelectorAll('[data-why="icon"]')];
+  const titles = [...document.querySelectorAll('[data-why="title"]')];
+  const descs = [...document.querySelectorAll('[data-why="description"]')];
+  const cards = icons.map((iconEl, i) => ({
+    icon: (iconEl.value || '').trim() || '✨',
+    title: (titles[i]?.value || '').trim(),
+    description: (descs[i]?.value || '').trim()
+  })).filter(c => c.title || c.description);
+
+  document.getElementById('why-preview-cards').innerHTML = cards.length
+    ? cards.map(c => `
+        <div class="why-preview-card">
+          <div class="why-preview-head"><span class="why-preview-icon">${escapeHtml(c.icon)}</span><span>${escapeHtml(c.title || 'Chưa có tiêu đề')}</span></div>
+          <div class="why-preview-desc">${escapeHtml(c.description).replace(/\n/g, '<br>')}</div>
+        </div>
+      `).join('')
+    : '<div class="why-preview-desc">Chưa có dữ liệu thẻ.</div>';
+}
+
 function isUltraWide() {
   return window.matchMedia('(min-width: 1800px)').matches;
 }
 
 function bindRealtimePreview() {
+  const heroInputs = [
+    'hero-badge-input',
+    'hero-title-prefix-input',
+    'hero-title-rest-input',
+    'hero-desc-input',
+    'hero-image-input',
+    'hero-image-alt-input'
+  ];
   const aboutInputs = [
     'about-desc-1-input',
     'about-desc-2-input'
+  ];
+  const whyInputs = [
+    'why-section-label-input',
+    'why-section-title-input'
   ];
   const footerInputs = [
     'footer-desc-input',
@@ -1145,6 +1303,16 @@ function bindRealtimePreview() {
     'footer-link-contact-input'
   ];
 
+  heroInputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || el.dataset.previewBound === '1') return;
+    el.dataset.previewBound = '1';
+    el.addEventListener('input', () => {
+      const wrap = document.getElementById('hero-preview-wrap');
+      if (isUltraWide() || wrap.style.display !== 'none') renderHeroPreview();
+    });
+  });
+
   aboutInputs.forEach(id => {
     const el = document.getElementById(id);
     if (!el || el.dataset.previewBound === '1') return;
@@ -1154,6 +1322,25 @@ function bindRealtimePreview() {
       if (isUltraWide() || wrap.style.display !== 'none') renderAboutPreview();
     });
   });
+
+  whyInputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || el.dataset.previewBound === '1') return;
+    el.dataset.previewBound = '1';
+    el.addEventListener('input', () => {
+      const wrap = document.getElementById('why-preview-wrap');
+      if (isUltraWide() || wrap.style.display !== 'none') renderWhyPreview();
+    });
+  });
+
+  const whyCardsForm = document.getElementById('why-cards-form');
+  if (whyCardsForm && whyCardsForm.dataset.previewBound !== '1') {
+    whyCardsForm.dataset.previewBound = '1';
+    whyCardsForm.addEventListener('input', () => {
+      const wrap = document.getElementById('why-preview-wrap');
+      if (isUltraWide() || wrap.style.display !== 'none') renderWhyPreview();
+    });
+  }
 
   footerInputs.forEach(id => {
     const el = document.getElementById(id);
@@ -2083,7 +2270,7 @@ document.getElementById('post-save-btn').addEventListener('click', async () => {
     title,
     slug,
     date:    document.getElementById('post-date').value,
-    excerpt: document.getElementById('post-excerpt').value.trim(),
+    excerpt: sanitizeHtml(document.getElementById('post-excerpt').value.trim()),
     content: document.getElementById('post-content').value,
     visible: document.getElementById('post-visible').dataset.val === 'true',
   };
@@ -2123,6 +2310,7 @@ async function loadHeroSettings() {
   document.getElementById('hero-desc-input').value = hero.description || '';
   document.getElementById('hero-image-input').value = hero.image || '/images/hero-machine.png';
   document.getElementById('hero-image-alt-input').value = hero.imageAlt || 'Máy cầm tay Toyoko';
+  if (isUltraWide()) renderHeroPreview();
 }
 
 async function loadAboutSettings() {
@@ -2183,6 +2371,7 @@ async function loadWhySettings() {
   document.getElementById('why-section-label-input').value = why.sectionLabel || 'Tại sao chọn chúng tôi';
   document.getElementById('why-section-title-input').value = why.title || 'Lợi ích khi mua hàng tại Quang Phú';
   renderWhyCardsForm(Array.isArray(why.cards) ? why.cards : []);
+  if (isUltraWide()) renderWhyPreview();
 }
 
   async function loadFooterSettings() {
@@ -2246,6 +2435,7 @@ document.getElementById('hero-image-file').addEventListener('change', async func
     const r = await api('/api/admin/upload', 'POST', { filename: file.name, data: base64, type: file.type });
     if (r.ok) {
       document.getElementById('hero-image-input').value = r.url;
+      if (isUltraWide()) renderHeroPreview();
       showToast('Upload ảnh thành công');
     } else {
       showToast(r.error || 'Upload ảnh thất bại', 'error');
