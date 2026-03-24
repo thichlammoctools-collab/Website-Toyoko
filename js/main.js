@@ -163,76 +163,81 @@ async function initProducts() {
   const gridEl = $('#products-grid');
   if (!gridEl) return;
 
-  const [products, site] = await Promise.all([
-    fetchJSON('/api/products'),
-    fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null)
-  ]);
-  let allProducts = products.filter(p => p.visible);
-  let currentCat = 'Tất cả';
-  let searchTerm = '';
-  const initialCatSlug = new URLSearchParams(location.search).get('cat') || '';
+  try {
+    const [products, site] = await Promise.all([
+      fetchJSON('/api/products'),
+      fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null)
+    ]);
+    let allProducts = products.filter(p => p.visible);
+    let currentCat = 'Tất cả';
+    let searchTerm = '';
+    const initialCatSlug = new URLSearchParams(location.search).get('cat') || '';
 
-  // Build category buttons
-  const configuredCats = Array.isArray(site?.productCategories)
-    ? site.productCategories.map(c => (typeof c === 'string' ? c : c?.name)).filter(Boolean)
-    : [];
-  const liveCats = allProducts.map(p => p.category).filter(Boolean);
-  const cats = ['Tất cả', ...new Set([...configuredCats, ...liveCats])];
-  const catSlugMap = Object.fromEntries(cats.map(name => [slugify(name), name]));
-  const initialCatSlugNormalized = slugify(initialCatSlug || '');
-  if (initialCatSlug && catSlugMap[initialCatSlugNormalized]) {
-    currentCat = catSlugMap[initialCatSlugNormalized];
-  }
-
-  function syncCategoryQuery() {
-    const url = new URL(location.href);
-    if (currentCat === 'Tất cả') url.searchParams.delete('cat');
-    else url.searchParams.set('cat', slugify(currentCat));
-    const nextPath = `${url.pathname}${url.search}${url.hash}`;
-    const curPath = `${location.pathname}${location.search}${location.hash}`;
-    if (nextPath !== curPath) {
-      history.replaceState(null, '', nextPath);
+    // Build category buttons
+    const configuredCats = Array.isArray(site?.productCategories)
+      ? site.productCategories.map(c => (typeof c === 'string' ? c : c?.name)).filter(Boolean)
+      : [];
+    const liveCats = allProducts.map(p => p.category).filter(Boolean);
+    const cats = ['Tất cả', ...new Set([...configuredCats, ...liveCats])];
+    const catSlugMap = Object.fromEntries(cats.map(name => [slugify(name), name]));
+    const initialCatSlugNormalized = slugify(initialCatSlug || '');
+    if (initialCatSlug && catSlugMap[initialCatSlugNormalized]) {
+      currentCat = catSlugMap[initialCatSlugNormalized];
     }
-  }
 
-  if (initialCatSlug) {
-    syncCategoryQuery();
-  }
+    function syncCategoryQuery() {
+      const url = new URL(location.href);
+      if (currentCat === 'Tất cả') url.searchParams.delete('cat');
+      else url.searchParams.set('cat', slugify(currentCat));
+      const nextPath = `${url.pathname}${url.search}${url.hash}`;
+      const curPath = `${location.pathname}${location.search}${location.hash}`;
+      if (nextPath !== curPath) {
+        history.replaceState(null, '', nextPath);
+      }
+    }
 
-  const catEl = $('#categories');
-  if (catEl) {
-    catEl.innerHTML = cats.map(c =>
-      `<button class="cat-btn${c === currentCat ? ' active' : ''}" data-cat="${c}">${c}</button>`
-    ).join('');
-    catEl.addEventListener('click', e => {
-      if (!e.target.matches('.cat-btn')) return;
-      currentCat = e.target.dataset.cat;
-      $$('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === currentCat));
+    if (initialCatSlug) {
       syncCategoryQuery();
+    }
+
+    const catEl = $('#categories');
+    if (catEl) {
+      catEl.innerHTML = cats.map(c =>
+        `<button class="cat-btn${c === currentCat ? ' active' : ''}" data-cat="${c}">${c}</button>`
+      ).join('');
+      catEl.addEventListener('click', e => {
+        if (!e.target.matches('.cat-btn')) return;
+        currentCat = e.target.dataset.cat;
+        $$('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === currentCat));
+        syncCategoryQuery();
+        render();
+      });
+    }
+
+    const searchInput = $('#search-input');
+    searchInput?.addEventListener('input', e => {
+      searchTerm = e.target.value.toLowerCase();
       render();
     });
-  }
 
-  const searchInput = $('#search-input');
-  searchInput?.addEventListener('input', e => {
-    searchTerm = e.target.value.toLowerCase();
+    function render() {
+      const filtered = allProducts.filter(p => {
+        const matchCat = currentCat === 'Tất cả' || p.category === currentCat;
+        const name = String(p.name || '').toLowerCase();
+        const desc = String(p.description || '').toLowerCase();
+        const matchSearch = name.includes(searchTerm) || desc.includes(searchTerm);
+        return matchCat && matchSearch;
+      });
+      gridEl.innerHTML = filtered.length
+        ? filtered.map(productCardHTML).join('')
+        : `<div class="empty-state" style="grid-column:1/-1"><h3>Không tìm thấy sản phẩm</h3><p>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p></div>`;
+    }
+
     render();
-  });
-
-  function render() {
-    const filtered = allProducts.filter(p => {
-      const matchCat = currentCat === 'Tất cả' || p.category === currentCat;
-      const name = String(p.name || '').toLowerCase();
-      const desc = String(p.description || '').toLowerCase();
-      const matchSearch = name.includes(searchTerm) || desc.includes(searchTerm);
-      return matchCat && matchSearch;
-    });
-    gridEl.innerHTML = filtered.length
-      ? filtered.map(productCardHTML).join('')
-      : `<div class="empty-state" style="grid-column:1/-1"><h3>Không tìm thấy sản phẩm</h3><p>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p></div>`;
+  } catch (err) {
+    console.error('[initProducts] Failed to load/render products:', err);
+    gridEl.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><h3>Không thể tải sản phẩm</h3><p>Vui lòng thử tải lại trang sau vài giây.</p></div>';
   }
-
-  render();
 }
 
 // ─── PRODUCT DETAIL PAGE ─────────────────────────────────────────
