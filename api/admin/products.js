@@ -14,28 +14,118 @@ function setCORSHeaders(res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
-// Rebuild the flat products.json index from individual files
-async function rebuildIndex() {
-  const files = await listDir('_data/products');
-  const products = [];
-  for (const f of files) {
-    if (!f.name.endsWith('.json')) continue;
-    const result = await getFile(f.path);
-    if (result) {
-      try { products.push(JSON.parse(result.content)); } catch { /* skip malformed */ }
-    }
-  }
-  // Sort by numeric id
+function sortProducts(products) {
   products.sort((a, b) => Number(a.id) - Number(b.id));
+  return products;
+}
 
+function normalizeCategoryName(name) {
+  return String(name || '').trim().replace(/\s+/g, ' ');
+}
+
+async function readProductsFromFiles() {
+  const files = await listDir('_data/products');
+  const jsonFiles = files.filter(f => f.name.endsWith('.json'));
+  const loaded = await Promise.all(
+    jsonFiles.map(async (f) => {
+      const result = await getFile(f.path);
+      if (!result) return null;
+      try {
+        return JSON.parse(result.content);
+      } catch {
+        return null;
+      }
+    })
+  );
+  return sortProducts(loaded.filter(Boolean));
+}
+
+async function readProductsIndex() {
   const indexFile = await getFile('_data/products.json');
-  const indexContent = JSON.stringify({ data: products }, null, 2);
+  if (!indexFile) return { products: null, sha: null };
+
+  try {
+    const parsed = JSON.parse(indexFile.content);
+    const products = Array.isArray(parsed)
+      ? parsed
+      : (Array.isArray(parsed.data) ? parsed.data : null);
+    if (!products) return { products: null, sha: indexFile.sha };
+    return { products: sortProducts(products), sha: indexFile.sha };
+  } catch {
+    return { products: null, sha: indexFile.sha };
+  }
+}
+
+async function readProductsFast() {
+  const fromIndex = await readProductsIndex();
+  if (fromIndex.products) return fromIndex.products;
+  return readProductsFromFiles();
+}
+
+async function writeProductsIndex(products, existingSha) {
+  const sorted = sortProducts([...(products || [])]);
+  const indexContent = JSON.stringify({ data: sorted }, null, 2);
   await putFile(
     '_data/products.json',
     indexContent,
-    'admin: rebuild products.json index',
-    indexFile ? indexFile.sha : undefined
+    'admin: update products.json index',
+    existingSha
   );
+}
+
+// Rebuild the flat products.json index from individual files
+async function rebuildIndex() {
+  const products = await readProductsFromFiles();
+  const indexFile = await getFile('_data/products.json');
+  await writeProductsIndex(products, indexFile ? indexFile.sha : undefined);
+}
+
+async function upsertProductInIndex(product) {
+  const { products: indexProducts, sha } = await readProductsIndex();
+  const products = indexProducts || await readProductsFromFiles();
+  const idx = products.findIndex(p => p.slug === product.slug);
+  if (idx >= 0) products[idx] = product;
+  else products.push(product);
+  await writeProductsIndex(products, sha || undefined);
+}
+
+async function removeProductFromIndex(slug) {
+  const { products: indexProducts, sha } = await readProductsIndex();
+  const products = indexProducts || await readProductsFromFiles();
+  const filtered = products.filter(p => p.slug !== slug);
+  await writeProductsIndex(filtered, sha || undefined);
+}
+
+async function replaceCategoryForProducts(oldCategory, newCategory) {
+  const oldNorm = normalizeCategoryName(oldCategory).toLowerCase();
+  const newNorm = normalizeCategoryName(newCategory);
+  if (!oldNorm || !newNorm) return { updated: 0 };
+
+  const { products: indexProducts, sha } = await readProductsIndex();
+  const products = indexProducts || await readProductsFromFiles();
+  const affected = products.filter(
+    p => normalizeCategoryName(p.category).toLowerCase() === oldNorm
+  );
+
+  for (const product of affected) {
+    const filePath = `_data/products/${product.slug}.json`;
+    const existing = await getFile(filePath);
+    const updated = { ...product, category: newNorm };
+    await putFile(
+      filePath,
+      JSON.stringify(updated, null, 2),
+      `admin: update category for ${product.slug}`,
+      existing ? existing.sha : undefined
+    );
+  }
+
+  const merged = products.map(p =>
+    normalizeCategoryName(p.category).toLowerCase() === oldNorm
+      ? { ...p, category: newNorm }
+      : p
+  );
+  await writeProductsIndex(merged, sha || undefined);
+  return { updated: affected.length };
 }
 
 module.exports = async function handler(req, res) {
@@ -50,16 +140,7 @@ module.exports = async function handler(req, res) {
   // ── GET: list ────────────────────────────────────────────────
   if (req.method === 'GET') {
     try {
-      const files = await listDir('_data/products');
-      const products = [];
-      for (const f of files) {
-        if (!f.name.endsWith('.json')) continue;
-        const result = await getFile(f.path);
-        if (result) {
-          try { products.push(JSON.parse(result.content)); } catch { /* skip */ }
-        }
-      }
-      products.sort((a, b) => Number(a.id) - Number(b.id));
+      const products = await readProductsFast();
       return res.status(200).json({ ok: true, data: products });
     } catch (err) {
       return res.status(500).json({ ok: false, error: err.message });
@@ -86,7 +167,7 @@ module.exports = async function handler(req, res) {
         const existing = await getFile(filePath);
         if (!existing) return res.status(404).json({ ok: false, error: 'Product not found' });
         await deleteFile(filePath, existing.sha, `admin: delete product ${slug}`);
-        await rebuildIndex();
+        await removeProductFromIndex(slug);
         return res.status(200).json({ ok: true });
       } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
@@ -114,8 +195,23 @@ module.exports = async function handler(req, res) {
           `admin: ${existing ? 'update' : 'create'} product ${slug}`,
           existing ? existing.sha : undefined
         );
-        await rebuildIndex();
+        await upsertProductInIndex(data);
         return res.status(200).json({ ok: true, data });
+      } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+      }
+    }
+
+    // ── BULK CATEGORY REPLACE ──
+    if (action === 'bulk-category-replace') {
+      const { oldCategory, newCategory } = body;
+      if (!oldCategory || !newCategory) {
+        return res.status(400).json({ ok: false, error: 'oldCategory and newCategory required' });
+      }
+
+      try {
+        const result = await replaceCategoryForProducts(oldCategory, newCategory);
+        return res.status(200).json({ ok: true, ...result });
       } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
       }

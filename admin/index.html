@@ -327,7 +327,10 @@
         <button class="nav-item" data-page="why">
           <span class="icon">⭐</span> Tại sao chọn chúng tôi
         </button>
-      </nav>
+          <button class="nav-item" data-page="footer">
+            <span class="icon">🦶</span> Footer
+          </button>
+        </nav>
       <div class="sidebar-footer">
         <button class="btn-logout" id="logout-btn">Đăng xuất</button>
       </div>
@@ -1386,16 +1389,15 @@ async function loadCategories() {
 
 async function updateProductsCategory(oldCategory, newCategory) {
   const affected = cachedProducts.filter(p => normalizeCategoryName(p.category).toLowerCase() === oldCategory.toLowerCase());
-  for (const product of affected) {
-    const r = await api('/api/admin/products', 'POST', {
-      action: 'save',
-      data: {
-        ...product,
-        category: newCategory
-      }
-    });
-    if (!r.ok) throw new Error(r.error || `Không thể cập nhật sản phẩm ${product.name || product.slug}`);
-  }
+  if (!affected.length) return;
+
+  const r = await api('/api/admin/products', 'POST', {
+    action: 'bulk-category-replace',
+    oldCategory,
+    newCategory
+  });
+  if (!r.ok) throw new Error(r.error || 'Không thể cập nhật danh mục cho sản phẩm');
+
   cachedProducts = cachedProducts.map(p => normalizeCategoryName(p.category).toLowerCase() === oldCategory.toLowerCase()
     ? { ...p, category: newCategory }
     : p

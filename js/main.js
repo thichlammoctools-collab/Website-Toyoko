@@ -373,10 +373,42 @@ function initContact() {
   });
 }
 
+// ─── FOOTER (all pages) ─────────────────────────────────────────
+async function initFooter() {
+  const phoneEl = $('#footer-phone');
+  if (!phoneEl) return;
+  try {
+    const site = await fetch('/api/site').then(r => r.ok ? r.json() : null).catch(() => null);
+    const f = site?.footer || {};
+    const descEl      = $('#footer-desc');
+    const emailEl     = $('#footer-email');
+    const addressEl   = $('#footer-address');
+    const hoursEl     = $('#footer-hours');
+    const copyrightEl = $('#footer-copyright');
+    const taglineEl   = $('#footer-tagline');
+    if (f.desc && descEl) descEl.textContent = f.desc;
+    if (f.phone) {
+      phoneEl.href = 'tel:' + f.phone.replace(/\s/g, '');
+      phoneEl.innerHTML = '<span>📞</span> ' + f.phone;
+    }
+    if (f.email && emailEl) {
+      emailEl.href = 'mailto:' + f.email;
+      emailEl.innerHTML = '<span>✉️</span> ' + f.email;
+    }
+    if (f.address && addressEl) addressEl.textContent = f.address;
+    if (f.hours && hoursEl) hoursEl.textContent = f.hours;
+    if (f.copyright && copyrightEl) copyrightEl.textContent = f.copyright;
+    if (f.tagline && taglineEl) taglineEl.textContent = f.tagline;
+  } catch {
+    // keep static fallback
+  }
+}
+
 // ─── INIT ────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   setActiveNav();
   initMobileNav();
+  initFooter();
   initHome();
   initProducts();
   initProductDetail();
