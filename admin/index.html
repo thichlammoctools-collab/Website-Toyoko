@@ -437,7 +437,7 @@
                 <label>Tên danh mục</label>
                 <input type="text" id="category-name-input" placeholder="Ví dụ: Máy cắt, Máy chà nhám...">
               </div>
-              <button class="btn btn-primary" id="category-save-btn" style="align-self:end">Lưu danh mục</button>
+              <button class="btn btn-primary" id="category-save-btn" style="align-self:end">Lưu lại</button>
               <button class="btn btn-secondary" id="category-cancel-btn" style="align-self:end;display:none">Hủy sửa</button>
             </div>
             <div class="hint">Khi xóa danh mục đang có sản phẩm, hệ thống sẽ chuyển sản phẩm đó sang "Khác".</div>
@@ -465,7 +465,7 @@
         <div class="topbar">
           <h2>🖼️ Hero Trang chủ</h2>
           <div class="actions">
-            <button class="btn btn-primary" id="hero-save-btn">Lưu nội dung Hero</button>
+            <button class="btn btn-primary" id="hero-save-btn">Lưu lại</button>
           </div>
         </div>
         <div class="content">
@@ -512,7 +512,7 @@
           <h2>🏢 Về chúng tôi</h2>
           <div class="actions">
             <button class="btn btn-secondary" id="about-preview-btn">Preview HTML</button>
-            <button class="btn btn-primary" id="about-save-btn">Lưu nội dung Về chúng tôi</button>
+            <button class="btn btn-primary" id="about-save-btn">Lưu lại</button>
           </div>
         </div>
         <div class="content">
@@ -619,7 +619,7 @@
         <div class="topbar">
           <h2>⭐ Tại sao chọn chúng tôi</h2>
           <div class="actions">
-            <button class="btn btn-primary" id="why-save-btn">Lưu lợi ích</button>
+            <button class="btn btn-primary" id="why-save-btn">Lưu lại</button>
           </div>
         </div>
         <div class="content">
@@ -650,7 +650,7 @@
             <h2>🦶 Footer</h2>
             <div class="actions">
               <button class="btn btn-secondary" id="footer-preview-btn">Preview HTML</button>
-              <button class="btn btn-primary" id="footer-save-btn">Lưu Footer</button>
+              <button class="btn btn-primary" id="footer-save-btn">Lưu lại</button>
             </div>
           </div>
           <div class="content">
@@ -844,7 +844,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" id="product-modal-cancel">Hủy</button>
-      <button class="btn btn-primary" id="product-save-btn">Lưu sản phẩm</button>
+      <button class="btn btn-primary" id="product-save-btn">Lưu lại</button>
     </div>
   </div>
 </div>
@@ -888,7 +888,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" id="post-modal-cancel">Hủy</button>
-      <button class="btn btn-primary" id="post-save-btn">Lưu bài viết</button>
+      <button class="btn btn-primary" id="post-save-btn">Lưu lại</button>
     </div>
   </div>
 </div>
@@ -1597,7 +1597,7 @@ document.getElementById('product-save-btn').addEventListener('click', async () =
 
     // Return UI control to user almost instantly.
     btn.disabled = false;
-    btn.textContent = 'Lưu sản phẩm';
+    btn.textContent = 'Lưu lại';
 
     (async () => {
       try {
@@ -1654,7 +1654,7 @@ document.getElementById('product-save-btn').addEventListener('click', async () =
   } finally {
     if (btn.disabled) {
       btn.disabled = false;
-      btn.textContent = 'Lưu sản phẩm';
+      btn.textContent = 'Lưu lại';
     }
   }
 });
@@ -1677,7 +1677,7 @@ async function deleteProduct(slug, name) {
 function resetCategoryForm() {
   editingCategoryIndex = -1;
   document.getElementById('category-name-input').value = '';
-  document.getElementById('category-save-btn').textContent = 'Lưu danh mục';
+  document.getElementById('category-save-btn').textContent = 'Lưu lại';
   document.getElementById('category-cancel-btn').style.display = 'none';
 }
 
@@ -1802,7 +1802,7 @@ function editCategory(index) {
   }
   editingCategoryIndex = index;
   document.getElementById('category-name-input').value = name;
-  document.getElementById('category-save-btn').textContent = 'Cập nhật danh mục';
+  document.getElementById('category-save-btn').textContent = 'Lưu lại';
   document.getElementById('category-cancel-btn').style.display = '';
 }
 
@@ -1883,7 +1883,7 @@ document.getElementById('category-save-btn').addEventListener('click', async () 
     showToast(err.message, 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = editingCategoryIndex >= 0 ? 'Cập nhật danh mục' : 'Lưu danh mục';
+    btn.textContent = 'Lưu lại';
   }
 });
 
@@ -1997,7 +1997,7 @@ document.getElementById('post-save-btn').addEventListener('click', async () => {
     showToast(r.error || 'Lỗi khi lưu', 'error');
   }
   btn.disabled = false;
-  btn.textContent = 'Lưu bài viết';
+  btn.textContent = 'Lưu lại';
 });
 
 async function deletePost(slug, title) {
@@ -2126,7 +2126,7 @@ document.getElementById('hero-save-btn').addEventListener('click', async () => {
     showToast(r.error || 'Lỗi khi lưu Hero', 'error');
   }
   btn.disabled = false;
-  btn.textContent = 'Lưu nội dung Hero';
+  btn.textContent = 'Lưu lại';
 });
 
 document.getElementById('hero-image-file').addEventListener('change', async function () {
@@ -2177,7 +2177,7 @@ document.getElementById('about-save-btn').addEventListener('click', async () => 
   }
 
   btn.disabled = false;
-  btn.textContent = 'Lưu nội dung Về chúng tôi';
+  btn.textContent = 'Lưu lại';
 });
 
 document.getElementById('about-preview-btn').addEventListener('click', () => {
@@ -2246,7 +2246,7 @@ document.getElementById('why-save-btn').addEventListener('click', async () => {
   }
 
   btn.disabled = false;
-  btn.textContent = 'Lưu lợi ích';
+  btn.textContent = 'Lưu lại';
 });
 
 document.getElementById('footer-save-btn').addEventListener('click', async () => {
@@ -2279,7 +2279,7 @@ document.getElementById('footer-save-btn').addEventListener('click', async () =>
     showToast(r.error || 'Lỗi khi lưu Footer', 'error');
   }
   btn.disabled = false;
-  btn.textContent = 'Lưu Footer';
+  btn.textContent = 'Lưu lại';
 });
 
 document.getElementById('footer-preview-btn').addEventListener('click', () => {
