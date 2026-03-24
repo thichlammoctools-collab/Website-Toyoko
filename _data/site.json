@@ -1,4 +1,11 @@
 {
+  "productCategories": [
+    "Máy khoan",
+    "Máy mài",
+    "Máy cưa",
+    "Máy bắn bu lông",
+    "Khác"
+  ],
   "hero": {
     "badge": "🇻🇳 Nhà sản xuất và nhập khẩu chính thức tại Việt Nam",
     "titlePrefix": "TOYOKO",
