@@ -50,6 +50,28 @@ function productCardHTML(p) {
 
 // ─── HOME PAGE ───────────────────────────────────────────────────
 async function initHome() {
+  // Inject hero content from site settings when homepage elements exist
+  const heroBadge = $('#hero-badge');
+  if (heroBadge) {
+    try {
+      const site = await fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null);
+      const hero = site?.hero || {};
+      const titlePrefixEl = $('#hero-title-prefix');
+      const titleRestEl = $('#hero-title-rest');
+      const descEl = $('#hero-desc');
+      const imageEl = $('#hero-image');
+
+      if (hero.badge) heroBadge.textContent = hero.badge;
+      if (hero.titlePrefix && titlePrefixEl) titlePrefixEl.textContent = hero.titlePrefix;
+      if (hero.titleRest && titleRestEl) titleRestEl.innerHTML = hero.titleRest.replace(/\n/g, '<br>');
+      if (hero.description && descEl) descEl.innerHTML = hero.description.replace(/\n/g, '<br>');
+      if (hero.image && imageEl) imageEl.src = hero.image;
+      if (hero.imageAlt && imageEl) imageEl.alt = hero.imageAlt;
+    } catch {
+      // Keep fallback static content if API is unavailable
+    }
+  }
+
   const featuredEl = $('#featured-products');
   if (!featuredEl) return;
   const products = await fetchJSON('/api/products');

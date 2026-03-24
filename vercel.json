@@ -14,10 +14,12 @@
   "routes": [
     { "src": "^/$", "dest": "/index.html" },
     { "src": "^/admin/?$", "dest": "/admin/index.html" },
+    { "src": "^/api/site$", "dest": "/api/site.js" },
     { "src": "^/api/admin/auth$", "dest": "/api/admin/auth.js" },
     { "src": "^/api/admin/products$", "dest": "/api/admin/products.js" },
     { "src": "^/api/admin/posts$", "dest": "/api/admin/posts.js" },
-    { "src": "^/api/admin/upload$", "dest": "/api/admin/upload.js" }
+    { "src": "^/api/admin/upload$", "dest": "/api/admin/upload.js" },
+    { "src": "^/api/admin/site$", "dest": "/api/admin/site.js" }
   ],
   "headers": [
     {

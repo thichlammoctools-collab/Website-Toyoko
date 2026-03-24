@@ -254,6 +254,9 @@
         <button class="nav-item" data-page="posts">
           <span class="icon">📝</span> Bài viết
         </button>
+        <button class="nav-item" data-page="hero">
+          <span class="icon">🖼️</span> Hero trang chu
+        </button>
       </nav>
       <div class="sidebar-footer">
         <button class="btn-logout" id="logout-btn">Đăng xuất</button>
@@ -284,6 +287,52 @@
         </div>
         <div class="content">
           <div id="posts-body"><div class="loading-state">Đang tải...</div></div>
+        </div>
+      </div>
+
+      <!-- Hero page -->
+      <div id="page-hero" style="display:none">
+        <div class="topbar">
+          <h2>🖼️ Hero Trang Chu</h2>
+          <div class="actions">
+            <button class="btn btn-primary" id="hero-save-btn">Luu noi dung Hero</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="table-wrap" style="padding:20px;max-width:900px">
+            <div class="field">
+              <label>Badge</label>
+              <input type="text" id="hero-badge-input" placeholder="Nha san xuat va nhap khau chinh thuc tai Viet Nam">
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Tieu de phan dau</label>
+                <input type="text" id="hero-title-prefix-input" placeholder="TOYOKO">
+              </div>
+              <div class="field">
+                <label>Alt anh</label>
+                <input type="text" id="hero-image-alt-input" placeholder="May cam tay Toyoko">
+              </div>
+            </div>
+            <div class="field">
+              <label>Tieu de phan sau (xuong dong bang Enter)</label>
+              <textarea id="hero-title-rest-input" rows="3" placeholder="An tam dong hanh&#10;May cam tay chat luong, ben bi, gia phai chang"></textarea>
+            </div>
+            <div class="field">
+              <label>Mo ta (xuong dong bang Enter)</label>
+              <textarea id="hero-desc-input" rows="5" placeholder="Mo ta ngan cho Hero"></textarea>
+            </div>
+            <div class="field">
+              <label>Anh Hero (upload hoac URL)</label>
+              <div class="img-upload-area" style="margin-bottom:10px">
+                <input type="file" id="hero-image-file" accept="image/*">
+                <div>📷 Chon anh de upload</div>
+                <div style="font-size:12px;color:var(--muted);margin-top:4px">JPEG, PNG, WebP - toi da 5MB</div>
+              </div>
+              <input type="text" id="hero-image-input" placeholder="/images/hero-machine.png">
+              <div class="hint">Sau khi upload, duong dan se tu dong dien vao o tren.</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -428,6 +477,7 @@ let authToken = localStorage.getItem(TOKEN_KEY) || '';
 let pendingImages = [];
 let editingProduct = null;
 let editingPost = null;
+let heroConfig = null;
 
 // ── Helpers ────────────────────────────────────────────────────────
 function api(path, method = 'GET', body = null) {
@@ -526,8 +576,10 @@ function showPage(name) {
   document.querySelector(`[data-page="${name}"]`).classList.add('active');
   document.getElementById('page-products').style.display = name === 'products' ? '' : 'none';
   document.getElementById('page-posts').style.display    = name === 'posts'    ? '' : 'none';
+  document.getElementById('page-hero').style.display     = name === 'hero'     ? '' : 'none';
   if (name === 'products') loadProducts();
   if (name === 'posts')    loadPosts();
+  if (name === 'hero')     loadHeroSettings();
 }
 
 document.querySelectorAll('.nav-item').forEach(btn => {
@@ -824,6 +876,67 @@ async function deletePost(slug, title) {
   if (r.ok) { showToast('Đã xóa bài viết'); loadPosts(); }
   else showToast(r.error || 'Lỗi khi xóa', 'error');
 }
+
+// ── Hero settings ─────────────────────────────────────────────────
+async function loadHeroSettings() {
+  const r = await api('/api/admin/site');
+  if (!r.ok) {
+    showToast(r.error || 'Khong the tai Hero settings', 'error');
+    return;
+  }
+  heroConfig = r.data || {};
+  const hero = heroConfig.hero || {};
+  document.getElementById('hero-badge-input').value = hero.badge || '';
+  document.getElementById('hero-title-prefix-input').value = hero.titlePrefix || 'TOYOKO';
+  document.getElementById('hero-title-rest-input').value = hero.titleRest || '';
+  document.getElementById('hero-desc-input').value = hero.description || '';
+  document.getElementById('hero-image-input').value = hero.image || '/images/hero-machine.png';
+  document.getElementById('hero-image-alt-input').value = hero.imageAlt || 'May cam tay Toyoko';
+}
+
+document.getElementById('hero-save-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('hero-save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Dang luu...';
+
+  const data = {
+    hero: {
+      badge: document.getElementById('hero-badge-input').value.trim(),
+      titlePrefix: document.getElementById('hero-title-prefix-input').value.trim() || 'TOYOKO',
+      titleRest: document.getElementById('hero-title-rest-input').value.trim(),
+      description: document.getElementById('hero-desc-input').value.trim(),
+      image: document.getElementById('hero-image-input').value.trim() || '/images/hero-machine.png',
+      imageAlt: document.getElementById('hero-image-alt-input').value.trim() || 'May cam tay Toyoko'
+    }
+  };
+
+  const r = await api('/api/admin/site', 'POST', { data });
+  if (r.ok) {
+    showToast('Da luu Hero! Vercel dang deploy (~1-2 phut)');
+  } else {
+    showToast(r.error || 'Loi khi luu Hero', 'error');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Luu noi dung Hero';
+});
+
+document.getElementById('hero-image-file').addEventListener('change', async function () {
+  const file = this.files && this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const base64 = String(e.target.result).replace(/^data:[^;]+;base64,/, '');
+    const r = await api('/api/admin/upload', 'POST', { filename: file.name, data: base64, type: file.type });
+    if (r.ok) {
+      document.getElementById('hero-image-input').value = r.url;
+      showToast('Upload anh thanh cong');
+    } else {
+      showToast(r.error || 'Upload anh that bai', 'error');
+    }
+  };
+  reader.readAsDataURL(file);
+  this.value = '';
+});
 
 // ── Init ────────────────────────────────────────────────────────────
 async function showApp() {
