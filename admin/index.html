@@ -257,6 +257,9 @@
         <button class="nav-item" data-page="hero">
           <span class="icon">🖼️</span> Hero trang chu
         </button>
+        <button class="nav-item" data-page="about">
+          <span class="icon">🏢</span> Ve chung toi
+        </button>
       </nav>
       <div class="sidebar-footer">
         <button class="btn-logout" id="logout-btn">Đăng xuất</button>
@@ -331,6 +334,79 @@
               </div>
               <input type="text" id="hero-image-input" placeholder="/images/hero-machine.png">
               <div class="hint">Sau khi upload, duong dan se tu dong dien vao o tren.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- About page -->
+      <div id="page-about" style="display:none">
+        <div class="topbar">
+          <h2>🏢 Về chúng tôi</h2>
+          <div class="actions">
+            <button class="btn btn-primary" id="about-save-btn">Luu noi dung Ve chung toi</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="table-wrap" style="padding:20px;max-width:980px">
+            <div class="field">
+              <label>Nhan section</label>
+              <input type="text" id="about-section-label-input" placeholder="Về chúng tôi">
+            </div>
+            <div class="field">
+              <label>Tieu de</label>
+              <input type="text" id="about-title-input" placeholder="Toyoko – An tâm đồng hành cùng người thợ Việt">
+            </div>
+            <div class="field">
+              <label>Mo ta doan 1 (cho phep HTML nhe, vd: &lt;strong&gt;...&lt;/strong&gt;)</label>
+              <textarea id="about-desc-1-input" rows="6" placeholder="Noi dung doan 1..."></textarea>
+            </div>
+            <div class="field">
+              <label>Mo ta doan 2 (cho phep HTML nhe, vd: &lt;strong&gt;...&lt;/strong&gt;)</label>
+              <textarea id="about-desc-2-input" rows="4" placeholder="Noi dung doan 2..."></textarea>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Text nut chinh</label>
+                <input type="text" id="about-primary-text-input" placeholder="Xem sản phẩm">
+              </div>
+              <div class="field">
+                <label>Link nut chinh</label>
+                <input type="text" id="about-primary-href-input" placeholder="/products.html">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Text nut phu</label>
+                <input type="text" id="about-secondary-text-input" placeholder="Liên hệ">
+              </div>
+              <div class="field">
+                <label>Link nut phu</label>
+                <input type="text" id="about-secondary-href-input" placeholder="/contact.html">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Badge title</label>
+                <input type="text" id="about-badge-title-input" placeholder="Chứng nhận nhập khẩu">
+              </div>
+              <div class="field">
+                <label>Badge subtitle</label>
+                <input type="text" id="about-badge-subtitle-input" placeholder="Toyoko Official Importer VN">
+              </div>
+            </div>
+            <div class="field">
+              <label>Anh Ve chung toi (upload hoac URL)</label>
+              <div class="img-upload-area" style="margin-bottom:10px">
+                <input type="file" id="about-image-file" accept="image/*">
+                <div>📷 Chon anh de upload</div>
+                <div style="font-size:12px;color:var(--muted);margin-top:4px">JPEG, PNG, WebP - toi da 5MB</div>
+              </div>
+              <input type="text" id="about-image-input" placeholder="/images/about.jpg">
+            </div>
+            <div class="field">
+              <label>Alt anh</label>
+              <input type="text" id="about-image-alt-input" placeholder="Kho hàng Quang Phú">
             </div>
           </div>
         </div>
@@ -577,9 +653,11 @@ function showPage(name) {
   document.getElementById('page-products').style.display = name === 'products' ? '' : 'none';
   document.getElementById('page-posts').style.display    = name === 'posts'    ? '' : 'none';
   document.getElementById('page-hero').style.display     = name === 'hero'     ? '' : 'none';
+  document.getElementById('page-about').style.display    = name === 'about'    ? '' : 'none';
   if (name === 'products') loadProducts();
   if (name === 'posts')    loadPosts();
   if (name === 'hero')     loadHeroSettings();
+  if (name === 'about')    loadAboutSettings();
 }
 
 document.querySelectorAll('.nav-item').forEach(btn => {
@@ -894,6 +972,27 @@ async function loadHeroSettings() {
   document.getElementById('hero-image-alt-input').value = hero.imageAlt || 'May cam tay Toyoko';
 }
 
+async function loadAboutSettings() {
+  const r = await api('/api/admin/site');
+  if (!r.ok) {
+    showToast(r.error || 'Khong the tai About settings', 'error');
+    return;
+  }
+  const about = (r.data && r.data.about) || {};
+  document.getElementById('about-section-label-input').value = about.sectionLabel || 'Về chúng tôi';
+  document.getElementById('about-title-input').value = about.title || '';
+  document.getElementById('about-desc-1-input').value = about.description1 || '';
+  document.getElementById('about-desc-2-input').value = about.description2 || '';
+  document.getElementById('about-badge-title-input').value = about.badgeTitle || '';
+  document.getElementById('about-badge-subtitle-input').value = about.badgeSubtitle || '';
+  document.getElementById('about-primary-text-input').value = about.primaryButtonText || 'Xem sản phẩm';
+  document.getElementById('about-primary-href-input').value = about.primaryButtonHref || '/products.html';
+  document.getElementById('about-secondary-text-input').value = about.secondaryButtonText || 'Liên hệ';
+  document.getElementById('about-secondary-href-input').value = about.secondaryButtonHref || '/contact.html';
+  document.getElementById('about-image-input').value = about.image || '/images/about.jpg';
+  document.getElementById('about-image-alt-input').value = about.imageAlt || 'Kho hàng Quang Phú';
+}
+
 document.getElementById('hero-save-btn').addEventListener('click', async () => {
   const btn = document.getElementById('hero-save-btn');
   btn.disabled = true;
@@ -929,6 +1028,57 @@ document.getElementById('hero-image-file').addEventListener('change', async func
     const r = await api('/api/admin/upload', 'POST', { filename: file.name, data: base64, type: file.type });
     if (r.ok) {
       document.getElementById('hero-image-input').value = r.url;
+      showToast('Upload anh thanh cong');
+    } else {
+      showToast(r.error || 'Upload anh that bai', 'error');
+    }
+  };
+  reader.readAsDataURL(file);
+  this.value = '';
+});
+
+document.getElementById('about-save-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('about-save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Dang luu...';
+
+  const data = {
+    about: {
+      sectionLabel: document.getElementById('about-section-label-input').value.trim() || 'Về chúng tôi',
+      title: document.getElementById('about-title-input').value.trim(),
+      description1: document.getElementById('about-desc-1-input').value.trim(),
+      description2: document.getElementById('about-desc-2-input').value.trim(),
+      badgeTitle: document.getElementById('about-badge-title-input').value.trim(),
+      badgeSubtitle: document.getElementById('about-badge-subtitle-input').value.trim(),
+      primaryButtonText: document.getElementById('about-primary-text-input').value.trim() || 'Xem sản phẩm',
+      primaryButtonHref: document.getElementById('about-primary-href-input').value.trim() || '/products.html',
+      secondaryButtonText: document.getElementById('about-secondary-text-input').value.trim() || 'Liên hệ',
+      secondaryButtonHref: document.getElementById('about-secondary-href-input').value.trim() || '/contact.html',
+      image: document.getElementById('about-image-input').value.trim() || '/images/about.jpg',
+      imageAlt: document.getElementById('about-image-alt-input').value.trim() || 'Kho hàng Quang Phú'
+    }
+  };
+
+  const r = await api('/api/admin/site', 'POST', { data });
+  if (r.ok) {
+    showToast('Da luu Ve chung toi! Vercel dang deploy (~1-2 phut)');
+  } else {
+    showToast(r.error || 'Loi khi luu Ve chung toi', 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Luu noi dung Ve chung toi';
+});
+
+document.getElementById('about-image-file').addEventListener('change', async function () {
+  const file = this.files && this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const base64 = String(e.target.result).replace(/^data:[^;]+;base64,/, '');
+    const r = await api('/api/admin/upload', 'POST', { filename: file.name, data: base64, type: file.type });
+    if (r.ok) {
+      document.getElementById('about-image-input').value = r.url;
       showToast('Upload anh thanh cong');
     } else {
       showToast(r.error || 'Upload anh that bai', 'error');

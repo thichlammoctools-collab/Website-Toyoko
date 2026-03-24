@@ -5,8 +5,10 @@
 const { createToken, verifyAuth } = require('./_auth');
 const crypto = require('crypto');
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || '';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+// Fallback credentials keep admin login usable when env vars are missing.
+// Prefer setting ADMIN_USERNAME/ADMIN_PASSWORD in hosting env for production.
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'quangphu';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '0938895934@';
 
 function setCORSHeaders(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -42,10 +44,6 @@ module.exports = async function handler(req, res) {
     }
 
     const { username, password } = body;
-
-    if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
-      return res.status(500).json({ ok: false, error: 'Admin credentials not configured on server' });
-    }
 
     // Constant-time comparison to prevent timing attacks
     const userMatch = username && crypto.timingSafeEqual(
