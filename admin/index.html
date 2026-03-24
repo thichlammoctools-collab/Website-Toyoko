@@ -1241,6 +1241,7 @@ document.getElementById('product-save-btn').addEventListener('click', async () =
   const name = document.getElementById('p-name').value.trim();
   const slug = document.getElementById('p-slug').value.trim();
   if (!name || !slug) { showToast('Vui lòng điền Tên và Slug', 'error'); return; }
+  const previousSlug = editingProduct?.slug || '';
 
   const btn = document.getElementById('product-save-btn');
   btn.disabled = true;
@@ -1267,9 +1268,18 @@ document.getElementById('product-save-btn').addEventListener('click', async () =
     };
     const r = await api('/api/admin/products', 'POST', { action: 'save', data });
     if (r.ok) {
+      const saved = r.data || data;
+      cachedProducts = cachedProducts.filter(p => {
+        if (p.slug === saved.slug) return false;
+        if (previousSlug && previousSlug !== saved.slug && p.slug === previousSlug) return false;
+        return true;
+      });
+      cachedProducts.push(saved);
+      cachedProducts.sort((a, b) => Number(a.id) - Number(b.id));
+      renderProductsFilterControls();
+      renderProductsTable();
       showToast('Đã lưu sản phẩm! Vercel đang deploy (~1-2 phút)');
       closeProductModal();
-      loadProducts();
     } else {
       showToast(r.error || 'Lỗi khi lưu', 'error');
     }
@@ -1285,7 +1295,12 @@ async function deleteProduct(slug, name) {
   const ok = await confirm('Xóa sản phẩm', `Bạn có chắc muốn xóa "${name}"? Hành động không thể hoàn tác.`);
   if (!ok) return;
   const r = await api('/api/admin/products', 'POST', { action: 'delete', slug });
-  if (r.ok) { showToast('Đã xóa sản phẩm'); loadProducts(); }
+  if (r.ok) {
+    cachedProducts = cachedProducts.filter(p => p.slug !== slug);
+    renderProductsFilterControls();
+    renderProductsTable();
+    showToast('Đã xóa sản phẩm');
+  }
   else showToast(r.error || 'Lỗi khi xóa', 'error');
 }
 
