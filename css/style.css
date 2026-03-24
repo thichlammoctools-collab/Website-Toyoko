@@ -94,10 +94,10 @@ header {
 }
 .header-inner {
   display: flex; align-items: center; justify-content: space-between;
-  height: 68px;
+  height: 84px;
 }
 .logo { display: flex; align-items: center; gap: 4px; }
-.logo img { height: 48px; width: auto; object-fit: contain; }
+.logo img { height: 64px; width: auto; object-fit: contain; }
 .logo-text { font-weight: 800; font-size: 24px; color: var(--primary); letter-spacing: -0.5px; }
 nav a {
   padding: 8px 16px; border-radius: 8px;
@@ -355,6 +355,8 @@ footer {
 
 /* ═══ RESPONSIVE ════════════════════════════════════════════════ */
 @media (max-width: 900px) {
+  .header-inner { height: 76px; }
+  .logo img { height: 56px; }
   .hero-content, .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 32px; }
   .hero-img-box { height: 260px; }
   .why-grid { grid-template-columns: repeat(2,1fr); }
