@@ -22,6 +22,7 @@
       --success: #22c55e;
       --danger: #ef4444;
       --radius: 8px;
+      --page-max: 1120px;
     }
     html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); }
 
@@ -91,11 +92,28 @@
     .topbar {
       padding: 18px 32px; background: var(--card); border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
     }
     .topbar h2 { font-size: 20px; font-weight: 700; }
     .topbar .actions { display: flex; gap: 10px; }
 
-    .content { padding: 28px 32px; flex: 1; }
+    .content {
+      padding: 28px 32px;
+      flex: 1;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+    }
+
+    /* Keep all editor/table blocks same width across pages */
+    .content > .table-wrap {
+      width: 100%;
+      max-width: none !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
 
     .products-toolbar {
       margin-bottom: 14px;
@@ -406,12 +424,8 @@
         width: 260px;
         min-width: 260px;
       }
-      .topbar {
-        padding: 20px 44px;
-      }
-      .content {
-        padding: 30px 44px;
-      }
+      .topbar { padding: 20px 44px; }
+      .content { padding: 30px 44px; }
       .modal {
         max-width: 980px;
       }
