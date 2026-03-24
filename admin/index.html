@@ -23,6 +23,7 @@
       --danger: #ef4444;
       --radius: 8px;
       --page-max: 1120px;
+      --page-gutter: 12px;
     }
     html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); }
 
@@ -90,7 +91,7 @@
     /* Main content */
     .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
     .topbar {
-      padding: 18px 32px; background: var(--card); border-bottom: 1px solid var(--border);
+      padding: 18px var(--page-gutter); background: var(--card); border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
       width: 100%;
       max-width: var(--page-max);
@@ -100,7 +101,7 @@
     .topbar .actions { display: flex; gap: 10px; }
 
     .content {
-      padding: 28px 32px;
+      padding: 28px var(--page-gutter);
       flex: 1;
       width: 100%;
       max-width: var(--page-max);
@@ -424,20 +425,16 @@
         width: 260px;
         min-width: 260px;
       }
-      .topbar { padding: 20px 44px; }
-      .content { padding: 30px 44px; }
+      .topbar { padding: 20px var(--page-gutter); }
+      .content { padding: 30px var(--page-gutter); }
       .modal {
         max-width: 980px;
       }
     }
 
     @media (min-width: 1800px) {
-      .topbar {
-        padding: 22px 56px;
-      }
-      .content {
-        padding: 34px 56px;
-      }
+      .topbar { padding: 22px var(--page-gutter); }
+      .content { padding: 34px var(--page-gutter); }
       .modal {
         max-width: 1100px;
       }
