@@ -95,6 +95,24 @@
 
     .content { padding: 28px 32px; flex: 1; }
 
+    .products-toolbar {
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .products-search {
+      width: 100%;
+      max-width: 360px;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      outline: none;
+      transition: border .2s;
+      background: #fff;
+    }
+    .products-search:focus { border-color: var(--primary); }
+
     /* Buttons */
     .btn {
       padding: 9px 18px; border-radius: var(--radius); font-size: 14px; font-weight: 600;
@@ -212,6 +230,16 @@
     .empty-state { text-align: center; padding: 60px 0; color: var(--muted); }
     .empty-state .ico { font-size: 48px; margin-bottom: 12px; }
     .loading-state { text-align: center; padding: 60px 0; color: var(--muted); }
+    .drag-handle {
+      cursor: grab;
+      color: var(--muted);
+      user-select: none;
+      font-size: 16px;
+      margin-right: 8px;
+      display: inline-block;
+    }
+    tr.dragging td { opacity: 0.55; background: #fff7ed; }
+    tr.drag-over td { background: #ffedd5; }
   </style>
 </head>
 <body>
@@ -282,6 +310,9 @@
           </div>
         </div>
         <div class="content">
+          <div class="products-toolbar">
+            <input type="search" id="products-search-input" class="products-search" placeholder="Tìm theo tên sản phẩm hoặc mã SKU..." autocomplete="off">
+          </div>
           <div id="products-body"><div class="loading-state">Đang tải...</div></div>
         </div>
       </div>
@@ -305,6 +336,7 @@
               <button class="btn btn-secondary" id="category-cancel-btn" style="align-self:end;display:none">Hủy sửa</button>
             </div>
             <div class="hint">Khi xóa danh mục đang có sản phẩm, hệ thống sẽ chuyển sản phẩm đó sang "Khác".</div>
+            <div class="hint">Kéo-thả từng dòng để đổi thứ tự hiển thị danh mục. Slug được tạo tự động từ tên và dùng cho link lọc: /products.html?cat=slug.</div>
           </div>
           <div id="categories-body"><div class="loading-state">Đang tải...</div></div>
         </div>
@@ -613,8 +645,10 @@ let heroConfig = null;
 let categoryOptions = [];
 let cachedProducts = [];
 let editingCategoryIndex = -1;
+let productSearchKeyword = '';
 
 const DEFAULT_PRODUCT_CATEGORIES = ['Máy khoan', 'Máy mài', 'Máy cưa', 'Máy siết bulon/vít', 'Khác'];
+const SYSTEM_CATEGORIES = ['Khác'];
 
 // ── Helpers ────────────────────────────────────────────────────────
 function api(path, method = 'GET', body = null) {
@@ -663,6 +697,21 @@ function uniqueCategories(list) {
   return out;
 }
 
+function categorySlug(name) {
+  return slugify(normalizeCategoryName(name));
+}
+
+function isSystemCategory(name) {
+  return SYSTEM_CATEGORIES.some(c => c.toLowerCase() === normalizeCategoryName(name).toLowerCase());
+}
+
+function ensureSystemCategoriesLast(list) {
+  const categories = uniqueCategories(list);
+  const normal = categories.filter(c => !isSystemCategory(c));
+  const system = SYSTEM_CATEGORIES.filter(sys => categories.some(c => c.toLowerCase() === sys.toLowerCase()));
+  return [...normal, ...system];
+}
+
 function renderProductCategorySelect(selected = '') {
   const select = document.getElementById('p-category');
   if (!select) return;
@@ -679,7 +728,7 @@ function renderProductCategorySelect(selected = '') {
 }
 
 async function saveCategoryOptions(nextCategories) {
-  const merged = uniqueCategories([...nextCategories, 'Khác']);
+  const merged = ensureSystemCategoriesLast([...nextCategories, ...SYSTEM_CATEGORIES]);
   const r = await api('/api/admin/site', 'POST', { data: { productCategories: merged } });
   if (!r.ok) throw new Error(r.error || 'Không thể lưu danh mục');
   categoryOptions = merged;
@@ -700,7 +749,7 @@ async function loadCategoryOptions() {
   const fromSite = Array.isArray(siteRes.data?.productCategories) ? siteRes.data.productCategories : DEFAULT_PRODUCT_CATEGORIES;
   const fromProducts = cachedProducts.map(p => p.category).filter(Boolean);
 
-  categoryOptions = uniqueCategories([...fromSite, ...fromProducts, ...DEFAULT_PRODUCT_CATEGORIES]);
+  categoryOptions = ensureSystemCategoriesLast([...fromSite, ...fromProducts, ...DEFAULT_PRODUCT_CATEGORIES]);
   renderProductCategorySelect();
   return categoryOptions;
 }
@@ -810,10 +859,44 @@ async function loadProducts() {
   categoryOptions = uniqueCategories([...categoryOptions, ...items.map(p => p.category), ...DEFAULT_PRODUCT_CATEGORIES]);
   renderProductCategorySelect();
 
-  if (!items.length) {
+  const searchInput = document.getElementById('products-search-input');
+  if (searchInput) searchInput.value = productSearchKeyword;
+
+  renderProductsTable();
+}
+
+function searchText(input) {
+  return String(input || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+function getFilteredProducts(items, keyword) {
+  const term = searchText(keyword).trim();
+  if (!term) return items;
+
+  return items.filter(p => {
+    const name = searchText(p.name);
+    const sku = searchText(p.sku);
+    return name.includes(term) || sku.includes(term);
+  });
+}
+
+function renderProductsTable() {
+  const el = document.getElementById('products-body');
+  const filteredItems = getFilteredProducts(cachedProducts, productSearchKeyword);
+
+  if (!cachedProducts.length) {
     el.innerHTML = '<div class="empty-state"><div class="ico">📦</div><p>Chưa có sản phẩm nào. Nhấn "+ Thêm sản phẩm" để bắt đầu.</p></div>';
     return;
   }
+
+  if (!filteredItems.length) {
+    el.innerHTML = '<div class="empty-state"><div class="ico">🔎</div><p>Không tìm thấy sản phẩm phù hợp với từ khóa hiện tại.</p></div>';
+    return;
+  }
+
   el.innerHTML = `
     <div class="table-wrap">
       <table>
@@ -822,7 +905,7 @@ async function loadProducts() {
           <th>Giá</th><th>Trạng thái</th><th>Thao tác</th>
         </tr></thead>
         <tbody>
-          ${items.map(p => `
+          ${filteredItems.map(p => `
             <tr>
               <td>${p.images && p.images.length ? `<img class="product-img" src="${p.images[0]}" onerror="this.parentNode.innerHTML='<div class=no-img>📷</div>'">` : '<div class="no-img">📷</div>'}</td>
               <td><strong>${p.name || ''}</strong></td>
@@ -878,6 +961,10 @@ function editProduct(p) { openProductModal(p); }
 document.getElementById('btn-add-product').addEventListener('click', () => openProductModal());
 document.getElementById('product-modal-close').addEventListener('click', closeProductModal);
 document.getElementById('product-modal-cancel').addEventListener('click', closeProductModal);
+document.getElementById('products-search-input').addEventListener('input', function() {
+  productSearchKeyword = this.value || '';
+  renderProductsTable();
+});
 
 function closeProductModal() {
   document.getElementById('product-modal').style.display = 'none';
@@ -1041,26 +1128,103 @@ function renderCategories() {
   el.innerHTML = `
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Danh mục</th><th>Số sản phẩm</th><th>Thao tác</th></tr></thead>
+        <thead><tr><th style="width:52px"></th><th>Danh mục</th><th>Slug</th><th>Số sản phẩm</th><th>Thao tác</th></tr></thead>
         <tbody>
           ${categoryOptions.map((cat, idx) => `
-            <tr>
-              <td><strong>${cat}</strong></td>
+            <tr data-category-row="${idx}" draggable="${!isSystemCategory(cat)}">
+              <td>${isSystemCategory(cat) ? '<span class="drag-handle" style="opacity:.4;cursor:not-allowed">☰</span>' : '<span class="drag-handle" title="Kéo để đổi thứ tự">☰</span>'}</td>
+              <td><strong>${cat}</strong>${isSystemCategory(cat) ? ' <span class="badge badge-gray">Hệ thống</span>' : ''}</td>
+              <td><code>${categorySlug(cat)}</code></td>
               <td>${usageMap[cat] || 0}</td>
               <td>
-                <button class="btn btn-secondary btn-sm" onclick="editCategory(${idx})">Sửa</button>
-                <button class="btn btn-danger btn-sm" ${cat === 'Khác' ? 'disabled' : ''} onclick="deleteCategory('${cat.replace(/'/g, "\\'")}')">Xóa</button>
+                <button class="btn btn-secondary btn-sm" ${isSystemCategory(cat) ? 'disabled' : ''} onclick="editCategory(${idx})">Sửa</button>
+                <button class="btn btn-danger btn-sm" ${isSystemCategory(cat) ? 'disabled' : ''} onclick="deleteCategory('${cat.replace(/'/g, "\\'")}')">Xóa</button>
               </td>
             </tr>
           `).join('')}
         </tbody>
       </table>
     </div>`;
+
+  initCategoryDragAndDrop();
+}
+
+function moveCategory(fromIndex, toIndex) {
+  if (fromIndex === toIndex) return;
+  const next = [...categoryOptions];
+  const [item] = next.splice(fromIndex, 1);
+  next.splice(toIndex, 0, item);
+  categoryOptions = ensureSystemCategoriesLast(next);
+}
+
+function initCategoryDragAndDrop() {
+  const rows = [...document.querySelectorAll('[data-category-row]')];
+  let draggingIndex = -1;
+
+  rows.forEach(row => {
+    row.addEventListener('dragstart', e => {
+      const idx = Number(row.dataset.categoryRow);
+      const catName = categoryOptions[idx] || '';
+      if (isSystemCategory(catName)) {
+        e.preventDefault();
+        return;
+      }
+      draggingIndex = idx;
+      row.classList.add('dragging');
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(idx));
+      }
+    });
+
+    row.addEventListener('dragend', () => {
+      draggingIndex = -1;
+      rows.forEach(r => r.classList.remove('dragging', 'drag-over'));
+    });
+
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      const targetIdx = Number(row.dataset.categoryRow);
+      if (targetIdx === draggingIndex) return;
+      const targetCat = categoryOptions[targetIdx] || '';
+      if (isSystemCategory(targetCat)) return;
+      row.classList.add('drag-over');
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+    });
+
+    row.addEventListener('dragleave', () => {
+      row.classList.remove('drag-over');
+    });
+
+    row.addEventListener('drop', async e => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      const targetIdx = Number(row.dataset.categoryRow);
+      if (draggingIndex < 0 || targetIdx < 0 || targetIdx === draggingIndex) return;
+      const targetCat = categoryOptions[targetIdx] || '';
+      if (isSystemCategory(targetCat)) return;
+
+      try {
+        moveCategory(draggingIndex, targetIdx);
+        await saveCategoryOptions(categoryOptions);
+        renderCategories();
+        showToast('Đã cập nhật thứ tự danh mục');
+      } catch (err) {
+        showToast(err.message, 'error');
+        await loadCategoryOptions();
+        renderCategories();
+      }
+    });
+  });
 }
 
 function editCategory(index) {
   const name = categoryOptions[index];
   if (!name) return;
+  if (isSystemCategory(name)) {
+    showToast('Danh mục hệ thống không thể chỉnh sửa', 'error');
+    return;
+  }
   editingCategoryIndex = index;
   document.getElementById('category-name-input').value = name;
   document.getElementById('category-save-btn').textContent = 'Cập nhật danh mục';
@@ -1120,6 +1284,9 @@ document.getElementById('category-save-btn').addEventListener('click', async () 
     const nextCategories = [...categoryOptions];
     if (editingCategoryIndex >= 0) {
       const oldName = nextCategories[editingCategoryIndex];
+      if (isSystemCategory(oldName) && oldName.toLowerCase() !== nextName.toLowerCase()) {
+        throw new Error('Danh mục hệ thống không thể đổi tên');
+      }
       nextCategories[editingCategoryIndex] = nextName;
       if (oldName && oldName.toLowerCase() !== nextName.toLowerCase()) {
         await updateProductsCategory(oldName, nextName);
@@ -1143,7 +1310,7 @@ document.getElementById('category-save-btn').addEventListener('click', async () 
 
 async function deleteCategory(name) {
   const category = normalizeCategoryName(name);
-  if (!category || category.toLowerCase() === 'khác') return;
+  if (!category || isSystemCategory(category)) return;
 
   const inUse = cachedProducts.filter(p => normalizeCategoryName(p.category).toLowerCase() === category.toLowerCase()).length;
   const msg = inUse

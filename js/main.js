@@ -160,11 +160,26 @@ async function initProducts() {
   let allProducts = products.filter(p => p.visible);
   let currentCat = 'Tất cả';
   let searchTerm = '';
+  const initialCatSlug = new URLSearchParams(location.search).get('cat') || '';
 
   // Build category buttons
-  const configuredCats = Array.isArray(site?.productCategories) ? site.productCategories : [];
+  const configuredCats = Array.isArray(site?.productCategories)
+    ? site.productCategories.map(c => (typeof c === 'string' ? c : c?.name)).filter(Boolean)
+    : [];
   const liveCats = allProducts.map(p => p.category).filter(Boolean);
   const cats = ['Tất cả', ...new Set([...configuredCats, ...liveCats])];
+  const catSlugMap = Object.fromEntries(cats.map(name => [slugify(name), name]));
+  if (initialCatSlug && catSlugMap[initialCatSlug]) {
+    currentCat = catSlugMap[initialCatSlug];
+  }
+
+  function syncCategoryQuery() {
+    const url = new URL(location.href);
+    if (currentCat === 'Tất cả') url.searchParams.delete('cat');
+    else url.searchParams.set('cat', slugify(currentCat));
+    history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+  }
+
   const catEl = $('#categories');
   if (catEl) {
     catEl.innerHTML = cats.map(c =>
@@ -174,6 +189,7 @@ async function initProducts() {
       if (!e.target.matches('.cat-btn')) return;
       currentCat = e.target.dataset.cat;
       $$('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === currentCat));
+      syncCategoryQuery();
       render();
     });
   }
