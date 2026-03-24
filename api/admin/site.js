@@ -7,6 +7,21 @@ function setCORSHeaders(res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
+function normalizeProductCategories(categories) {
+  const seen = new Set();
+  const out = [];
+  (Array.isArray(categories) ? categories : []).forEach(item => {
+    const name = (typeof item === 'string' ? item : (item && item.name)) || '';
+    const clean = String(name).trim();
+    const key = clean.toLowerCase();
+    if (!clean || seen.has(key)) return;
+    seen.add(key);
+    out.push(clean);
+  });
+  if (!out.some(c => c.toLowerCase() === 'khác')) out.push('Khác');
+  return out;
+}
+
 const DEFAULT_SITE = {
   productCategories: [
     'Máy khoan',
@@ -65,7 +80,14 @@ module.exports = async function handler(req, res) {
     try {
       const file = await getFile('_data/site.json');
       if (!file) return res.status(200).json({ ok: true, data: DEFAULT_SITE });
-      return res.status(200).json({ ok: true, data: JSON.parse(file.content) });
+      const parsed = JSON.parse(file.content);
+      return res.status(200).json({
+        ok: true,
+        data: {
+          ...parsed,
+          productCategories: normalizeProductCategories(parsed.productCategories || DEFAULT_SITE.productCategories)
+        }
+      });
     } catch (err) {
       return res.status(500).json({ ok: false, error: err.message });
     }
@@ -79,8 +101,8 @@ module.exports = async function handler(req, res) {
       const current = existing ? JSON.parse(existing.content) : DEFAULT_SITE;
       const merged = {
         productCategories: Array.isArray(data.productCategories)
-          ? data.productCategories.filter(Boolean)
-          : (Array.isArray(current.productCategories) ? current.productCategories : DEFAULT_SITE.productCategories),
+          ? normalizeProductCategories(data.productCategories)
+          : normalizeProductCategories(Array.isArray(current.productCategories) ? current.productCategories : DEFAULT_SITE.productCategories),
         hero: {
           ...DEFAULT_SITE.hero,
           ...(current.hero || {}),
