@@ -108,6 +108,35 @@ async function initHome() {
     }
   }
 
+  // Inject why section content from site settings
+  const whyGridEl = $('#why-grid');
+  if (whyGridEl) {
+    try {
+      if (!site) {
+        site = await fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null);
+      }
+      const why = site?.why || {};
+      const whySectionLabelEl = $('#why-section-label');
+      const whySectionTitleEl = $('#why-section-title');
+
+      if (why.sectionLabel && whySectionLabelEl) whySectionLabelEl.textContent = why.sectionLabel;
+      if (why.title && whySectionTitleEl) whySectionTitleEl.textContent = why.title;
+
+      const cards = Array.isArray(why.cards) ? why.cards.filter(c => c && (c.title || c.description)) : [];
+      if (cards.length) {
+        whyGridEl.innerHTML = cards.map(card => `
+          <div class="why-card">
+            <span class="why-icon">${card.icon || '✨'}</span>
+            <h3 class="why-title">${card.title || ''}</h3>
+            <p class="why-desc">${(card.description || '').replace(/\n/g, '<br>')}</p>
+          </div>
+        `).join('');
+      }
+    } catch {
+      // Keep fallback static content if API is unavailable
+    }
+  }
+
   const featuredEl = $('#featured-products');
   if (!featuredEl) return;
   const products = await fetchJSON('/api/products');

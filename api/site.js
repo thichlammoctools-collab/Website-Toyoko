@@ -33,6 +33,11 @@ module.exports = function handler(req, res) {
         primaryButtonHref: '/products.html',
         secondaryButtonText: 'Liên hệ',
         secondaryButtonHref: '/contact.html'
+      },
+      why: {
+        sectionLabel: 'Tại sao chọn chúng tôi',
+        title: 'Lợi ích khi mua hàng tại Quang Phú',
+        cards: []
       }
     });
   }

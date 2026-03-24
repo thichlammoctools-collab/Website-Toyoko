@@ -29,6 +29,18 @@ const DEFAULT_SITE = {
     primaryButtonHref: '/products.html',
     secondaryButtonText: 'Liên hệ',
     secondaryButtonHref: '/contact.html'
+  },
+  why: {
+    sectionLabel: 'Tại sao chọn chúng tôi',
+    title: 'Lợi ích khi mua hàng tại Quang Phú',
+    cards: [
+      { icon: '🏆', title: 'Chính hãng 100%', description: 'Nhà nhập khẩu trực tiếp từ nhà máy Toyoko, cam kết hàng chính hãng.' },
+      { icon: '🚚', title: 'Giao hàng nhanh', description: 'Giao hàng toàn quốc, TP.HCM giao trong ngày.' },
+      { icon: '🔧', title: 'Bảo hành chính hãng', description: 'Bảo hành 6 tháng, trung tâm bảo hành chuyên nghiệp.' },
+      { icon: '💰', title: 'Giá cạnh tranh', description: 'Nhập thẳng từ nhà máy, giá tốt nhất thị trường.' },
+      { icon: '📞', title: 'Hỗ trợ kỹ thuật', description: 'Đội ngũ kỹ thuật tư vấn miễn phí qua Zalo và điện thoại.' },
+      { icon: '🤝', title: 'Đại lý chính thức', description: 'Chính sách đại lý hấp dẫn, hỗ trợ trưng bày và marketing.' }
+    ]
   }
 };
 
@@ -68,6 +80,11 @@ module.exports = async function handler(req, res) {
           ...DEFAULT_SITE.about,
           ...(current.about || {}),
           ...(data.about || {}),
+        },
+        why: {
+          ...DEFAULT_SITE.why,
+          ...(current.why || {}),
+          ...(data.why || {}),
         },
       };
 
