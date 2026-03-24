@@ -13,7 +13,11 @@
   ],
   "routes": [
     { "src": "^/$", "dest": "/index.html" },
-    { "src": "^/admin/?$", "dest": "/admin/index.html" }
+    { "src": "^/admin/?$", "dest": "/admin/index.html" },
+    { "src": "^/api/admin/auth$", "dest": "/api/admin/auth.js" },
+    { "src": "^/api/admin/products$", "dest": "/api/admin/products.js" },
+    { "src": "^/api/admin/posts$", "dest": "/api/admin/posts.js" },
+    { "src": "^/api/admin/upload$", "dest": "/api/admin/upload.js" }
   ],
   "headers": [
     {
