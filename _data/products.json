@@ -1,422 +1,424 @@
 {
   "data": [
     {
-      "id": "1",
-      "slug": "may-khoan-pin-toyoko-cd01",
-      "name": "Máy Khoan Pin Toyoko CD-01",
-      "category": "Máy khoan",
-      "price": 850000,
-      "unit": "cái",
-      "description": "Máy khoan pin không dây Toyoko CD-01, động cơ brushless mạnh mẽ, pin Lithium 18V dung lượng cao. Phù hợp cho thợ mộc, thợ điện, sửa chữa dân dụng.",
-      "images": [],
-      "visible": true
-    },
-    {
-      "id": "2",
-      "slug": "may-mai-goc-toyoko-ag01",
-      "name": "Máy Mài Góc Toyoko AG-01",
-      "category": "Máy mài",
-      "price": 650000,
-      "unit": "cái",
-      "description": "Máy mài góc Toyoko AG-01, công suất 850W, đĩa mài 125mm. Thiết kế chắc chắn, chống bụi tốt, phù hợp cho các công trình nặng.",
-      "images": [],
-      "visible": true
-    },
-    {
-      "id": "3",
-      "slug": "may-cuia-xich-toyoko-cs01",
-      "name": "Máy Cưa Xích Toyoko CS-01",
-      "category": "Máy cưa",
-      "price": 1950000,
-      "unit": "cái",
-      "description": "Máy cưa xích điện Toyoko CS-01, lưỡi 16-inch, động cơ 2000W. Lý tưởng cho cắt gỗ lớn, cành cây, công trình xây dựng.",
-      "images": [],
-      "visible": true
-    },
-    {
       "id": "4",
       "slug": "b-sit-vt-168v-50nm",
       "name": "BỘ SIẾT VÍT 16.8V 50N.m",
       "category": "Máy siết bulon/vít",
-      "price": 830000,
+      "price": 1162000,
       "unit": "bộ",
-      "description": "Motor không chổi than, Lực siết 50Nm, 2 Pin 4 cells 16.8V + 1 sạc (10 bộ/thùng) - Mã hàng: T0150G",
+      "description": "Motor không chổi than, Lực siết 50Nm, 2 Pin 4 cells 16.8V + 1 sạc (10 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T0150G"
     },
     {
       "id": "5",
       "slug": "b-sit-vt-168v-150nm",
       "name": "BỘ SIẾT VÍT 16.8V 150N.m",
       "category": "Máy siết bulon/vít",
-      "price": 1050000,
+      "price": 1470000,
       "unit": "bộ",
-      "description": "Motor không chổi than, Lực 50-150Nm, Đầu gài lục giác 6.35mm (10 bộ/thùng) - Mã hàng: T16150-4F",
+      "description": "Motor không chổi than, Lực 50-150Nm, Đầu gài lục giác 6.35mm (10 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T16150-4F"
     },
     {
       "id": "6",
       "slug": "b-sit-vt-21v-230nm",
       "name": "BỘ SIẾT VÍT 21V 230N.m",
       "category": "Máy siết bulon/vít",
-      "price": 1500000,
+      "price": 2100000,
       "unit": "bộ",
-      "description": "Lực 100-230Nm, Motor không chổi than, 2 Pin 10 cells 21V + 1 sạc (6 bộ/thùng) - Mã hàng: T21230G",
+      "description": "Lực 100-230Nm, Motor không chổi than, 2 Pin 10 cells 21V + 1 sạc (6 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T21230G"
     },
     {
       "id": "7",
       "slug": "b-sit-vt-21v-230nm-thn-my",
       "name": "BỘ SIẾT VÍT 21V 230N.m (THÂN MÁY)",
       "category": "Máy siết bulon/vít",
-      "price": 770000,
+      "price": 1078000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ SIẾT VÍT 21V 230N.m - Mã hàng: 21230SL",
+      "description": "Biến thể THÂN MÁY của BỘ SIẾT VÍT 21V 230N.m",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "21230SL"
     },
     {
       "id": "8",
       "slug": "b-khoan-pin-168v",
       "name": "BỘ KHOAN PIN 16.8V",
       "category": "Máy khoan",
-      "price": 880000,
+      "price": 1232000,
       "unit": "bộ",
-      "description": "Lực siết 50Nm, Autolock 10mm, 2 Pin 4 cells + sạc (10 bộ/thùng) - Mã hàng: T0250G",
+      "description": "Lực siết 50Nm, Autolock 10mm, 2 Pin 4 cells + sạc (10 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T0250G"
     },
     {
       "id": "9",
       "slug": "b-khoan-pin-21v",
       "name": "BỘ KHOAN PIN 21V",
       "category": "Máy khoan",
-      "price": 990000,
+      "price": 1386000,
       "unit": "bộ",
-      "description": "Lực 30-58Nm, Motor không chổi than, 2 Pin 10 cells + 1 sạc (10 bộ/thùng) - Mã hàng: T0121G",
+      "description": "Lực 30-58Nm, Motor không chổi than, 2 Pin 10 cells + 1 sạc (10 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T0121G"
     },
     {
       "id": "10",
       "slug": "b-khoan-pin-21v-thn-my",
       "name": "BỘ KHOAN PIN 21V (THÂN MÁY)",
       "category": "Máy khoan",
-      "price": 530000,
+      "price": 742000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V - Mã hàng: 0121-LR",
+      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "0121-LR"
     },
     {
       "id": "11",
       "slug": "b-khoan-pin-21v-pin-5-cells",
       "name": "BỘ KHOAN PIN 21V (Pin 5 cells)",
       "category": "Máy khoan",
-      "price": 1130000,
+      "price": 1582000,
       "unit": "bộ",
-      "description": "Lực 60Nm, 3 chức năng, 2 Pin 5 cells + sạc (8 bộ/thùng) - Mã hàng: T0260G5",
+      "description": "Lực 60Nm, 3 chức năng, 2 Pin 5 cells + sạc (8 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T0260G5"
     },
     {
       "id": "12",
       "slug": "b-khoan-pin-21v-pin-5-cells-thn-my",
       "name": "BỘ KHOAN PIN 21V (Pin 5 cells) (THÂN MÁY)",
       "category": "Máy khoan",
-      "price": 630000,
+      "price": 882000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (Pin 5 cells) - Mã hàng: 0260-LR",
+      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (Pin 5 cells)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "0260-LR"
     },
     {
       "id": "13",
       "slug": "b-khoan-pin-21v-pin-10-cells",
       "name": "BỘ KHOAN PIN 21V (Pin 10 cells)",
       "category": "Máy khoan",
-      "price": 1400000,
+      "price": 1960000,
       "unit": "bộ",
-      "description": "Lực 60Nm, 3 chức năng, 2 Pin 10 cells + sạc (8 bộ/thùng) - Mã hàng: T0260G10",
+      "description": "Lực 60Nm, 3 chức năng, 2 Pin 10 cells + sạc (8 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T0260G10"
     },
     {
       "id": "14",
       "slug": "b-khoan-pin-21v-pin-10-cells-thn-my",
       "name": "BỘ KHOAN PIN 21V (Pin 10 cells) (THÂN MÁY)",
       "category": "Máy khoan",
-      "price": 660000,
+      "price": 924000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (Pin 10 cells) - Mã hàng: 0260-LR",
+      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (Pin 10 cells)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "0260-LR"
     },
     {
       "id": "15",
       "slug": "b-khoan-pin-21v-100nm",
       "name": "BỘ KHOAN PIN 21V (100Nm)",
       "category": "Máy khoan",
-      "price": 1810000,
+      "price": 2534000,
       "unit": "bộ",
-      "description": "Lực 100Nm, Motor không chổi than, 2 Pin 10 cells + sạc đế (6 bộ/thùng) - Mã hàng: T13100G",
+      "description": "Lực 100Nm, Motor không chổi than, 2 Pin 10 cells + sạc đế (6 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T13100G"
     },
     {
       "id": "16",
       "slug": "b-khoan-pin-21v-100nm-thn-my",
       "name": "BỘ KHOAN PIN 21V (100Nm) (THÂN MÁY)",
       "category": "Máy khoan",
-      "price": 920000,
+      "price": 1288000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (100Nm) - Mã hàng: 13100SL",
+      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (100Nm)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "13100SL"
     },
     {
       "id": "17",
       "slug": "b-khoan-pin-21v-160nm",
       "name": "BỘ KHOAN PIN 21V (160Nm)",
       "category": "Máy khoan",
-      "price": 2220000,
+      "price": 3108000,
       "unit": "bộ",
-      "description": "Lực 160Nm, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng) - Mã hàng: T13160G",
+      "description": "Lực 160Nm, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T13160G"
     },
     {
       "id": "18",
       "slug": "b-khoan-pin-21v-160nm-thn-my",
       "name": "BỘ KHOAN PIN 21V (160Nm) (THÂN MÁY)",
       "category": "Máy khoan",
-      "price": 1150000,
+      "price": 1610000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (160Nm) - Mã hàng: 13160SL",
+      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (160Nm)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "13160SL"
     },
     {
       "id": "19",
       "slug": "b-bulon-380nm",
       "name": "BỘ BULON 380N.m",
       "category": "Máy siết bulon/vít",
-      "price": 1460000,
+      "price": 2044000,
       "unit": "bộ",
-      "description": "Lực 380Nm, Đầu 2 trong 1, 2 Pin 10 cells + sạc (6 bộ/thùng) - Mã hàng: T380G",
+      "description": "Lực 380Nm, Đầu 2 trong 1, 2 Pin 10 cells + sạc (6 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T380G"
     },
     {
       "id": "20",
       "slug": "b-bulon-380nm-thn-my",
       "name": "BỘ BULON 380N.m (THÂN MÁY)",
       "category": "Máy siết bulon/vít",
-      "price": 660000,
+      "price": 924000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ BULON 380N.m - Mã hàng: 380SL",
+      "description": "Biến thể THÂN MÁY của BỘ BULON 380N.m",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "380SL"
     },
     {
       "id": "21",
       "slug": "b-bulon-21v-550nm",
       "name": "BỘ BULON 21V 550Nm",
       "category": "Máy siết bulon/vít",
-      "price": 1220000,
+      "price": 1708000,
       "unit": "bộ",
-      "description": "Lực 550Nm, Motor không chổi than, 2 Pin 10 cells + sạc (6 bộ/thùng) - Mã hàng: T20550G",
+      "description": "Lực 550Nm, Motor không chổi than, 2 Pin 10 cells + sạc (6 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T20550G"
     },
     {
       "id": "22",
       "slug": "b-bulon-21v-550nm-thn-my",
       "name": "BỘ BULON 21V 550Nm (THÂN MÁY)",
       "category": "Máy siết bulon/vít",
-      "price": 660000,
+      "price": 924000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ BULON 21V 550Nm - Mã hàng: 20550SL",
+      "description": "Biến thể THÂN MÁY của BỘ BULON 21V 550Nm",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "20550SL"
     },
     {
       "id": "23",
       "slug": "b-bulon-21v-600nm",
       "name": "BỘ BULON 21V 600Nm",
       "category": "Máy siết bulon/vít",
-      "price": 2220000,
+      "price": 3108000,
       "unit": "bộ",
-      "description": "Lực 600Nm, Motor không chổi than, 2 Pin 15 cells + sạc (6 bộ/thùng) - Mã hàng: T0124G",
+      "description": "Lực 600Nm, Motor không chổi than, 2 Pin 15 cells + sạc (6 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T0124G"
     },
     {
       "id": "24",
       "slug": "b-bulon-21v-600nm-thn-my",
       "name": "BỘ BULON 21V 600Nm (THÂN MÁY)",
       "category": "Máy siết bulon/vít",
-      "price": 1150000,
+      "price": 1610000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ BULON 21V 600Nm - Mã hàng: 0124SL",
+      "description": "Biến thể THÂN MÁY của BỘ BULON 21V 600Nm",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "0124SL"
     },
     {
       "id": "25",
       "slug": "b-bulon-1000nm",
       "name": "BỘ BULON 1000Nm",
       "category": "Máy siết bulon/vít",
-      "price": 2970000,
+      "price": 4158000,
       "unit": "bộ",
-      "description": "Lực 1000Nm, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng) - Mã hàng: T1000F/G",
+      "description": "Lực 1000Nm, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T1000F/G"
     },
     {
       "id": "26",
       "slug": "b-bulon-1000nm-thn-my",
       "name": "BỘ BULON 1000Nm (THÂN MÁY)",
       "category": "Máy siết bulon/vít",
-      "price": 1850000,
+      "price": 2590000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ BULON 1000Nm - Mã hàng: 1000SL",
+      "description": "Biến thể THÂN MÁY của BỘ BULON 1000Nm",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "1000SL"
     },
     {
       "id": "27",
       "slug": "b-mi-pin-800w",
       "name": "BỘ MÀI PIN 800W",
       "category": "Máy mài",
-      "price": 1760000,
+      "price": 2464000,
       "unit": "bộ",
-      "description": "800W, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng) - Mã hàng: T01100G",
+      "description": "800W, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T01100G"
     },
     {
       "id": "28",
       "slug": "b-mi-pin-800w-thn-my",
       "name": "BỘ MÀI PIN 800W (THÂN MÁY)",
       "category": "Máy mài",
-      "price": 770000,
+      "price": 1078000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ MÀI PIN 800W - Mã hàng: 01100-LR",
+      "description": "Biến thể THÂN MÁY của BỘ MÀI PIN 800W",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "01100-LR"
     },
     {
       "id": "29",
       "slug": "b-mi-pin-850w",
       "name": "BỘ MÀI PIN 850W",
       "category": "Máy mài",
-      "price": 1880000,
+      "price": 2632000,
       "unit": "bộ",
-      "description": "850W, Công tắc bóp, 2 Pin 15 cells + sạc đế (6 bộ/thùng) - Mã hàng: T04850G",
+      "description": "850W, Công tắc bóp, 2 Pin 15 cells + sạc đế (6 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T04850G"
     },
     {
       "id": "30",
       "slug": "b-mi-pin-850w-thn-my",
       "name": "BỘ MÀI PIN 850W (THÂN MÁY)",
       "category": "Máy mài",
-      "price": 890000,
+      "price": 1246000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ MÀI PIN 850W - Mã hàng: 04850-LR",
+      "description": "Biến thể THÂN MÁY của BỘ MÀI PIN 850W",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "04850-LR"
     },
     {
       "id": "31",
       "slug": "b-b-tng-pin-29j",
       "name": "BỘ BÊ TÔNG PIN 2.9J",
       "category": "Khác",
-      "price": 2220000,
+      "price": 3108000,
       "unit": "bộ",
-      "description": "Lực đập 2.9J, Motor không chổi than, 2 Pin 15 cells + sạc đế (4 bộ/thùng) - Mã hàng: T2629G",
+      "description": "Lực đập 2.9J, Motor không chổi than, 2 Pin 15 cells + sạc đế (4 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T2629G"
     },
     {
-      "id": "32",
-      "slug": "b-b-tng-pin-29j-thn-my",
-      "name": "BỘ BÊ TÔNG PIN 2.9J (THÂN MÁY)",
-      "category": "Khác",
-      "price": 1100000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ BÊ TÔNG PIN 2.9J - Mã hàng: 2629SL",
+      "price": 1540000,
+      "name": "Thân máy khoan bê tông pin 2.9J 2629SL",
+      "slug": "b-b-tng-pin-29j-thn-my",
+      "visible": true,
       "images": [],
-      "visible": true
+      "id": "32",
+      "description": "Biến thể THÂN MÁY của BỘ BÊ TÔNG PIN 2.9J",
+      "category": "Khác",
+      "sku": "2629SL"
     },
     {
       "id": "33",
       "slug": "b-my-laser-2-tia-xanh",
       "name": "BỘ MÁY LASER 2 TIA XANH",
       "category": "Khác",
-      "price": 700000,
+      "price": 980000,
       "unit": "bộ",
-      "description": "Tia siêu sáng, 2 pin tiểu, giá treo tường (10 bộ/thùng) - Mã hàng: TYK22LD",
+      "description": "Tia siêu sáng, 2 pin tiểu, giá treo tường (10 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "TYK22LD"
     },
     {
       "id": "34",
       "slug": "b-laser-5-tia-xanh",
       "name": "BỘ LASER 5 TIA XANH",
       "category": "Khác",
-      "price": 960000,
+      "price": 1344000,
       "unit": "bộ",
-      "description": "5 tia xanh, 2 pin 3000mah + chân 1.2m (10 bộ/thùng) - Mã hàng: TYK5LP",
+      "description": "5 tia xanh, 2 pin 3000mah + chân 1.2m (10 bộ/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "TYK5LP"
     },
     {
       "id": "35",
       "slug": "my-ra-xe-cao-p-3000w",
       "name": "MÁY RỬA XE CAO ÁP 3000W",
       "category": "Khác",
-      "price": 1900000,
+      "price": 2660000,
       "unit": "máy",
-      "description": "3000W, 220 bar, Dây 15m, Súng + phụ kiện (2 máy/thùng) - Mã hàng: T3000WM",
+      "description": "3000W, 220 bar, Dây 15m, Súng + phụ kiện (2 máy/thùng)",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T3000WM"
     },
     {
       "id": "36",
       "slug": "khoan-ng-lc-750w",
       "name": "KHOAN ĐỘNG LỰC 750W",
       "category": "Máy khoan",
-      "price": 700000,
+      "price": 980000,
       "unit": "máy",
-      "description": "  - Mã hàng: T750ID",
+      "description": "",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T750ID"
     },
     {
       "id": "37",
       "slug": "my-c-17mm-1680w",
       "name": "MÁY ĐỤC 17mm 1680W",
       "category": "Khác",
-      "price": 2050000,
+      "price": 2870000,
       "unit": "máy",
-      "description": "  - Mã hàng: T1680DH",
+      "description": "",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T1680DH"
     },
     {
       "id": "38",
       "slug": "my-ct-st-2600w",
       "name": "MÁY CẮT SẮT 2600W",
       "category": "Khác",
-      "price": 2100000,
+      "price": 2940000,
       "unit": "máy",
-      "description": "  - Mã hàng: T2600CO",
+      "description": "",
       "images": [],
-      "visible": true
+      "visible": true,
+      "sku": "T2600CO"
     }
   ]
 }
