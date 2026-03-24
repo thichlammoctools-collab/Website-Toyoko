@@ -153,13 +153,18 @@ async function initProducts() {
   const gridEl = $('#products-grid');
   if (!gridEl) return;
 
-  const products = await fetchJSON('/api/products');
+  const [products, site] = await Promise.all([
+    fetchJSON('/api/products'),
+    fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null)
+  ]);
   let allProducts = products.filter(p => p.visible);
   let currentCat = 'Tất cả';
   let searchTerm = '';
 
   // Build category buttons
-  const cats = ['Tất cả', ...new Set(allProducts.map(p => p.category))];
+  const configuredCats = Array.isArray(site?.productCategories) ? site.productCategories : [];
+  const liveCats = allProducts.map(p => p.category).filter(Boolean);
+  const cats = ['Tất cả', ...new Set([...configuredCats, ...liveCats])];
   const catEl = $('#categories');
   if (catEl) {
     catEl.innerHTML = cats.map(c =>

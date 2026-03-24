@@ -12,6 +12,7 @@ module.exports = function handler(req, res) {
     return res.status(200).json(json);
   } catch {
     return res.status(200).json({
+      productCategories: ['Máy khoan', 'Máy mài', 'Máy cưa', 'Máy siết bulon/vít', 'Khác'],
       hero: {
         badge: '',
         titlePrefix: 'TOYOKO',

@@ -8,6 +8,13 @@ function setCORSHeaders(res) {
 }
 
 const DEFAULT_SITE = {
+  productCategories: [
+    'Máy khoan',
+    'Máy mài',
+    'Máy cưa',
+    'Máy siết bulon/vít',
+    'Khác'
+  ],
   hero: {
     badge: '',
     titlePrefix: 'TOYOKO',
@@ -71,6 +78,9 @@ module.exports = async function handler(req, res) {
       const existing = await getFile('_data/site.json');
       const current = existing ? JSON.parse(existing.content) : DEFAULT_SITE;
       const merged = {
+        productCategories: Array.isArray(data.productCategories)
+          ? data.productCategories.filter(Boolean)
+          : (Array.isArray(current.productCategories) ? current.productCategories : DEFAULT_SITE.productCategories),
         hero: {
           ...DEFAULT_SITE.hero,
           ...(current.hero || {}),
