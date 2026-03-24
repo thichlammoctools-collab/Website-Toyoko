@@ -15,6 +15,20 @@ const DEFAULT_SITE = {
     description: '',
     image: '/images/hero-machine.png',
     imageAlt: 'Máy cầm tay Toyoko'
+  },
+  about: {
+    sectionLabel: 'Về chúng tôi',
+    title: 'Toyoko – An tâm đồng hành cùng người thợ Việt',
+    description1: '',
+    description2: '',
+    image: '/images/about.jpg',
+    imageAlt: 'Kho hàng Quang Phú',
+    badgeTitle: 'Chứng nhận nhập khẩu',
+    badgeSubtitle: 'Toyoko Official Importer VN',
+    primaryButtonText: 'Xem sản phẩm',
+    primaryButtonHref: '/products.html',
+    secondaryButtonText: 'Liên hệ',
+    secondaryButtonHref: '/contact.html'
   }
 };
 
@@ -42,18 +56,25 @@ module.exports = async function handler(req, res) {
     try {
       const body = typeof req.body === 'object' && req.body !== null ? req.body : JSON.parse(req.body || '{}');
       const data = body.data || {};
+      const existing = await getFile('_data/site.json');
+      const current = existing ? JSON.parse(existing.content) : DEFAULT_SITE;
       const merged = {
         hero: {
           ...DEFAULT_SITE.hero,
+          ...(current.hero || {}),
           ...(data.hero || {}),
+        },
+        about: {
+          ...DEFAULT_SITE.about,
+          ...(current.about || {}),
+          ...(data.about || {}),
         },
       };
 
-      const existing = await getFile('_data/site.json');
       await putFile(
         '_data/site.json',
         JSON.stringify(merged, null, 2),
-        'admin: update site hero content',
+        'admin: update site content',
         existing ? existing.sha : undefined
       );
       return res.status(200).json({ ok: true, data: merged });

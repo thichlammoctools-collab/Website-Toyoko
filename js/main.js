@@ -50,11 +50,13 @@ function productCardHTML(p) {
 
 // ─── HOME PAGE ───────────────────────────────────────────────────
 async function initHome() {
+  let site = null;
+
   // Inject hero content from site settings when homepage elements exist
   const heroBadge = $('#hero-badge');
   if (heroBadge) {
     try {
-      const site = await fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null);
+      site = await fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null);
       const hero = site?.hero || {};
       const titlePrefixEl = $('#hero-title-prefix');
       const titleRestEl = $('#hero-title-rest');
@@ -67,6 +69,40 @@ async function initHome() {
       if (hero.description && descEl) descEl.innerHTML = hero.description.replace(/\n/g, '<br>');
       if (hero.image && imageEl) imageEl.src = hero.image;
       if (hero.imageAlt && imageEl) imageEl.alt = hero.imageAlt;
+    } catch {
+      // Keep fallback static content if API is unavailable
+    }
+  }
+
+  // Inject about section content from site settings
+  const aboutTitle = $('#about-title');
+  if (aboutTitle) {
+    try {
+      if (!site) {
+        site = await fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null);
+      }
+      const about = site?.about || {};
+      const aboutLabelEl = $('#about-section-label');
+      const aboutDesc1El = $('#about-desc-1');
+      const aboutDesc2El = $('#about-desc-2');
+      const aboutImageEl = $('#about-image');
+      const aboutBadgeTitleEl = $('#about-badge-title');
+      const aboutBadgeSubtitleEl = $('#about-badge-subtitle');
+      const aboutPrimaryBtnEl = $('#about-btn-primary');
+      const aboutSecondaryBtnEl = $('#about-btn-secondary');
+
+      if (about.sectionLabel && aboutLabelEl) aboutLabelEl.textContent = about.sectionLabel;
+      if (about.title) aboutTitle.textContent = about.title;
+      if (about.description1 && aboutDesc1El) aboutDesc1El.innerHTML = about.description1.replace(/\n/g, '<br>');
+      if (about.description2 && aboutDesc2El) aboutDesc2El.innerHTML = about.description2.replace(/\n/g, '<br>');
+      if (about.image && aboutImageEl) aboutImageEl.src = about.image;
+      if (about.imageAlt && aboutImageEl) aboutImageEl.alt = about.imageAlt;
+      if (about.badgeTitle && aboutBadgeTitleEl) aboutBadgeTitleEl.textContent = about.badgeTitle;
+      if (about.badgeSubtitle && aboutBadgeSubtitleEl) aboutBadgeSubtitleEl.textContent = about.badgeSubtitle;
+      if (about.primaryButtonText && aboutPrimaryBtnEl) aboutPrimaryBtnEl.textContent = about.primaryButtonText;
+      if (about.primaryButtonHref && aboutPrimaryBtnEl) aboutPrimaryBtnEl.href = about.primaryButtonHref;
+      if (about.secondaryButtonText && aboutSecondaryBtnEl) aboutSecondaryBtnEl.textContent = about.secondaryButtonText;
+      if (about.secondaryButtonHref && aboutSecondaryBtnEl) aboutSecondaryBtnEl.href = about.secondaryButtonHref;
     } catch {
       // Keep fallback static content if API is unavailable
     }

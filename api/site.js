@@ -19,6 +19,20 @@ module.exports = function handler(req, res) {
         description: '',
         image: '/images/hero-machine.png',
         imageAlt: 'Máy cầm tay Toyoko'
+      },
+      about: {
+        sectionLabel: 'Về chúng tôi',
+        title: 'Toyoko – An tâm đồng hành cùng người thợ Việt',
+        description1: '',
+        description2: '',
+        image: '/images/about.jpg',
+        imageAlt: 'Kho hàng Quang Phú',
+        badgeTitle: 'Chứng nhận nhập khẩu',
+        badgeSubtitle: 'Toyoko Official Importer VN',
+        primaryButtonText: 'Xem sản phẩm',
+        primaryButtonHref: '/products.html',
+        secondaryButtonText: 'Liên hệ',
+        secondaryButtonHref: '/contact.html'
       }
     });
   }
