@@ -236,6 +236,30 @@
       border-radius: 0 !important;
       min-height: 110px;
     }
+    .preview-wrap {
+      margin-top: 14px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #fcfdff;
+    }
+    .preview-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .preview-note { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+    .preview-block {
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      line-height: 1.55;
+    }
+    .preview-block + .preview-block { margin-top: 10px; }
+    .preview-mini-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+    .preview-footer-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 14px;
+      margin-top: 8px;
+    }
     .toggle-row { display: flex; align-items: center; gap: 10px; }
     .toggle { width: 40px; height: 22px; background: var(--border); border-radius: 100px; position: relative; cursor: pointer; border: none; transition: background .2s; }
     .toggle.on { background: var(--success); }
@@ -487,6 +511,7 @@
         <div class="topbar">
           <h2>🏢 Về chúng tôi</h2>
           <div class="actions">
+            <button class="btn btn-secondary" id="about-preview-btn">Preview HTML</button>
             <button class="btn btn-primary" id="about-save-btn">Lưu nội dung Về chúng tôi</button>
           </div>
         </div>
@@ -513,6 +538,7 @@
                 </div>
                 <textarea id="about-desc-1-input" rows="6" placeholder="Nội dung đoạn 1..."></textarea>
               </div>
+              <div class="hint">Tag an toàn khi lưu: strong, em, u, br, a.</div>
             </div>
             <div class="field">
               <label>Mô tả đoạn 2 (cho phép HTML nhẹ, ví dụ: &lt;strong&gt;...&lt;/strong&gt;)</label>
@@ -571,6 +597,19 @@
               <label>Alt ảnh</label>
               <input type="text" id="about-image-alt-input" placeholder="Kho hàng Quang Phú">
             </div>
+
+            <div class="preview-wrap" id="about-preview-wrap" style="display:none">
+              <div class="preview-title">Xem trước khối About</div>
+              <div class="preview-note">Preview đã lọc whitelist HTML an toàn trước khi lưu.</div>
+              <div class="preview-block">
+                <div class="preview-mini-label">Mô tả đoạn 1</div>
+                <div id="about-preview-desc-1"></div>
+              </div>
+              <div class="preview-block">
+                <div class="preview-mini-label">Mô tả đoạn 2</div>
+                <div id="about-preview-desc-2"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -610,6 +649,7 @@
           <div class="topbar">
             <h2>🦶 Footer</h2>
             <div class="actions">
+              <button class="btn btn-secondary" id="footer-preview-btn">Preview HTML</button>
               <button class="btn btn-primary" id="footer-save-btn">Lưu Footer</button>
             </div>
           </div>
@@ -628,6 +668,7 @@
                   </div>
                   <textarea id="footer-desc-input" rows="3" placeholder="Công ty TNHH Quang Phú - Nhà sản xuất và phân phối độc quyền thương hiệu Toyoko tại Việt Nam."></textarea>
                 </div>
+                <div class="hint">Tag an toàn khi lưu: strong, em, u, br, a.</div>
               </div>
               <div class="form-row">
                 <div class="field">
@@ -705,6 +746,32 @@
                     <button type="button" class="html-btn" data-cmd="clear">Clear</button>
                   </div>
                   <textarea id="footer-tagline-input" rows="2" placeholder="Thương hiệu Toyoko – An tâm đồng hành cùng thợ Việt"></textarea>
+                </div>
+              </div>
+
+              <div class="preview-wrap" id="footer-preview-wrap" style="display:none">
+                <div class="preview-title">Xem trước khối Footer</div>
+                <div class="preview-note">Preview đã lọc whitelist HTML an toàn trước khi lưu.</div>
+                <div class="preview-block">
+                  <div class="preview-mini-label">Mô tả</div>
+                  <div id="footer-preview-desc"></div>
+                </div>
+                <div class="preview-block">
+                  <div class="preview-mini-label">Bản quyền</div>
+                  <div id="footer-preview-copyright"></div>
+                </div>
+                <div class="preview-block">
+                  <div class="preview-mini-label">Tagline</div>
+                  <div id="footer-preview-tagline"></div>
+                </div>
+                <div class="preview-block">
+                  <div class="preview-mini-label">Text menu</div>
+                  <div class="preview-footer-links">
+                    <div id="footer-preview-link-home"></div>
+                    <div id="footer-preview-link-products"></div>
+                    <div id="footer-preview-link-blog"></div>
+                    <div id="footer-preview-link-contact"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -939,6 +1006,64 @@ function initHtmlEditors() {
       btn.addEventListener('click', () => applyHtmlCommand(textarea, btn.dataset.cmd));
     });
   });
+}
+
+const SAFE_TAGS = new Set(['strong', 'em', 'u', 'br', 'a']);
+
+function sanitizeHtml(input) {
+  const template = document.createElement('template');
+  template.innerHTML = String(input || '');
+
+  function walk(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return document.createTextNode(node.textContent || '');
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      return document.createDocumentFragment();
+    }
+
+    const tag = node.tagName.toLowerCase();
+    const frag = document.createDocumentFragment();
+    if (!SAFE_TAGS.has(tag)) {
+      node.childNodes.forEach(child => frag.appendChild(walk(child)));
+      return frag;
+    }
+
+    const el = document.createElement(tag);
+    if (tag === 'a') {
+      const href = (node.getAttribute('href') || '').trim();
+      const safeHref = /^(https?:\/\/|mailto:|tel:|\/)/i.test(href) ? href : '#';
+      el.setAttribute('href', safeHref);
+      el.setAttribute('target', '_blank');
+      el.setAttribute('rel', 'noopener');
+    }
+
+    if (tag !== 'br') {
+      node.childNodes.forEach(child => el.appendChild(walk(child)));
+    }
+    return el;
+  }
+
+  const out = document.createElement('div');
+  template.content.childNodes.forEach(child => out.appendChild(walk(child)));
+  return out.innerHTML;
+}
+
+function renderAboutPreview() {
+  const d1 = sanitizeHtml(document.getElementById('about-desc-1-input').value.trim());
+  const d2 = sanitizeHtml(document.getElementById('about-desc-2-input').value.trim());
+  document.getElementById('about-preview-desc-1').innerHTML = d1;
+  document.getElementById('about-preview-desc-2').innerHTML = d2;
+}
+
+function renderFooterPreview() {
+  document.getElementById('footer-preview-desc').innerHTML = sanitizeHtml(document.getElementById('footer-desc-input').value.trim());
+  document.getElementById('footer-preview-copyright').innerHTML = sanitizeHtml(document.getElementById('footer-copyright-input').value.trim());
+  document.getElementById('footer-preview-tagline').innerHTML = sanitizeHtml(document.getElementById('footer-tagline-input').value.trim());
+  document.getElementById('footer-preview-link-home').textContent = document.getElementById('footer-link-home-input').value.trim() || 'Trang chủ';
+  document.getElementById('footer-preview-link-products').textContent = document.getElementById('footer-link-products-input').value.trim() || 'Sản phẩm';
+  document.getElementById('footer-preview-link-blog').textContent = document.getElementById('footer-link-blog-input').value.trim() || 'Tuyển dụng';
+  document.getElementById('footer-preview-link-contact').textContent = document.getElementById('footer-link-contact-input').value.trim() || 'Liên hệ';
 }
 
 function escapeHtml(str) {
@@ -2031,8 +2156,8 @@ document.getElementById('about-save-btn').addEventListener('click', async () => 
     about: {
       sectionLabel: document.getElementById('about-section-label-input').value.trim() || 'Về chúng tôi',
       title: document.getElementById('about-title-input').value.trim(),
-      description1: document.getElementById('about-desc-1-input').value.trim(),
-      description2: document.getElementById('about-desc-2-input').value.trim(),
+      description1: sanitizeHtml(document.getElementById('about-desc-1-input').value.trim()),
+      description2: sanitizeHtml(document.getElementById('about-desc-2-input').value.trim()),
       badgeTitle: document.getElementById('about-badge-title-input').value.trim(),
       badgeSubtitle: document.getElementById('about-badge-subtitle-input').value.trim(),
       primaryButtonText: document.getElementById('about-primary-text-input').value.trim() || 'Xem sản phẩm',
@@ -2053,6 +2178,19 @@ document.getElementById('about-save-btn').addEventListener('click', async () => 
 
   btn.disabled = false;
   btn.textContent = 'Lưu nội dung Về chúng tôi';
+});
+
+document.getElementById('about-preview-btn').addEventListener('click', () => {
+  const wrap = document.getElementById('about-preview-wrap');
+  const btn = document.getElementById('about-preview-btn');
+  if (wrap.style.display === 'none') {
+    renderAboutPreview();
+    wrap.style.display = '';
+    btn.textContent = 'Ẩn Preview';
+  } else {
+    wrap.style.display = 'none';
+    btn.textContent = 'Preview HTML';
+  }
 });
 
 document.getElementById('about-image-file').addEventListener('change', async function () {
@@ -2118,7 +2256,7 @@ document.getElementById('footer-save-btn').addEventListener('click', async () =>
 
   const data = {
     footer: {
-      desc:      document.getElementById('footer-desc-input').value.trim(),
+      desc:      sanitizeHtml(document.getElementById('footer-desc-input').value.trim()),
       phone:     document.getElementById('footer-phone-input').value.trim(),
       email:     document.getElementById('footer-email-input').value.trim(),
       address:   document.getElementById('footer-address-input').value.trim(),
@@ -2129,8 +2267,8 @@ document.getElementById('footer-save-btn').addEventListener('click', async () =>
       linkProductsText: document.getElementById('footer-link-products-input').value.trim() || 'Sản phẩm',
       linkBlogText: document.getElementById('footer-link-blog-input').value.trim() || 'Tuyển dụng',
       linkContactText: document.getElementById('footer-link-contact-input').value.trim() || 'Liên hệ',
-      copyright: document.getElementById('footer-copyright-input').value.trim(),
-      tagline:   document.getElementById('footer-tagline-input').value.trim(),
+      copyright: sanitizeHtml(document.getElementById('footer-copyright-input').value.trim()),
+      tagline:   sanitizeHtml(document.getElementById('footer-tagline-input').value.trim()),
     }
   };
 
@@ -2142,6 +2280,19 @@ document.getElementById('footer-save-btn').addEventListener('click', async () =>
   }
   btn.disabled = false;
   btn.textContent = 'Lưu Footer';
+});
+
+document.getElementById('footer-preview-btn').addEventListener('click', () => {
+  const wrap = document.getElementById('footer-preview-wrap');
+  const btn = document.getElementById('footer-preview-btn');
+  if (wrap.style.display === 'none') {
+    renderFooterPreview();
+    wrap.style.display = '';
+    btn.textContent = 'Ẩn Preview';
+  } else {
+    wrap.style.display = 'none';
+    btn.textContent = 'Preview HTML';
+  }
 });
 
 // ── Init ────────────────────────────────────────────────────────────
