@@ -171,6 +171,7 @@
     .badge-green { background: #dcfce7; color: #166534; }
     .badge-gray  { background: #f1f5f9; color: #64748b; }
     .badge-amber { background: #fef3c7; color: #92400e; }
+    .badge-blue  { background: #dbeafe; color: #1d4ed8; }
     .product-img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; background: var(--bg); }
     .no-img { width: 48px; height: 48px; border-radius: 6px; background: var(--bg); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 20px; }
 
@@ -204,6 +205,37 @@
     .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--primary); }
     .field textarea { resize: vertical; min-height: 80px; }
     .field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .html-editor {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #fff;
+    }
+    .html-editor:focus-within { border-color: var(--primary); }
+    .html-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+    }
+    .html-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 12px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .html-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .html-editor textarea {
+      border: none !important;
+      border-radius: 0 !important;
+      min-height: 110px;
+    }
     .toggle-row { display: flex; align-items: center; gap: 10px; }
     .toggle { width: 40px; height: 22px; background: var(--border); border-radius: 100px; position: relative; cursor: pointer; border: none; transition: background .2s; }
     .toggle.on { background: var(--success); }
@@ -470,11 +502,31 @@
             </div>
             <div class="field">
               <label>Mô tả đoạn 1 (cho phép HTML nhẹ, ví dụ: &lt;strong&gt;...&lt;/strong&gt;)</label>
-              <textarea id="about-desc-1-input" rows="6" placeholder="Nội dung đoạn 1..."></textarea>
+              <div class="html-editor">
+                <div class="html-toolbar" data-target="about-desc-1-input">
+                  <button type="button" class="html-btn" data-cmd="strong"><b>B</b></button>
+                  <button type="button" class="html-btn" data-cmd="em"><i>I</i></button>
+                  <button type="button" class="html-btn" data-cmd="u"><u>U</u></button>
+                  <button type="button" class="html-btn" data-cmd="br">BR</button>
+                  <button type="button" class="html-btn" data-cmd="a">Link</button>
+                  <button type="button" class="html-btn" data-cmd="clear">Clear</button>
+                </div>
+                <textarea id="about-desc-1-input" rows="6" placeholder="Nội dung đoạn 1..."></textarea>
+              </div>
             </div>
             <div class="field">
               <label>Mô tả đoạn 2 (cho phép HTML nhẹ, ví dụ: &lt;strong&gt;...&lt;/strong&gt;)</label>
-              <textarea id="about-desc-2-input" rows="4" placeholder="Nội dung đoạn 2..."></textarea>
+              <div class="html-editor">
+                <div class="html-toolbar" data-target="about-desc-2-input">
+                  <button type="button" class="html-btn" data-cmd="strong"><b>B</b></button>
+                  <button type="button" class="html-btn" data-cmd="em"><i>I</i></button>
+                  <button type="button" class="html-btn" data-cmd="u"><u>U</u></button>
+                  <button type="button" class="html-btn" data-cmd="br">BR</button>
+                  <button type="button" class="html-btn" data-cmd="a">Link</button>
+                  <button type="button" class="html-btn" data-cmd="clear">Clear</button>
+                </div>
+                <textarea id="about-desc-2-input" rows="4" placeholder="Nội dung đoạn 2..."></textarea>
+              </div>
             </div>
             <div class="form-row">
               <div class="field">
@@ -565,7 +617,17 @@
             <div class="table-wrap" style="padding:20px;max-width:900px">
               <div class="field">
                 <label>Mô tả ngắn (dưới logo)</label>
-                <textarea id="footer-desc-input" rows="3" placeholder="Công ty TNHH Quang Phú - Nhà sản xuất và phân phối độc quyền thương hiệu Toyoko tại Việt Nam."></textarea>
+                <div class="html-editor">
+                  <div class="html-toolbar" data-target="footer-desc-input">
+                    <button type="button" class="html-btn" data-cmd="strong"><b>B</b></button>
+                    <button type="button" class="html-btn" data-cmd="em"><i>I</i></button>
+                    <button type="button" class="html-btn" data-cmd="u"><u>U</u></button>
+                    <button type="button" class="html-btn" data-cmd="br">BR</button>
+                    <button type="button" class="html-btn" data-cmd="a">Link</button>
+                    <button type="button" class="html-btn" data-cmd="clear">Clear</button>
+                  </div>
+                  <textarea id="footer-desc-input" rows="3" placeholder="Công ty TNHH Quang Phú - Nhà sản xuất và phân phối độc quyền thương hiệu Toyoko tại Việt Nam."></textarea>
+                </div>
               </div>
               <div class="form-row">
                 <div class="field">
@@ -586,13 +648,64 @@
                 <input type="text" id="footer-hours-input" placeholder="T2-T6: 8h-17h, T7: 8h-12h">
               </div>
               <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+              <div class="form-row">
+                <div class="field">
+                  <label>Tiêu đề cột menu</label>
+                  <input type="text" id="footer-explore-title-input" placeholder="Khám phá">
+                </div>
+                <div class="field">
+                  <label>Tiêu đề cột liên hệ</label>
+                  <input type="text" id="footer-contact-title-input" placeholder="Liên hệ">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>Text link 1</label>
+                  <input type="text" id="footer-link-home-input" placeholder="Trang chủ">
+                </div>
+                <div class="field">
+                  <label>Text link 2</label>
+                  <input type="text" id="footer-link-products-input" placeholder="Sản phẩm">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>Text link 3</label>
+                  <input type="text" id="footer-link-blog-input" placeholder="Tuyển dụng">
+                </div>
+                <div class="field">
+                  <label>Text link 4</label>
+                  <input type="text" id="footer-link-contact-input" placeholder="Liên hệ">
+                </div>
+              </div>
+              <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
               <div class="field">
                 <label>Bản quyền (dòng 1 cuối trang)</label>
-                <input type="text" id="footer-copyright-input" placeholder="© 2024 Công ty TNHH Quang Phú. Tất cả quyền được bảo lưu.">
+                <div class="html-editor">
+                  <div class="html-toolbar" data-target="footer-copyright-input">
+                    <button type="button" class="html-btn" data-cmd="strong"><b>B</b></button>
+                    <button type="button" class="html-btn" data-cmd="em"><i>I</i></button>
+                    <button type="button" class="html-btn" data-cmd="u"><u>U</u></button>
+                    <button type="button" class="html-btn" data-cmd="br">BR</button>
+                    <button type="button" class="html-btn" data-cmd="a">Link</button>
+                    <button type="button" class="html-btn" data-cmd="clear">Clear</button>
+                  </div>
+                  <textarea id="footer-copyright-input" rows="2" placeholder="© 2024 Công ty TNHH Quang Phú. Tất cả quyền được bảo lưu."></textarea>
+                </div>
               </div>
               <div class="field">
                 <label>Tagline (dòng 2 cuối trang)</label>
-                <input type="text" id="footer-tagline-input" placeholder="Thương hiệu Toyoko – An tâm đồng hành cùng thợ Việt">
+                <div class="html-editor">
+                  <div class="html-toolbar" data-target="footer-tagline-input">
+                    <button type="button" class="html-btn" data-cmd="strong"><b>B</b></button>
+                    <button type="button" class="html-btn" data-cmd="em"><i>I</i></button>
+                    <button type="button" class="html-btn" data-cmd="u"><u>U</u></button>
+                    <button type="button" class="html-btn" data-cmd="br">BR</button>
+                    <button type="button" class="html-btn" data-cmd="a">Link</button>
+                    <button type="button" class="html-btn" data-cmd="clear">Clear</button>
+                  </div>
+                  <textarea id="footer-tagline-input" rows="2" placeholder="Thương hiệu Toyoko – An tâm đồng hành cùng thợ Việt"></textarea>
+                </div>
               </div>
             </div>
           </div>
@@ -742,6 +855,7 @@ let editingCategoryIndex = -1;
 let productSearchKeyword = '';
 let productCategoryFilter = 'all';
 let productStatusFilter = 'all';
+let syncingProductSlugs = new Set();
 
 const DEFAULT_PRODUCT_CATEGORIES = ['Máy khoan', 'Máy mài', 'Máy cưa', 'Máy siết bulon/vít', 'Khác'];
 const SYSTEM_CATEGORIES = ['Khác'];
@@ -776,6 +890,57 @@ function formatPrice(p) {
   return Number(p).toLocaleString('vi-VN') + ' ₫';
 }
 
+function htmlWrapSelection(textarea, openTag, closeTag) {
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const value = textarea.value;
+  const selected = value.slice(start, end);
+  const next = value.slice(0, start) + openTag + selected + closeTag + value.slice(end);
+  textarea.value = next;
+  textarea.focus();
+  textarea.selectionStart = start + openTag.length;
+  textarea.selectionEnd = start + openTag.length + selected.length;
+}
+
+function applyHtmlCommand(textarea, cmd) {
+  if (!textarea) return;
+  if (cmd === 'strong') return htmlWrapSelection(textarea, '<strong>', '</strong>');
+  if (cmd === 'em') return htmlWrapSelection(textarea, '<em>', '</em>');
+  if (cmd === 'u') return htmlWrapSelection(textarea, '<u>', '</u>');
+  if (cmd === 'br') return htmlWrapSelection(textarea, '', '<br>');
+  if (cmd === 'a') {
+    const href = prompt('Nhập URL cho liên kết (ví dụ: https://...)');
+    if (!href) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const value = textarea.value;
+    const selected = value.slice(start, end) || 'Nội dung liên kết';
+    const html = `<a href="${href}" target="_blank" rel="noopener">${selected}</a>`;
+    textarea.value = value.slice(0, start) + html + value.slice(end);
+    textarea.focus();
+    textarea.selectionStart = start;
+    textarea.selectionEnd = start + html.length;
+    return;
+  }
+  if (cmd === 'clear') {
+    textarea.value = textarea.value
+      .replace(/<\s*br\s*\/?\s*>/gi, '\n')
+      .replace(/<[^>]*>/g, '');
+    return;
+  }
+}
+
+function initHtmlEditors() {
+  document.querySelectorAll('.html-toolbar').forEach(tb => {
+    const targetId = tb.dataset.target;
+    const textarea = document.getElementById(targetId);
+    if (!textarea) return;
+    tb.querySelectorAll('.html-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyHtmlCommand(textarea, btn.dataset.cmd));
+    });
+  });
+}
+
 function escapeHtml(str) {
   return String(str || '')
     .replace(/&/g, '&amp;')
@@ -804,6 +969,12 @@ function uniqueCategories(list) {
 
 function categorySlug(name) {
   return slugify(normalizeCategoryName(name));
+}
+
+function setProductSyncStatus(slug, syncing) {
+  if (!slug) return;
+  if (syncing) syncingProductSlugs.add(slug);
+  else syncingProductSlugs.delete(slug);
 }
 
 function isSystemCategory(name) {
@@ -1083,7 +1254,10 @@ function renderProductsTable() {
               <td>${highlightText(p.sku, productSearchKeyword)}</td>
               <td>${escapeHtml(p.category || '')}</td>
               <td>${formatPrice(p.price)}</td>
-              <td><span class="badge ${p.visible ? 'badge-green' : 'badge-gray'}">${p.visible ? 'Hiển thị' : 'Ẩn'}</span></td>
+              <td>
+                <span class="badge ${p.visible ? 'badge-green' : 'badge-gray'}">${p.visible ? 'Hiển thị' : 'Ẩn'}</span>
+                ${syncingProductSlugs.has(p.slug) ? '<span class="badge badge-blue" style="margin-left:6px">Đang đồng bộ...</span>' : ''}
+              </td>
               <td>
                 <button class="btn btn-secondary btn-sm" onclick="editProduct(${JSON.stringify(p).replace(/"/g,'&quot;')})">Sửa</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.slug}','${(p.name||'').replace(/'/g,"\\'")}')">Xóa</button>
@@ -1208,8 +1382,8 @@ document.querySelectorAll('.toggle').forEach(btn => {
   });
 });
 
-async function uploadPendingImages() {
-  for (const item of pendingImages) {
+async function uploadPendingImages(items = pendingImages) {
+  for (const item of items) {
     if (item.uploaded) continue;
     const base64 = item.dataUrl.replace(/^data:[^;]+;base64,/, '');
     const filename = item.file.name;
@@ -1220,13 +1394,17 @@ async function uploadPendingImages() {
   }
 }
 
-function collectProductImages() {
+function collectPreviewImageSources() {
   const previews = document.querySelectorAll('#img-preview .img-preview-item img');
-  return [...previews].map(img => {
-    const src = img.src;
+  return [...previews].map(img => img.src);
+}
+
+function resolveProductImages(previewSources, pendingItems, preferUploaded = true) {
+  return (previewSources || []).map(src => {
     if (src.startsWith('data:')) {
-      const item = pendingImages.find(p => p.dataUrl === src);
-      return item?.uploaded || null;
+      const item = (pendingItems || []).find(p => p.dataUrl === src);
+      if (preferUploaded) return item?.uploaded || null;
+      return item?.uploaded || src;
     }
     try {
       const url = new URL(src);
@@ -1248,13 +1426,21 @@ document.getElementById('product-save-btn').addEventListener('click', async () =
   btn.innerHTML = '<span class="spinner"></span>Đang lưu...';
 
   try {
-    await uploadPendingImages();
-    const images = collectProductImages();
     const selectedCategory = normalizeCategoryName(document.getElementById('p-category').value) || 'Khác';
-    if (!categoryOptions.some(c => c.toLowerCase() === selectedCategory.toLowerCase())) {
-      await saveCategoryOptions([...categoryOptions, selectedCategory]);
+    const hadCategory = categoryOptions.some(c => c.toLowerCase() === selectedCategory.toLowerCase());
+    const previousCategoryOptions = [...categoryOptions];
+    if (!hadCategory) {
+      categoryOptions = uniqueCategories([...categoryOptions, selectedCategory]);
+      renderProductCategorySelect(selectedCategory);
+      renderProductsFilterControls();
     }
-    const data = {
+
+    const previewSources = collectPreviewImageSources();
+    const pendingSnapshot = pendingImages.map(item => ({ ...item }));
+    const previousProduct = cachedProducts.find(p => p.slug === previousSlug || p.slug === slug);
+    const previousProductSnapshot = previousProduct ? JSON.parse(JSON.stringify(previousProduct)) : null;
+
+    const optimisticData = {
       ...(editingProduct || {}),
       name,
       sku:         document.getElementById('p-sku').value.trim(),
@@ -1263,31 +1449,88 @@ document.getElementById('product-save-btn').addEventListener('click', async () =
       price:       Number(document.getElementById('p-price').value.replace(/[^\d]/g, '')) || 0,
       unit:        document.getElementById('p-unit').value.trim() || 'bộ',
       description: document.getElementById('p-desc').value.trim(),
-      images,
+      images:      resolveProductImages(previewSources, pendingSnapshot, false),
       visible:     document.getElementById('p-visible').dataset.val === 'true',
     };
-    const r = await api('/api/admin/products', 'POST', { action: 'save', data });
-    if (r.ok) {
-      const saved = r.data || data;
-      cachedProducts = cachedProducts.filter(p => {
-        if (p.slug === saved.slug) return false;
-        if (previousSlug && previousSlug !== saved.slug && p.slug === previousSlug) return false;
-        return true;
-      });
-      cachedProducts.push(saved);
-      cachedProducts.sort((a, b) => Number(a.id) - Number(b.id));
-      renderProductsFilterControls();
-      renderProductsTable();
-      showToast('Đã lưu sản phẩm! Vercel đang deploy (~1-2 phút)');
-      closeProductModal();
-    } else {
-      showToast(r.error || 'Lỗi khi lưu', 'error');
+
+    // Optimistic UI: apply immediately, then commit in background.
+    cachedProducts = cachedProducts.filter(p => {
+      if (p.slug === optimisticData.slug) return false;
+      if (previousSlug && previousSlug !== optimisticData.slug && p.slug === previousSlug) return false;
+      return true;
+    });
+    cachedProducts.push(optimisticData);
+    if (previousSlug && previousSlug !== optimisticData.slug) {
+      setProductSyncStatus(previousSlug, false);
     }
+    setProductSyncStatus(optimisticData.slug, true);
+    cachedProducts.sort((a, b) => Number(a.id) - Number(b.id));
+    renderProductsFilterControls();
+    renderProductsTable();
+    closeProductModal();
+    showToast('Đã lưu tạm. Đang đồng bộ dữ liệu...', 'success');
+
+    // Return UI control to user almost instantly.
+    btn.disabled = false;
+    btn.textContent = 'Lưu sản phẩm';
+
+    (async () => {
+      try {
+        if (!hadCategory) {
+          await saveCategoryOptions([...categoryOptions, selectedCategory]);
+        }
+
+        await uploadPendingImages(pendingSnapshot);
+        const committedData = {
+          ...optimisticData,
+          images: resolveProductImages(previewSources, pendingSnapshot, true),
+        };
+
+        const r = await api('/api/admin/products', 'POST', { action: 'save', data: committedData });
+        if (!r.ok) throw new Error(r.error || 'Lỗi khi lưu');
+
+        const saved = r.data || committedData;
+        cachedProducts = cachedProducts.filter(p => {
+          if (p.slug === saved.slug) return false;
+          if (p.slug === optimisticData.slug) return false;
+          if (previousSlug && previousSlug !== saved.slug && p.slug === previousSlug) return false;
+          return true;
+        });
+        cachedProducts.push(saved);
+        setProductSyncStatus(optimisticData.slug, false);
+        setProductSyncStatus(saved.slug, false);
+        cachedProducts.sort((a, b) => Number(a.id) - Number(b.id));
+        renderProductsFilterControls();
+        renderProductsTable();
+        showToast('Đã lưu sản phẩm! Vercel đang deploy (~1-2 phút)');
+      } catch (err) {
+        cachedProducts = cachedProducts.filter(p => {
+          if (p.slug === optimisticData.slug) return false;
+          if (previousSlug && previousSlug !== optimisticData.slug && p.slug === previousSlug) return false;
+          return true;
+        });
+        if (previousProductSnapshot) cachedProducts.push(previousProductSnapshot);
+        setProductSyncStatus(optimisticData.slug, false);
+        if (previousSlug) setProductSyncStatus(previousSlug, false);
+        cachedProducts.sort((a, b) => Number(a.id) - Number(b.id));
+
+        if (!hadCategory) {
+          categoryOptions = previousCategoryOptions;
+          renderProductCategorySelect();
+        }
+
+        renderProductsFilterControls();
+        renderProductsTable();
+        showToast(`Đồng bộ thất bại: ${err.message}`, 'error');
+      }
+    })();
   } catch (err) {
     showToast(err.message, 'error');
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'Lưu sản phẩm';
+    if (btn.disabled) {
+      btn.disabled = false;
+      btn.textContent = 'Lưu sản phẩm';
+    }
   }
 });
 
@@ -1296,6 +1539,7 @@ async function deleteProduct(slug, name) {
   if (!ok) return;
   const r = await api('/api/admin/products', 'POST', { action: 'delete', slug });
   if (r.ok) {
+    setProductSyncStatus(slug, false);
     cachedProducts = cachedProducts.filter(p => p.slug !== slug);
     renderProductsFilterControls();
     renderProductsTable();
@@ -1724,6 +1968,12 @@ async function loadWhySettings() {
     document.getElementById('footer-email-input').value     = footer.email     || '';
     document.getElementById('footer-address-input').value   = footer.address   || '';
     document.getElementById('footer-hours-input').value     = footer.hours     || '';
+    document.getElementById('footer-explore-title-input').value = footer.exploreTitle || 'Khám phá';
+    document.getElementById('footer-contact-title-input').value = footer.contactTitle || 'Liên hệ';
+    document.getElementById('footer-link-home-input').value = footer.linkHomeText || 'Trang chủ';
+    document.getElementById('footer-link-products-input').value = footer.linkProductsText || 'Sản phẩm';
+    document.getElementById('footer-link-blog-input').value = footer.linkBlogText || 'Tuyển dụng';
+    document.getElementById('footer-link-contact-input').value = footer.linkContactText || 'Liên hệ';
     document.getElementById('footer-copyright-input').value = footer.copyright || '';
     document.getElementById('footer-tagline-input').value   = footer.tagline   || '';
   }
@@ -1873,6 +2123,12 @@ document.getElementById('footer-save-btn').addEventListener('click', async () =>
       email:     document.getElementById('footer-email-input').value.trim(),
       address:   document.getElementById('footer-address-input').value.trim(),
       hours:     document.getElementById('footer-hours-input').value.trim(),
+      exploreTitle: document.getElementById('footer-explore-title-input').value.trim() || 'Khám phá',
+      contactTitle: document.getElementById('footer-contact-title-input').value.trim() || 'Liên hệ',
+      linkHomeText: document.getElementById('footer-link-home-input').value.trim() || 'Trang chủ',
+      linkProductsText: document.getElementById('footer-link-products-input').value.trim() || 'Sản phẩm',
+      linkBlogText: document.getElementById('footer-link-blog-input').value.trim() || 'Tuyển dụng',
+      linkContactText: document.getElementById('footer-link-contact-input').value.trim() || 'Liên hệ',
       copyright: document.getElementById('footer-copyright-input').value.trim(),
       tagline:   document.getElementById('footer-tagline-input').value.trim(),
     }
@@ -1910,6 +2166,7 @@ async function showApp() {
 
 // Format price input: focus = raw digits, blur = formatted
 (function() {
+  initHtmlEditors();
   const inp = document.getElementById('p-price');
   inp.addEventListener('focus', function() {
     const raw = this.value.replace(/[^\d]/g, '');

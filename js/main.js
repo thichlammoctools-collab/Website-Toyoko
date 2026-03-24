@@ -381,12 +381,24 @@ async function initFooter() {
     const site = await fetch('/api/site').then(r => r.ok ? r.json() : null).catch(() => null);
     const f = site?.footer || {};
     const descEl      = $('#footer-desc');
+    const exploreTitleEl = $('#footer-explore-title');
+    const contactTitleEl = $('#footer-contact-title');
+    const linkHomeEl = $('#footer-link-home-text');
+    const linkProductsEl = $('#footer-link-products-text');
+    const linkBlogEl = $('#footer-link-blog-text');
+    const linkContactEl = $('#footer-link-contact-text');
     const emailEl     = $('#footer-email');
     const addressEl   = $('#footer-address');
     const hoursEl     = $('#footer-hours');
     const copyrightEl = $('#footer-copyright');
     const taglineEl   = $('#footer-tagline');
-    if (f.desc && descEl) descEl.textContent = f.desc;
+    if (f.desc && descEl) descEl.innerHTML = f.desc;
+    if (f.exploreTitle && exploreTitleEl) exploreTitleEl.textContent = f.exploreTitle;
+    if (f.contactTitle && contactTitleEl) contactTitleEl.textContent = f.contactTitle;
+    if (f.linkHomeText && linkHomeEl) linkHomeEl.textContent = f.linkHomeText;
+    if (f.linkProductsText && linkProductsEl) linkProductsEl.textContent = f.linkProductsText;
+    if (f.linkBlogText && linkBlogEl) linkBlogEl.textContent = f.linkBlogText;
+    if (f.linkContactText && linkContactEl) linkContactEl.textContent = f.linkContactText;
     if (f.phone) {
       phoneEl.href = 'tel:' + f.phone.replace(/\s/g, '');
       phoneEl.innerHTML = '<span>📞</span> ' + f.phone;
@@ -397,8 +409,8 @@ async function initFooter() {
     }
     if (f.address && addressEl) addressEl.textContent = f.address;
     if (f.hours && hoursEl) hoursEl.textContent = f.hours;
-    if (f.copyright && copyrightEl) copyrightEl.textContent = f.copyright;
-    if (f.tagline && taglineEl) taglineEl.textContent = f.tagline;
+    if (f.copyright && copyrightEl) copyrightEl.innerHTML = f.copyright;
+    if (f.tagline && taglineEl) taglineEl.innerHTML = f.tagline;
   } catch {
     // keep static fallback
   }

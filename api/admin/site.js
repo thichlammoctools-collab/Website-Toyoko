@@ -70,6 +70,12 @@ const DEFAULT_SITE = {
     email: 'info@quangphugroup.com',
     address: '234 Bình Thới, Phường 10, Quận 11, HCM',
     hours: 'T2-T6: 8h-17h, T7: 8h-12h',
+    exploreTitle: 'Khám phá',
+    contactTitle: 'Liên hệ',
+    linkHomeText: 'Trang chủ',
+    linkProductsText: 'Sản phẩm',
+    linkBlogText: 'Tuyển dụng',
+    linkContactText: 'Liên hệ',
     copyright: '© 2024 Công ty TNHH Quang Phú. Tất cả quyền được bảo lưu.',
     tagline: 'Thương hiệu Toyoko – An tâm đồng hành cùng thợ Việt'
   }
