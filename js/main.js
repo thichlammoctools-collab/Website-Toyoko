@@ -5,6 +5,16 @@ const fmtPrice = p => p > 0
   ? p.toLocaleString('vi-VN') + ' ₫'
   : 'Liên hệ';
 
+const slugify = (str = '') => String(str)
+  .toLowerCase()
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/đ/g, 'd')
+  .replace(/[^a-z0-9\s-]/g, '')
+  .trim()
+  .replace(/\s+/g, '-')
+  .replace(/-+/g, '-');
+
 // Fetch JSON data – supports both array root and {data:[...]} wrapped
 const fetchJSON = url => fetch(url)
   .then(r => r.ok ? r.json() : [])
@@ -212,8 +222,9 @@ async function initProducts() {
   function render() {
     const filtered = allProducts.filter(p => {
       const matchCat = currentCat === 'Tất cả' || p.category === currentCat;
-      const matchSearch = p.name.toLowerCase().includes(searchTerm) ||
-        p.description?.toLowerCase().includes(searchTerm);
+      const name = String(p.name || '').toLowerCase();
+      const desc = String(p.description || '').toLowerCase();
+      const matchSearch = name.includes(searchTerm) || desc.includes(searchTerm);
       return matchCat && matchSearch;
     });
     gridEl.innerHTML = filtered.length
