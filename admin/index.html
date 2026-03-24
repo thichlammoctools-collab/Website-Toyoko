@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quản trị – Toyoko Quang Phú</title>
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+  <link rel="alternate icon" type="image/png" href="/images/logo.png">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -357,6 +359,35 @@
       .modal {
         max-width: 1100px;
       }
+
+      .ultra-two-col {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 420px;
+        column-gap: 18px;
+        align-items: start;
+      }
+      .ultra-two-col > :not(.preview-wrap) {
+        grid-column: 1;
+      }
+      .ultra-two-col > .preview-wrap {
+        grid-column: 2;
+        grid-row: 1 / span 999;
+        position: sticky;
+        top: 16px;
+        margin-top: 0;
+        display: block !important;
+      }
+      .ultra-two-col .preview-wrap .preview-title::after {
+        content: ' (realtime)';
+        color: var(--primary);
+        font-weight: 600;
+      }
+    }
+
+    @media (max-width: 1799.98px) {
+      .ultra-two-col {
+        display: block;
+      }
     }
   </style>
 </head>
@@ -545,7 +576,7 @@
           </div>
         </div>
         <div class="content">
-          <div class="table-wrap" style="padding:20px;max-width:1400px">
+          <div class="table-wrap ultra-two-col" style="padding:20px;max-width:1400px">
             <div class="field">
               <label>Nhãn section</label>
               <input type="text" id="about-section-label-input" placeholder="Về chúng tôi">
@@ -683,7 +714,7 @@
             </div>
           </div>
           <div class="content">
-            <div class="table-wrap" style="padding:20px;max-width:1280px">
+            <div class="table-wrap ultra-two-col" style="padding:20px;max-width:1280px">
               <div class="field">
                 <label>Mô tả ngắn (dưới logo)</label>
                 <div class="html-editor">
@@ -1093,6 +1124,46 @@ function renderFooterPreview() {
   document.getElementById('footer-preview-link-products').textContent = document.getElementById('footer-link-products-input').value.trim() || 'Sản phẩm';
   document.getElementById('footer-preview-link-blog').textContent = document.getElementById('footer-link-blog-input').value.trim() || 'Tuyển dụng';
   document.getElementById('footer-preview-link-contact').textContent = document.getElementById('footer-link-contact-input').value.trim() || 'Liên hệ';
+}
+
+function isUltraWide() {
+  return window.matchMedia('(min-width: 1800px)').matches;
+}
+
+function bindRealtimePreview() {
+  const aboutInputs = [
+    'about-desc-1-input',
+    'about-desc-2-input'
+  ];
+  const footerInputs = [
+    'footer-desc-input',
+    'footer-copyright-input',
+    'footer-tagline-input',
+    'footer-link-home-input',
+    'footer-link-products-input',
+    'footer-link-blog-input',
+    'footer-link-contact-input'
+  ];
+
+  aboutInputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || el.dataset.previewBound === '1') return;
+    el.dataset.previewBound = '1';
+    el.addEventListener('input', () => {
+      const wrap = document.getElementById('about-preview-wrap');
+      if (isUltraWide() || wrap.style.display !== 'none') renderAboutPreview();
+    });
+  });
+
+  footerInputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || el.dataset.previewBound === '1') return;
+    el.dataset.previewBound = '1';
+    el.addEventListener('input', () => {
+      const wrap = document.getElementById('footer-preview-wrap');
+      if (isUltraWide() || wrap.style.display !== 'none') renderFooterPreview();
+    });
+  });
 }
 
 function escapeHtml(str) {
@@ -2073,6 +2144,10 @@ async function loadAboutSettings() {
   document.getElementById('about-secondary-href-input').value = about.secondaryButtonHref || '/contact.html';
   document.getElementById('about-image-input').value = about.image || '/images/about.jpg';
   document.getElementById('about-image-alt-input').value = about.imageAlt || 'Kho hàng Quang Phú';
+  if (isUltraWide()) {
+    renderAboutPreview();
+    document.getElementById('about-preview-btn').textContent = 'Preview realtime';
+  }
 }
 
 function renderWhyCardsForm(cards) {
@@ -2130,6 +2205,10 @@ async function loadWhySettings() {
     document.getElementById('footer-link-contact-input').value = footer.linkContactText || 'Liên hệ';
     document.getElementById('footer-copyright-input').value = footer.copyright || '';
     document.getElementById('footer-tagline-input').value   = footer.tagline   || '';
+    if (isUltraWide()) {
+      renderFooterPreview();
+      document.getElementById('footer-preview-btn').textContent = 'Preview realtime';
+    }
   }
 
 document.getElementById('hero-save-btn').addEventListener('click', async () => {
@@ -2212,6 +2291,12 @@ document.getElementById('about-save-btn').addEventListener('click', async () => 
 document.getElementById('about-preview-btn').addEventListener('click', () => {
   const wrap = document.getElementById('about-preview-wrap');
   const btn = document.getElementById('about-preview-btn');
+  if (isUltraWide()) {
+    renderAboutPreview();
+    wrap.style.display = '';
+    btn.textContent = 'Preview realtime';
+    return;
+  }
   if (wrap.style.display === 'none') {
     renderAboutPreview();
     wrap.style.display = '';
@@ -2314,6 +2399,12 @@ document.getElementById('footer-save-btn').addEventListener('click', async () =>
 document.getElementById('footer-preview-btn').addEventListener('click', () => {
   const wrap = document.getElementById('footer-preview-wrap');
   const btn = document.getElementById('footer-preview-btn');
+  if (isUltraWide()) {
+    renderFooterPreview();
+    wrap.style.display = '';
+    btn.textContent = 'Preview realtime';
+    return;
+  }
   if (wrap.style.display === 'none') {
     renderFooterPreview();
     wrap.style.display = '';
@@ -2346,6 +2437,7 @@ async function showApp() {
 
 // Format price input: focus = raw digits, blur = formatted
 (function() {
+  bindRealtimePreview();
   initHtmlEditors();
   const inp = document.getElementById('p-price');
   inp.addEventListener('focus', function() {
