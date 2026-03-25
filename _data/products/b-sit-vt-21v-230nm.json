@@ -6,9 +6,7 @@
   "price": 2100000,
   "unit": "bộ",
   "description": "Lực 100-230Nm, Motor không chổi than, 2 Pin 10 cells 21V + 1 sạc (6 bộ/thùng)",
-  "images": [
-    "/images/products/img_4005.jpeg"
-  ],
+  "images": [],
   "visible": true,
   "sku": "T21230G"
 }
