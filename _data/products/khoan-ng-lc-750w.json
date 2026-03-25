@@ -6,7 +6,9 @@
   "price": 980000,
   "unit": "máy",
   "description": "",
-  "images": [],
+  "images": [
+    "/images/products/t750id_03_n.png"
+  ],
   "visible": true,
   "sku": "T750ID"
 }
