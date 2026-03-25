@@ -5,8 +5,10 @@
   "category": "Máy khoan",
   "price": 1232000,
   "unit": "bộ",
-  "description": "Lực siết 50Nm, Autolock 10mm, 2 Pin 4 cells + sạc (10 bộ/thùng)",
-  "images": [],
+  "description": "Chức năng \tBắn vít + khoan sắt + tường \nXuất xứ\tTrung Quốc\nMotor\tKhông chổi than\nLực siết\t50Nm\nTốc độ\tI: 0 - 800 vòng/phút, II: 0 - 2100 vòng/phút\nCấp độ trượt\t20 cấp\nĐầu kẹp sắt\tAutolock\nBảo hành\t6 tháng",
+  "images": [
+    "/images/products/may-khoan-16-8v-10mm-50nm-toyoko-t0250f-1.webp"
+  ],
   "visible": true,
   "sku": "T0250G"
 }
