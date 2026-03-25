@@ -49,8 +49,10 @@
       "category": "Máy bắn bu lông",
       "price": 1078000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ SIẾT VÍT 21V 230N.m",
-      "images": [],
+      "description": "Lực\t100-230Nm\nTốc độ không tải\t0 - 1.800 / 0 - 2.600 / 0 - 3.300 vòng/phút\nTốc độ có búa\t0 - 2.300 / 0 - 3.600 / 0 - 4.500 vòng/phút\nTrục lục giác\t1/4\"\nPin\t2 pin 10 cells 21V + 1 sạc",
+      "images": [
+        "/images/products/500x500-eb789902-cccc-4a85-9d6a-1486d2b04fbb.webp"
+      ],
       "visible": true,
       "sku": "21230SL"
     },
