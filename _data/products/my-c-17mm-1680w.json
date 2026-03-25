@@ -6,7 +6,9 @@
   "price": 2870000,
   "unit": "máy",
   "description": "",
-  "images": [],
+  "images": [
+    "/images/products/t1680dh_03_n.png"
+  ],
   "visible": true,
   "sku": "T1680DH"
 }
