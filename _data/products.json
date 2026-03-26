@@ -73,12 +73,14 @@
     {
       "id": "9",
       "slug": "b-khoan-pin-21v",
-      "name": "BỘ KHOAN PIN 21V",
+      "name": "Máy khoan pin M21V 58Nm Toyoko T0121F (2 pin + 1 sạc)",
       "category": "Máy khoan",
       "price": 1386000,
       "unit": "bộ",
-      "description": "Lực 30-58Nm, Motor không chổi than, 2 Pin 10 cells + 1 sạc (10 bộ/thùng)",
-      "images": [],
+      "description": "Lực siết\t58 Nm\nTốc độ không tải\t2.300 v/p\nĐộng cơ\tKhông chổi than\nChức năng\tBắt vít + Khoan sắt + Tường\nCấp độ trượt\t23 cấp độ\nĐầu kẹp sắt\tAutolock 10mm\nBảo hành\t6 tháng\nPhụ kiện gồm\t2 pin 2Ah + Sạc + 1 thùng nhựa",
+      "images": [
+        "/images/products/may-khoan-pin-m21v-58nm-toyoko-t0121f-2-pin-plus-1-sac--1-.webp"
+      ],
       "visible": true,
       "sku": "T0121G"
     },
