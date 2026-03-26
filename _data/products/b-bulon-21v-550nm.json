@@ -1,12 +1,14 @@
 {
   "id": "21",
   "slug": "b-bulon-21v-550nm",
-  "name": "BỘ BULON 21V 550Nm",
+  "name": "Máy bắn bu lông pin M21V 550Nm Toyoko T20550G (2 pin + 1 sạc)",
   "category": "Máy bắn bu lông",
   "price": 1708000,
   "unit": "bộ",
-  "description": "Lực 550Nm, Motor không chổi than, 2 Pin 10 cells + sạc (6 bộ/thùng)",
-  "images": [],
+  "description": "Lực siết\t550Nm\nMotor\tKhông chổi than\nCấp chỉnh lực I\t0 - 1.850 vòng/phút\nCấp chỉnh lực II\t0 - 2.800 vòng/phút\nCấp chỉnh lực III\t0 - 3.600 vòng/phút\nĐầu \t1/2 inch\nPhụ kiện\t2 pin 10 cells 21V + 1 sạc đế",
+  "images": [
+    "/images/products/thiet-ke-chua-co-ten-98-4c608920-9817-4ec6-983c-491ee887b0e2.webp"
+  ],
   "visible": true,
   "sku": "T20550G"
 }
