@@ -115,12 +115,14 @@
     {
       "id": "12",
       "slug": "b-khoan-pin-21v-pin-5-cells-thn-my",
-      "name": "BỘ KHOAN PIN 21V (Pin 5 cells) (THÂN MÁY)",
+      "name": "Thân máy khoan pin không chổi than Toyoko 0260-LR",
       "category": "Máy khoan",
       "price": 882000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (Pin 5 cells)",
-      "images": [],
+      "description": "Chức năng\tBắn vít, khoan sắt, khoan tường\nLực xoắn\t45 - 60Nm\nTốc độ\tCấp I: 0 - 800 vòng/phút\nCấp II: 0 - 2100 vòng/phút\nPin\t21V\nĐầu kẹp\tAutolock\nCấp trượt\t20 cấp\nPhụ kiện\t2 pin 5 cells 21V + 1 sạc\nBảo hành\t6 tháng\nXuất xứ\tTrung Quốc",
+      "images": [
+        "/images/products/500x500-607abbad-7edf-42f8-8803-2fd2eabc6350.webp"
+      ],
       "visible": true,
       "sku": "0260-LR"
     },
