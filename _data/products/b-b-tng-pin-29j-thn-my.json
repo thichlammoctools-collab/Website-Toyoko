@@ -1,14 +1,12 @@
 {
   "unit": "thân máy",
   "price": 1540000,
-  "name": "Máy khoan bê tông pin M21V Toyoko T2629G (2 pin 6Ah + 1 sạc)",
+  "name": "Thân máy bên tông pin m21v",
   "slug": "b-b-tng-pin-29j-thn-my",
   "visible": true,
-  "images": [
-    "/images/products/may-khoan-be-tong-pin-15cell-toyoko-t6026ff-3a0bd1a3-ad20-4951-971b-297486327bcb-3d839221-19bb-4351-88d7-2b0efd25c6a2.webp"
-  ],
+  "images": [],
   "id": "32",
-  "description": "Xuất xứ\tTrung Quốc \nMotor\tKhông chổi than\nTốc độ không tải\t0 - 1.500v/phút\nTốc độ có tải\t0 - 5.000v/phút\nĐường kính trong\t26mm",
+  "description": "",
   "category": "Khác",
   "sku": "2629SL"
 }
