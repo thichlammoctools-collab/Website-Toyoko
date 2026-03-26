@@ -243,12 +243,14 @@
     {
       "id": "23",
       "slug": "b-bulon-21v-600nm",
-      "name": "BỘ BULON 21V 600Nm",
+      "name": "Máy bắn bu lông 600N.m Toyoko T0124G",
       "category": "Máy bắn bu lông",
       "price": 3108000,
       "unit": "bộ",
-      "description": "Lực 600Nm, Motor không chổi than, 2 Pin 15 cells + sạc (6 bộ/thùng)",
-      "images": [],
+      "description": "Lực siết\t600Nm\nMotor\tKhông chổi than\nTốc độ\t3 cấp: I: 0-1430 vòng/phút; II: 0-1890 vòng/phút; III: 0-2420 vòng/phút\nĐầu\tĐặc 1/2 inch\nPin\t2 pin 15 cells 21V (6Ah)\nBảo hành\t6 tháng\nXuất xứ\tTrung Quốc",
+      "images": [
+        "/images/products/40-ace9dfb1-448e-4ef8-9253-0b5812205318.webp"
+      ],
       "visible": true,
       "sku": "T0124G"
     },
