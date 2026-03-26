@@ -1,12 +1,14 @@
 {
   "id": "35",
   "slug": "my-ra-xe-cao-p-3000w",
-  "name": "MÁY RỬA XE CAO ÁP 3000W",
+  "name": "Máy rửa áp lực cao 3000W Toyoko T3000WM",
   "category": "Khác",
   "price": 2660000,
   "unit": "máy",
-  "description": "3000W, 220 bar, Dây 15m, Súng + phụ kiện (2 máy/thùng)",
-  "images": [],
+  "description": "Xuất xứ\tTrung Quốc\nCông suất\t3000W\nÁp suất\t220 bar\nDung lượng\t8 lít/phút\nDây xịt\tDài 15 mét\nDây hút nước\tDài 2 mét\nBảo hành\t6 tháng",
+  "images": [
+    "/images/products/may-xit-rua-cao-ap-toyoko-t3000wm-4-1759219233.webp"
+  ],
   "visible": true,
   "sku": "T3000WM"
 }
