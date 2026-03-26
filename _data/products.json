@@ -279,12 +279,14 @@
     {
       "id": "26",
       "slug": "b-bulon-1000nm-thn-my",
-      "name": "BỘ BULON 1000Nm (THÂN MÁY)",
+      "name": "Thân máy bắn bu lông 1000Nm Toyoko 1000SL",
       "category": "Máy bắn bu lông",
       "price": 2590000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ BULON 1000Nm",
-      "images": [],
+      "description": "Lực siết\n\n1000Nm\n\nTốc độ I\n\n0 - 1650 vòng/phút\nTốc độ II\n\n0 - 1850 vòng/phút\nTốc độ III\t\n0 - 2200 vòng/phút.\n\nĐầu\n\n3/4 inch\n\nĐầu mở\n\nMở bulon\n\nPhụ kiện\n\nThân máy, không gồm pin với sạc",
+      "images": [
+        "/images/products/1000sl.webp"
+      ],
       "visible": true,
       "sku": "1000SL"
     },
