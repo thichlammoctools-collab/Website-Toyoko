@@ -1,12 +1,14 @@
 {
   "id": "30",
   "slug": "b-mi-pin-850w-thn-my",
-  "name": "BỘ MÀI PIN 850W (THÂN MÁY)",
+  "name": "Thân máy mài pin công tắc bóp 800W Toyoko 04850-LR",
   "category": "Máy mài",
   "price": 1246000,
   "unit": "thân máy",
-  "description": "Biến thể THÂN MÁY của BỘ MÀI PIN 850W",
-  "images": [],
+  "description": "",
+  "images": [
+    "/images/products/500x500-10-ca102ec0-4530-49ed-9136-f0787f5b8764.webp"
+  ],
   "visible": true,
   "sku": "04850-LR"
 }
