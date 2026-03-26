@@ -339,12 +339,14 @@
     {
       "id": "31",
       "slug": "b-b-tng-pin-29j",
-      "name": "BỘ BÊ TÔNG PIN 2.9J",
+      "name": "Máy khoan bê tông pin M21V Toyoko T2629G (2 pin 6Ah + 1 sạc)",
       "category": "Khác",
       "price": 3108000,
       "unit": "bộ",
-      "description": "Lực đập 2.9J, Motor không chổi than, 2 Pin 15 cells + sạc đế (4 bộ/thùng)",
-      "images": [],
+      "description": "Xuất xứ\tTrung Quốc \nMotor\tKhông chổi than\nTốc độ không tải\t0 - 1.500v/phút\nTốc độ có tải\t0 - 5.000v/phút\nĐường kính trong\t26mm",
+      "images": [
+        "/images/products/may-khoan-be-tong-pin-15cell-toyoko-t6026ff-3a0bd1a3-ad20-4951-971b-297486327bcb-3d839221-19bb-4351-88d7-2b0efd25c6a2.webp"
+      ],
       "visible": true,
       "sku": "T2629G"
     },
