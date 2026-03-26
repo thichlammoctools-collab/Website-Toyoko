@@ -101,12 +101,14 @@
     {
       "id": "11",
       "slug": "b-khoan-pin-21v-pin-5-cells",
-      "name": "BỘ KHOAN PIN 21V (Pin 5 cells)",
+      "name": "Máy khoan pin M21V 60Nm Toyoko T0260A (2 pin + 1 sạc)",
       "category": "Máy khoan",
       "price": 1582000,
       "unit": "bộ",
-      "description": "Lực 60Nm, 3 chức năng, 2 Pin 5 cells + sạc (8 bộ/thùng)",
-      "images": [],
+      "description": "Chức năng \tbắn vít + khoan sắt + khoan tường \nLực\t45 - 60Nm\nTốc độ\t*I: 0 - 800 vòng/phút\n \t*II: 0 - 2100 vòng/phút\nPin\t21V\nĐầu kẹp sắt\tAutolock\nCấp trượt \t20 cấp \nPhụ kiện \t2 pin 5cells 21V + 1 sạc \nBảo hành\t6 tháng\nXuất xứ\tTrung Quốc",
+      "images": [
+        "/images/products/may-siet-vit-21v-toyoko-t0260f.webp"
+      ],
       "visible": true,
       "sku": "T0260G5"
     },
