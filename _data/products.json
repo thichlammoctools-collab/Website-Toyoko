@@ -375,12 +375,14 @@
     {
       "id": "34",
       "slug": "b-laser-5-tia-xanh",
-      "name": "BỘ LASER 5 TIA XANH",
+      "name": "Máy cân mực laser 5 tia xanh siêu sáng Toyoko TYK5LP",
       "category": "Khác",
       "price": 1344000,
       "unit": "bộ",
-      "description": "5 tia xanh, 2 pin 3000mah + chân 1.2m (10 bộ/thùng)",
-      "images": [],
+      "description": "Tia laser\tXanh siêu sáng\nSố tia\t5\nTự cân bằng\tCó\nPin và sạc \t2 pin, 1 sạc\nPhụ kiện\t1 chân máy 1.2m",
+      "images": [
+        "/images/products/may-can-bang-laser-5-tia-xanh-sieu-sang-toyoko-tyk5lp.webp"
+      ],
       "visible": true,
       "sku": "TYK5LP"
     },
