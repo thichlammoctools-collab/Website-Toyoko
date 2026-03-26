@@ -291,12 +291,14 @@
     {
       "id": "27",
       "slug": "b-mi-pin-800w",
-      "name": "BỘ MÀI PIN 800W",
+      "name": "Máy mài góc pin M21V 100mm 800W Toyoko T01100G",
       "category": "Máy mài",
       "price": 2464000,
       "unit": "bộ",
-      "description": "800W, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng)",
-      "images": [],
+      "description": "Công suất\t800W\nTốc độ\t9000 vòng/phút\nĐường kính lưỡi\t100mm\nChức năng\tchống khởi động lại \nChế độ",
+      "images": [
+        "/images/products/100sl.webp"
+      ],
       "visible": true,
       "sku": "T01100G"
     },
