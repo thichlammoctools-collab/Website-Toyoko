@@ -87,12 +87,14 @@
     {
       "id": "10",
       "slug": "b-khoan-pin-21v-thn-my",
-      "name": "BỘ KHOAN PIN 21V (THÂN MÁY)",
+      "name": "Máy khoan pin M21V 58Nm Toyoko",
       "category": "Máy khoan",
       "price": 742000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V",
-      "images": [],
+      "description": "Lực siết\t58 Nm\nTốc độ không tải\t2.300 v/p\nĐộng cơ\tKhông chổi than\nChức năng\tBắt vít + Khoan sắt + Tường\nCấp độ trượt\t23 cấp độ\nĐầu kẹp sắt\tAutolock 10mm\nBảo hành\t6 tháng",
+      "images": [
+        "/images/products/500x500--4-.png"
+      ],
       "visible": true,
       "sku": "0121-LR"
     },
