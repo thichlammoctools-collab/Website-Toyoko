@@ -1,12 +1,14 @@
 {
   "id": "25",
   "slug": "b-bulon-1000nm",
-  "name": "BỘ BULON 1000Nm",
+  "name": "Bộ Bulon 1000Nm Toyoko T1000G",
   "category": "Máy bắn bu lông",
   "price": 4158000,
   "unit": "bộ",
-  "description": "Lực 1000Nm, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng)",
-  "images": [],
+  "description": "Xuất xứ\tTrung Quốc\nLực siết tối đa\t1000Nm\nMotor\tKhông chổi than\nTốc độ\t3 cấp: 0 -1650 -1850 -2200 vòng/phút\nĐầu đặc\tKích thước 1/2 inch\nBảo hành\t6 tháng",
+  "images": [
+    "/images/products/500x500-8.webp"
+  ],
   "visible": true,
   "sku": "T1000F/G"
 }
