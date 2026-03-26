@@ -45,12 +45,14 @@
     {
       "id": "7",
       "slug": "b-sit-vt-21v-230nm-thn-my",
-      "name": "BỘ SIẾT VÍT 21V 230N.m (THÂN MÁY)",
+      "name": "Bộ máy bắt vít pin M21V 230Nm Toyoko T21230-10F (2pin 4Ah + 1 sạc)",
       "category": "Máy bắn bu lông",
       "price": 1078000,
       "unit": "thân máy",
       "description": "Lực\t100-230Nm\nTốc độ không tải\t0 - 1.800 / 0 - 2.600 / 0 - 3.300 vòng/phút\nTốc độ có búa\t0 - 2.300 / 0 - 3.600 / 0 - 4.500 vòng/phút\nTrục lục giác\t1/4\"\nPin\t2 pin 10 cells 21V + 1 sạc",
-      "images": [],
+      "images": [
+        "/images/products/500x500-eb789902-cccc-4a85-9d6a-1486d2b04fbb.webp"
+      ],
       "visible": true,
       "sku": "21230SL"
     },
