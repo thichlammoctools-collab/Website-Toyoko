@@ -195,12 +195,14 @@
     {
       "id": "19",
       "slug": "b-bulon-380nm",
-      "name": "BỘ BULON 380N.m",
+      "name": "Bộ bulon 380Nm Toyoko T380G",
       "category": "Máy bắn bu lông",
       "price": 2044000,
       "unit": "bộ",
-      "description": "Lực 380Nm, Đầu 2 trong 1, 2 Pin 10 cells + sạc (6 bộ/thùng)",
-      "images": [],
+      "description": "Lực siết\t380Nm\nMotor\tKhông chổi than\nTốc độ\t0–1800 vòng/phút & 0–2200 vòng/phút\nĐầu nối\tĐầu 2 trong 1 1/2 inch\nChức năng đầu\tMở bulon + vít\nXuất xứ\tTrung Quốc",
+      "images": [
+        "/images/products/500x500--2-.png"
+      ],
       "visible": true,
       "sku": "T380G"
     },
