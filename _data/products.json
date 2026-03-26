@@ -303,12 +303,14 @@
     {
       "id": "28",
       "slug": "b-mi-pin-800w-thn-my",
-      "name": "BỘ MÀI PIN 800W (THÂN MÁY)",
+      "name": "Máy mài pin 21V công tắc bóp 800W Toyoko T04850F / T04850G",
       "category": "Máy mài",
       "price": 1078000,
       "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ MÀI PIN 800W",
-      "images": [],
+      "description": "Công suất\t850W\nMotor\tKhông chổi than\nTốc độ\t9.000 vòng/phút\nĐường kính lưỡi\t100mm\nPin\t2 pin 15 cells 21V (6Ah)\nSạc\tCó\nChức năng chống khởi động lại\tCó\nĐiều chỉnh tốc độ\t3 cấp tốc độ\nXuất xứ\tTrung Quốc \nBảo hành\t6 tháng",
+      "images": [
+        "/images/products/500x500-12.webp"
+      ],
       "visible": true,
       "sku": "01100-LR"
     },
