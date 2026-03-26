@@ -1,12 +1,14 @@
 {
   "id": "33",
   "slug": "b-my-laser-2-tia-xanh",
-  "name": "BỘ MÁY LASER 2 TIA XANH",
+  "name": "Bộ máy cân mực laser 2 tia xanh Toyoko TYK22LD",
   "category": "Khác",
   "price": 980000,
   "unit": "bộ",
-  "description": "Tia siêu sáng, 2 pin tiểu, giá treo tường (10 bộ/thùng)",
-  "images": [],
+  "description": "Tia laser\t2 tia xanh\nNguồn điện\t2 pin tiểu\nTính năng đặc biệt\tKhóa tia laser\nThiết kế\tGiá treo tường",
+  "images": [
+    "/images/products/anh-dang-fb-1-8d635d47-fc5e-4fe9-8308-6db2a173f994.webp"
+  ],
   "visible": true,
   "sku": "TYK22LD"
 }
