@@ -1,12 +1,14 @@
 {
   "id": "16",
   "slug": "b-khoan-pin-21v-100nm-thn-my",
-  "name": "BỘ KHOAN PIN 21V (100Nm) (THÂN MÁY)",
+  "name": "Máy khoan pin M21V 100Nm Toyoko 13100SL",
   "category": "Máy khoan",
   "price": 1288000,
   "unit": "thân máy",
-  "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (100Nm)",
-  "images": [],
+  "description": "Lực xoắn\t100Nm\nĐộng cơ\tKhông chổi than\nTốc độ\tCấp I: 0 - 950 vòng/phút\nCấp II: 0 - 2200 vòng/phút\nChức năng\tBắn vít, khoan sắt, khoan tường\nĐầu kẹp\tAutolock 13mm\nCấp độ trượt\t20 cấp",
+  "images": [
+    "/images/products/8411-35070242-2892-4637-ab0a-0f34aab6c741.webp"
+  ],
   "visible": true,
   "sku": "13100SL"
 }
