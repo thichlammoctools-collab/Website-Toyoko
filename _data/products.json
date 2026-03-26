@@ -177,12 +177,14 @@
     {
       "id": "17",
       "slug": "b-khoan-pin-21v-160nm",
-      "name": "BỘ KHOAN PIN 21V (160Nm)",
+      "name": "Bộ khoan pin 21V 160Nm Autolock Toyoko T13160G",
       "category": "Máy khoan",
       "price": 3108000,
       "unit": "bộ",
-      "description": "Lực 160Nm, Motor không chổi than, 2 Pin 15 cells + sạc đế (6 bộ/thùng)",
-      "images": [],
+      "description": "Loại motor\tKhông chổi than\nPin\tLithium-ion 21V\nLực mô-men xoắn\t160Nm\nTốc độ\t0–950 vòng/phút & 0–2100 vòng/phút\nCấp độ trượt\t20 cấp\nTay cầm\tCó tay cầm thuận tiện\nBảo hành\t6 tháng\nXuất xứ\tTrung Quốc",
+      "images": [
+        "/images/products/9636-anh-dang-fb-slm-1.webp"
+      ],
       "visible": true,
       "sku": "T13160G"
     },
