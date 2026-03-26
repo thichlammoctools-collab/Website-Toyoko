@@ -427,12 +427,14 @@
     {
       "id": "38",
       "slug": "my-ct-st-2600w",
-      "name": "MÁY CẮT SẮT 2600W",
+      "name": "Máy cắt sắt điện 2600W đĩa 355mm Toyoko T2600CO",
       "category": "Khác",
       "price": 2940000,
       "unit": "máy",
-      "description": "",
-      "images": [],
+      "description": "Xuất xứ\tTrung Quốc\nCông suất\t2600W\nĐường kính đĩa\t355mm\nĐiện áp\t220-240V\nTần số\t50-60Hz\nTốc độ không tải\t3900 vòng/phút\nBảo hành\t6 tháng",
+      "images": [
+        "/images/products/500x500-2.webp"
+      ],
       "visible": true,
       "sku": "T2600CO"
     }
