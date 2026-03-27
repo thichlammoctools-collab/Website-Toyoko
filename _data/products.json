@@ -181,18 +181,6 @@
       "sku": "T13160G"
     },
     {
-      "id": "18",
-      "slug": "b-khoan-pin-21v-160nm-thn-my",
-      "name": "Thân máy khoan 13100-LR",
-      "category": "Máy khoan",
-      "price": 1050000,
-      "unit": "thân máy",
-      "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (160Nm)",
-      "images": [],
-      "visible": true,
-      "sku": "13160-LR"
-    },
-    {
       "id": "19",
       "slug": "b-bulon-380nm",
       "name": "Bộ bulon 380Nm Toyoko T380G",
