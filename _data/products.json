@@ -134,7 +134,9 @@
       "price": 1960000,
       "unit": "bộ",
       "description": "Lực 60Nm, 3 chức năng, 2 Pin 10 cells + sạc (8 bộ/thùng)",
-      "images": [],
+      "images": [
+        "/images/products/z7663475907297_af476cf3beea3de155f6f67918eee869.jpg"
+      ],
       "visible": true,
       "sku": "T0260G10"
     },
