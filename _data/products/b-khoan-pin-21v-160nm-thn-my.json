@@ -1,12 +1,12 @@
 {
   "id": "18",
   "slug": "b-khoan-pin-21v-160nm-thn-my",
-  "name": "BỘ KHOAN PIN 21V (160Nm) (THÂN MÁY)",
+  "name": "Thân máy khoan 13100-LR",
   "category": "Máy khoan",
-  "price": 1610000,
+  "price": 1050000,
   "unit": "thân máy",
   "description": "Biến thể THÂN MÁY của BỘ KHOAN PIN 21V (160Nm)",
   "images": [],
   "visible": true,
-  "sku": "13160SL"
+  "sku": "13160-LR"
 }
