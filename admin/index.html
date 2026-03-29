@@ -1934,7 +1934,7 @@ document.getElementById('product-save-btn').addEventListener('click', async () =
     renderProductsFilterControls();
     renderProductsTable();
     closeProductModal();
-    showToast('Đã lưu tạm. Đang đồng bộ dữ liệu...', 'success');
+    showToast('Đang lưu...', 'success');
 
     // Return UI control to user almost instantly.
     btn.disabled = false;
@@ -1968,7 +1968,7 @@ document.getElementById('product-save-btn').addEventListener('click', async () =
         cachedProducts.sort((a, b) => Number(a.id) - Number(b.id));
         renderProductsFilterControls();
         renderProductsTable();
-        showToast('Đã lưu sản phẩm! Vercel đang deploy (~1-2 phút)');
+        showToast('✅ Đã lưu sản phẩm thành công!');
       } catch (err) {
         cachedProducts = cachedProducts.filter(p => {
           if (p.slug === optimisticData.slug) return false;
@@ -1987,7 +1987,7 @@ document.getElementById('product-save-btn').addEventListener('click', async () =
 
         renderProductsFilterControls();
         renderProductsTable();
-        showToast(`Đồng bộ thất bại: ${err.message}`, 'error');
+        showToast(`Lỗi khi lưu: ${err.message}`, 'error');
       }
     })();
   } catch (err) {
@@ -2351,7 +2351,7 @@ document.getElementById('post-save-btn').addEventListener('click', async () => {
 
   const r = await api('/api/admin/posts', 'POST', { action: 'save', data });
   if (r.ok) {
-    showToast('Đã lưu bài viết! Vercel đang deploy (~1-2 phút)');
+    showToast('✅ Đã lưu bài viết thành công!');
     document.getElementById('post-modal').style.display = 'none';
     loadPosts();
   } else {
@@ -2492,7 +2492,7 @@ document.getElementById('hero-save-btn').addEventListener('click', async () => {
 
   const r = await api('/api/admin/site', 'POST', { data });
   if (r.ok) {
-    showToast('Đã lưu Hero! Vercel đang deploy (~1-2 phút)');
+        showToast('✅ Đã lưu Hero thành công!');
   } else {
     showToast(r.error || 'Lỗi khi lưu Hero', 'error');
   }
@@ -2543,7 +2543,7 @@ document.getElementById('about-save-btn').addEventListener('click', async () => 
 
   const r = await api('/api/admin/site', 'POST', { data });
   if (r.ok) {
-    showToast('Đã lưu phần Về chúng tôi! Vercel đang deploy (~1-2 phút)');
+    showToast('✅ Đã lưu phần Về chúng tôi thành công!');
   } else {
     showToast(r.error || 'Lỗi khi lưu phần Về chúng tôi', 'error');
   }
@@ -2618,7 +2618,7 @@ document.getElementById('why-save-btn').addEventListener('click', async () => {
 
   const r = await api('/api/admin/site', 'POST', { data });
   if (r.ok) {
-    showToast('Đã lưu section lợi ích! Vercel đang deploy (~1-2 phút)');
+    showToast('✅ Đã lưu section lợi ích thành công!');
   } else {
     showToast(r.error || 'Lỗi khi lưu section lợi ích', 'error');
   }
@@ -2652,7 +2652,7 @@ document.getElementById('footer-save-btn').addEventListener('click', async () =>
 
   const r = await api('/api/admin/site', 'POST', { data });
   if (r.ok) {
-    showToast('Đã lưu Footer! Vercel đang deploy (~1-2 phút)');
+    showToast('✅ Đã lưu Footer thành công!');
   } else {
     showToast(r.error || 'Lỗi khi lưu Footer', 'error');
   }
