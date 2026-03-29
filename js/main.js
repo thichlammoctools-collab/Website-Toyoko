@@ -101,12 +101,12 @@ async function initHome() {
   if (!heroBadge && !aboutTitle && !whyGridEl && !featuredEl) return;
 
   // Fire all initial requests in parallel
-  const [site, products] = await Promise.all([
+  const [site, allProducts] = await Promise.all([
     fetchSite(),
     fetchJSON('/api/products')
   ]).catch(() => [null, []]);
 
-  // Inject hero content
+  // 1. Inject hero content
   if (heroBadge && site) {
     const hero = site.hero || {};
     const titlePrefixEl = $('#hero-title-prefix');
@@ -122,78 +122,62 @@ async function initHome() {
     if (hero.imageAlt && imageEl) imageEl.alt = hero.imageAlt;
   }
 
-  // Inject about section content from site settings
-  const aboutTitle = $('#about-title');
-  if (aboutTitle) {
-    try {
-      if (!site) {
-        site = await fetchSite();
-      }
-      const about = site?.about || {};
-      const aboutLabelEl = $('#about-section-label');
-      const aboutDesc1El = $('#about-desc-1');
-      const aboutDesc2El = $('#about-desc-2');
-      const aboutImageEl = $('#about-image');
-      const aboutBadgeTitleEl = $('#about-badge-title');
-      const aboutBadgeSubtitleEl = $('#about-badge-subtitle');
-      const aboutPrimaryBtnEl = $('#about-btn-primary');
-      const aboutSecondaryBtnEl = $('#about-btn-secondary');
+  // 2. Inject about section
+  if (aboutTitle && site) {
+    const about = site.about || {};
+    const aboutLabelEl = $('#about-section-label');
+    const aboutDesc1El = $('#about-desc-1');
+    const aboutDesc2El = $('#about-desc-2');
+    const aboutImageEl = $('#about-image');
+    const aboutBadgeTitleEl = $('#about-badge-title');
+    const aboutBadgeSubtitleEl = $('#about-badge-subtitle');
+    const aboutPrimaryBtnEl = $('#about-btn-primary');
+    const aboutSecondaryBtnEl = $('#about-btn-secondary');
 
-      if (about.sectionLabel && aboutLabelEl) aboutLabelEl.textContent = about.sectionLabel;
-      if (about.title) aboutTitle.textContent = about.title;
-      if (about.description1 && aboutDesc1El) aboutDesc1El.innerHTML = about.description1.replace(/\n/g, '<br>');
-      if (about.description2 && aboutDesc2El) aboutDesc2El.innerHTML = about.description2.replace(/\n/g, '<br>');
-      if (about.image && aboutImageEl) aboutImageEl.src = about.image;
-      if (about.imageAlt && aboutImageEl) aboutImageEl.alt = about.imageAlt;
-      if (about.badgeTitle && aboutBadgeTitleEl) aboutBadgeTitleEl.textContent = about.badgeTitle;
-      if (about.badgeSubtitle && aboutBadgeSubtitleEl) aboutBadgeSubtitleEl.textContent = about.badgeSubtitle;
-      if (about.primaryButtonText && aboutPrimaryBtnEl) aboutPrimaryBtnEl.textContent = about.primaryButtonText;
-      if (about.primaryButtonHref && aboutPrimaryBtnEl) aboutPrimaryBtnEl.href = about.primaryButtonHref;
-      if (about.secondaryButtonText && aboutSecondaryBtnEl) aboutSecondaryBtnEl.textContent = about.secondaryButtonText;
-      if (about.secondaryButtonHref && aboutSecondaryBtnEl) aboutSecondaryBtnEl.href = about.secondaryButtonHref;
-    } catch {
-      // Keep fallback static content if API is unavailable
+    if (about.sectionLabel && aboutLabelEl) aboutLabelEl.textContent = about.sectionLabel;
+    if (about.title) aboutTitle.textContent = about.title;
+    if (about.description1 && aboutDesc1El) aboutDesc1El.innerHTML = about.description1.replace(/\n/g, '<br>');
+    if (about.description2 && aboutDesc2El) aboutDesc2El.innerHTML = about.description2.replace(/\n/g, '<br>');
+    if (about.image && aboutImageEl) aboutImageEl.src = about.image;
+    if (about.imageAlt && aboutImageEl) aboutImageEl.alt = about.imageAlt;
+    if (about.badgeTitle && aboutBadgeTitleEl) aboutBadgeTitleEl.textContent = about.badgeTitle;
+    if (about.badgeSubtitle && aboutBadgeSubtitleEl) aboutBadgeSubtitleEl.textContent = about.badgeSubtitle;
+    if (about.primaryButtonText && aboutPrimaryBtnEl) aboutPrimaryBtnEl.textContent = about.primaryButtonText;
+    if (about.primaryButtonHref && aboutPrimaryBtnEl) aboutPrimaryBtnEl.href = about.primaryButtonHref;
+    if (about.secondaryButtonText && aboutSecondaryBtnEl) aboutSecondaryBtnEl.textContent = about.secondaryButtonText;
+    if (about.secondaryButtonHref && aboutSecondaryBtnEl) aboutSecondaryBtnEl.href = about.secondaryButtonHref;
+  }
+
+  // 3. Inject why section
+  if (whyGridEl && site) {
+    const why = site.why || {};
+    const whySectionLabelEl = $('#why-section-label');
+    const whySectionTitleEl = $('#why-section-title');
+
+    if (why.sectionLabel && whySectionLabelEl) whySectionLabelEl.textContent = why.sectionLabel;
+    if (why.title && whySectionTitleEl) whySectionTitleEl.textContent = why.title;
+
+    const cards = Array.isArray(why.cards) ? why.cards.filter(c => c && (c.title || c.description)) : [];
+    if (cards.length) {
+      whyGridEl.innerHTML = cards.map(card => `
+        <div class="why-card">
+          <span class="why-icon">${card.icon || '✨'}</span>
+          <h3 class="why-title">${card.title || ''}</h3>
+          <p class="why-desc">${(card.description || '').replace(/\n/g, '<br>')}</p>
+        </div>
+      `).join('');
     }
   }
 
-  // Inject why section content from site settings
-  const whyGridEl = $('#why-grid');
-  if (whyGridEl) {
-    try {
-      if (!site) {
-        site = await fetchSite();
-      }
-      const why = site?.why || {};
-      const whySectionLabelEl = $('#why-section-label');
-      const whySectionTitleEl = $('#why-section-title');
-
-      if (why.sectionLabel && whySectionLabelEl) whySectionLabelEl.textContent = why.sectionLabel;
-      if (why.title && whySectionTitleEl) whySectionTitleEl.textContent = why.title;
-
-      const cards = Array.isArray(why.cards) ? why.cards.filter(c => c && (c.title || c.description)) : [];
-      if (cards.length) {
-        whyGridEl.innerHTML = cards.map(card => `
-          <div class="why-card">
-            <span class="why-icon">${card.icon || '✨'}</span>
-            <h3 class="why-title">${card.title || ''}</h3>
-            <p class="why-desc">${(card.description || '').replace(/\n/g, '<br>')}</p>
-          </div>
-        `).join('');
-      }
-    } catch {
-      // Keep fallback static content if API is unavailable
+  // 4. Featured products
+  if (featuredEl) {
+    const visible = allProducts.filter(p => p.visible).slice(0, 6);
+    if (visible.length === 0) {
+      featuredEl.closest('section')?.remove();
+    } else {
+      featuredEl.innerHTML = visible.map(productCardHTML).join('');
     }
   }
-
-  const featuredEl = $('#featured-products');
-  if (!featuredEl) return;
-  const products = await fetchJSON('/api/products');
-  const visible = products.filter(p => p.visible).slice(0, 6);
-  if (visible.length === 0) {
-    featuredEl.closest('section')?.remove();
-    return;
-  }
-  featuredEl.innerHTML = visible.map(productCardHTML).join('');
 }
 
 // ─── PRODUCTS PAGE ───────────────────────────────────────────────
