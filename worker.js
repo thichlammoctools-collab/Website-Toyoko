@@ -166,52 +166,32 @@ function normalizeCats(cats) {
   return out;
 }
 
-// ── Products Index Helpers ────────────────────────────────────────
-
-function sortProducts(arr) { return [...arr].sort((a, b) => Number(a.id) - Number(b.id)); }
-
-async function readProductsIndex(env) {
-  const f = await ghGet('_data/products.json', env);
-  if (!f) return { products: null, sha: null };
-  try {
-    const p = JSON.parse(f.content);
-    const arr = Array.isArray(p) ? p : (Array.isArray(p.data) ? p.data : null);
-    return { products: arr ? sortProducts(arr) : null, sha: f.sha };
-  } catch { return { products: null, sha: f.sha }; }
-}
-
-async function writeProductsIndex(products, sha, env) {
-  const sorted = sortProducts(products || []);
-  await ghPut('_data/products.json', JSON.stringify({ data: sorted }, null, 2), 'admin: update products.json index', sha, false, env);
-}
-
-async function readProductsFromFiles(env) {
-  const files = await ghList('_data/products', env);
-  const loaded = await Promise.all(files.filter(f => f.name.endsWith('.json')).map(async f => {
-    const r = await ghGet(f.path, env);
-    if (!r) return null;
-    try { return JSON.parse(r.content); } catch { return null; }
-  }));
-  return sortProducts(loaded.filter(Boolean));
-}
+// ── KV API Helpers ─────────────────────────────────────────────
 
 async function getProducts(env) {
-  const idx = await readProductsIndex(env);
-  return idx.products || await readProductsFromFiles(env);
+  try { return JSON.parse(await env.DATA_KV.get('products')) || []; }
+  catch { return []; }
+}
+async function saveProducts(products, env) {
+  const sorted = [...(products || [])].sort((a, b) => Number(a.id) - Number(b.id));
+  await env.DATA_KV.put('products', JSON.stringify(sorted));
 }
 
-// ── Posts Index Helper ────────────────────────────────────────────
+async function getPosts(env) {
+  try { return JSON.parse(await env.DATA_KV.get('posts')) || []; }
+  catch { return []; }
+}
+async function savePosts(posts, env) {
+  const sorted = [...(posts || [])].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+  await env.DATA_KV.put('posts', JSON.stringify(sorted));
+}
 
-async function rebuildPostsIndex(env) {
-  const files = await ghList('_data/posts', env);
-  const posts = [];
-  for (const f of files.filter(f => f.name.endsWith('.json'))) {
-    const r = await ghGet(f.path, env);
-    if (r) { try { posts.push(JSON.parse(r.content)); } catch {} }
-  }
-  posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-  const idx = await ghGet('_data/posts.json', env);
-  await ghPut('_data/posts.json', JSON.stringify({ data: posts }, null, 2), 'admin: rebuild posts.json', idx?.sha, false, env);
+async function getSiteConfig(env) {
+  try { return JSON.parse(await env.DATA_KV.get('site')) || DEFAULT_SITE; }
+  catch { return DEFAULT_SITE; }
+}
+async function saveSiteConfig(config, env) {
+  await env.DATA_KV.put('site', JSON.stringify(config || DEFAULT_SITE));
 }
 
 // ── Main Export ───────────────────────────────────────────────────
@@ -227,69 +207,16 @@ export default {
     // ── Public API ──
 
     if (pathname === '/api/products') {
-      try {
-        // Try with GitHub token first
-        const f = await ghGet('_data/products.json', env);
-        if (f) {
-          const p = JSON.parse(f.content);
-          const arr = Array.isArray(p) ? p : (p.data || []);
-          return json(arr);
-        }
-      } catch {}
-      // Fallback: public GitHub raw URL (works for public repos without a token)
-      try {
-        const cfg = getConfig(env);
-        const rawUrl = `https://raw.githubusercontent.com/${cfg.GITHUB_REPO}/${cfg.GITHUB_BRANCH}/_data/products.json`;
-        const res = await fetch(rawUrl);
-        if (res.ok) {
-          const p = await res.json();
-          const arr = Array.isArray(p) ? p : (p.data || []);
-          return json(arr);
-        }
-      } catch {}
-      return json([]);
+      return json(await getProducts(env));
     }
 
     if (pathname === '/api/posts') {
-      try {
-        const f = await ghGet('_data/posts.json', env);
-        if (f) {
-          const p = JSON.parse(f.content);
-          const arr = Array.isArray(p) ? p : (p.data || []);
-          return json(arr);
-        }
-      } catch {}
-      try {
-        const cfg = getConfig(env);
-        const rawUrl = `https://raw.githubusercontent.com/${cfg.GITHUB_REPO}/${cfg.GITHUB_BRANCH}/_data/posts.json`;
-        const res = await fetch(rawUrl);
-        if (res.ok) {
-          const p = await res.json();
-          const arr = Array.isArray(p) ? p : (p.data || []);
-          return json(arr);
-        }
-      } catch {}
-      return json([]);
+      return json(await getPosts(env));
     }
 
     if (pathname === '/api/site') {
-      try {
-        const f = await ghGet('_data/site.json', env);
-        if (f) {
-          const d = JSON.parse(f.content);
-          return json({ ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) });
-        }
-      } catch {}
-      try {
-        const cfg = getConfig(env);
-        const rawUrl = `https://raw.githubusercontent.com/${cfg.GITHUB_REPO}/${cfg.GITHUB_BRANCH}/_data/site.json`;
-        const res = await fetch(rawUrl);
-        if (res.ok) {
-          const d = await res.json();
-          return json({ ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) });
-        }
-      } catch {}
-      return json(DEFAULT_SITE);
+      const d = await getSiteConfig(env);
+      return json({ ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) });
     }
 
     // ── Admin API (requires auth) ──
@@ -320,7 +247,6 @@ export default {
         }
       }
 
-      // Admin Products
       if (pathname === '/api/admin/products') {
         if (request.method === 'GET') {
           try { return json({ ok: true, data: await getProducts(env) }); }
@@ -332,11 +258,8 @@ export default {
 
           if (action === 'delete') {
             const { slug } = body;
-            const f = await ghGet(`_data/products/${slug}.json`, env);
-            if (!f) return json({ ok: false, error: 'Not found' }, 404);
-            await ghDelete(`_data/products/${slug}.json`, f.sha, `admin: delete product ${slug}`, env);
-            const { products, sha } = await readProductsIndex(env);
-            if (products) await writeProductsIndex(products.filter(p => p.slug !== slug), sha, env);
+            const prods = await getProducts(env);
+            await saveProducts(prods.filter(p => p.slug !== slug), env);
             return json({ ok: true });
           }
 
@@ -346,30 +269,28 @@ export default {
             const slug = data.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/^-+|-+$/g, '');
             data.slug = slug;
             if (!data.id) data.id = String(Date.now());
-            const existing = await ghGet(`_data/products/${slug}.json`, env);
-            await ghPut(`_data/products/${slug}.json`, JSON.stringify(data, null, 2), `admin: ${existing ? 'update' : 'create'} product ${slug}`, existing?.sha, false, env);
-            const { products, sha } = await readProductsIndex(env);
-            const prods = products || await readProductsFromFiles(env);
+            
+            const prods = await getProducts(env);
             const idx = prods.findIndex(p => p.slug === slug);
             if (idx >= 0) prods[idx] = data; else prods.push(data);
-            await writeProductsIndex(prods, sha, env);
+            await saveProducts(prods, env);
             return json({ ok: true, data });
           }
 
           if (action === 'bulk-category-replace') {
             const { oldCategory, newCategory } = body;
-            const { products, sha } = await readProductsIndex(env);
-            const prods = products || await readProductsFromFiles(env);
+            const prods = await getProducts(env);
             const norm = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
-            const affected = prods.filter(p => norm(p.category) === norm(oldCategory));
-            for (const p of affected) {
-              const f = await ghGet(`_data/products/${p.slug}.json`, env);
-              const updated = { ...p, category: newCategory };
-              await ghPut(`_data/products/${p.slug}.json`, JSON.stringify(updated, null, 2), `admin: update category for ${p.slug}`, f?.sha, false, env);
-            }
-            const merged = prods.map(p => norm(p.category) === norm(oldCategory) ? { ...p, category: newCategory } : p);
-            await writeProductsIndex(merged, sha, env);
-            return json({ ok: true, updated: affected.length });
+            let updated = 0;
+            const merged = prods.map(p => {
+               if (norm(p.category) === norm(oldCategory)) {
+                  updated++;
+                  return { ...p, category: newCategory };
+               }
+               return p;
+            });
+            await saveProducts(merged, env);
+            return json({ ok: true, updated });
           }
 
           return json({ ok: false, error: `Unknown action: ${action}` }, 400);
@@ -379,16 +300,8 @@ export default {
       // Admin Posts
       if (pathname === '/api/admin/posts') {
         if (request.method === 'GET') {
-          try {
-            const files = await ghList('_data/posts', env);
-            const posts = [];
-            for (const f of files.filter(f => f.name.endsWith('.json'))) {
-              const r = await ghGet(f.path, env);
-              if (r) { try { posts.push(JSON.parse(r.content)); } catch {} }
-            }
-            posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-            return json({ ok: true, data: posts });
-          } catch (e) { return json({ ok: false, error: e.message }, 500); }
+          try { return json({ ok: true, data: await getPosts(env) }); }
+          catch (e) { return json({ ok: false, error: e.message }, 500); }
         }
         if (request.method === 'POST') {
           const body = await request.json();
@@ -396,10 +309,8 @@ export default {
 
           if (action === 'delete') {
             const { slug } = body;
-            const f = await ghGet(`_data/posts/${slug}.json`, env);
-            if (!f) return json({ ok: false, error: 'Not found' }, 404);
-            await ghDelete(`_data/posts/${slug}.json`, f.sha, `admin: delete post ${slug}`, env);
-            await rebuildPostsIndex(env);
+            const posts = await getPosts(env);
+            await savePosts(posts.filter(p => p.slug !== slug), env);
             return json({ ok: true });
           }
 
@@ -408,33 +319,30 @@ export default {
             if (!data?.slug) return json({ ok: false, error: 'data.slug required' }, 400);
             const slug = data.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/^-+|-+$/g, '');
             data.slug = slug;
-            if (!data.date) data.date = new Date().toISOString().slice(0, 10);
             if (!data.id) data.id = String(Date.now());
-            const existing = await ghGet(`_data/posts/${slug}.json`, env);
-            await ghPut(`_data/posts/${slug}.json`, JSON.stringify(data, null, 2), `admin: ${existing ? 'update' : 'create'} post ${slug}`, existing?.sha, false, env);
-            await rebuildPostsIndex(env);
+            
+            const posts = await getPosts(env);
+            const idx = posts.findIndex(p => p.slug === slug);
+            if (idx >= 0) posts[idx] = data; else posts.push(data);
+            await savePosts(posts, env);
             return json({ ok: true, data });
           }
-
           return json({ ok: false, error: `Unknown action: ${action}` }, 400);
         }
       }
 
-      // Admin Site
+      // Admin Site Config
       if (pathname === '/api/admin/site') {
         if (request.method === 'GET') {
           try {
-            const f = await ghGet('_data/site.json', env);
-            if (!f) return json({ ok: true, data: DEFAULT_SITE });
-            const d = JSON.parse(f.content);
+            const d = await getSiteConfig(env);
             return json({ ok: true, data: { ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) } });
           } catch (e) { return json({ ok: false, error: e.message }, 500); }
         }
         if (request.method === 'POST') {
           try {
             const { data } = await request.json();
-            const existing = await ghGet('_data/site.json', env);
-            const current = existing ? JSON.parse(existing.content) : DEFAULT_SITE;
+            const current = await getSiteConfig(env);
             const merged = {
               productCategories: Array.isArray(data.productCategories) ? normalizeCats(data.productCategories) : normalizeCats(current.productCategories || DEFAULT_SITE.productCategories),
               hero: { ...DEFAULT_SITE.hero, ...(current.hero || {}), ...(data.hero || {}) },
@@ -442,7 +350,7 @@ export default {
               why: { ...DEFAULT_SITE.why, ...(current.why || {}), ...(data.why || {}) },
               footer: { ...DEFAULT_SITE.footer, ...(current.footer || {}), ...(data.footer || {}) },
             };
-            await ghPut('_data/site.json', JSON.stringify(merged, null, 2), 'admin: update site content', existing?.sha, false, env);
+            await saveSiteConfig(merged, env);
             return json({ ok: true, data: merged });
           } catch (e) { return json({ ok: false, error: e.message }, 500); }
         }
@@ -455,20 +363,82 @@ export default {
           if (!filename || !data) return json({ ok: false, error: 'filename and data required' }, 400);
           const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
           if (type && !allowed.includes(type.toLowerCase())) return json({ ok: false, error: 'File type not allowed' }, 400);
-          // Strip data:image/...;base64, prefix if present
+          
           const base64Data = data.includes(',') ? data.split(',')[1] : data;
           const safeName = filename.toLowerCase().replace(/[^a-z0-9._-]/g, '-').replace(/\.{2,}/g, '.').replace(/^\./, '');
           if (!safeName) return json({ ok: false, error: 'Invalid filename' }, 400);
-          if (Math.ceil((base64Data.length * 3) / 4) > 5 * 1024 * 1024) return json({ ok: false, error: 'File too large (max 5MB)' }, 400);
-          // Correct path: images/products/ (no 'public/' prefix)
-          const filePath = `images/products/${safeName}`;
-          const existing = await ghGet(filePath, env);
-          await ghPut(filePath, base64Data, `admin: upload image ${safeName}`, existing?.sha, true, env);
+          
+          const binaryString = atob(base64Data);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+          }
+          
+          await env.IMAGE_BUCKET.put(`products/${safeName}`, bytes, {
+             httpMetadata: { contentType: type || 'image/png' }
+          });
+          
           return json({ ok: true, url: `/images/products/${safeName}` });
         } catch (e) { return json({ ok: false, error: e.message }, 500); }
       }
 
+      // ── API: Migrate to KV ──
+      // Call this once to move everything from Github repo to Cloudflare KV Setup
+      if (pathname === '/api/admin/migrate-to-kv') {
+         try {
+           // Read products
+           const f_prod = await ghGet('_data/products.json', env);
+           let p_arr = [];
+           if (f_prod) {
+              const p = JSON.parse(f_prod.content);
+              p_arr = Array.isArray(p) ? p : (p.data || []);
+           } else {
+              const files = await ghList('_data/products', env);
+              for (const f of files.filter(x=>x.name.endsWith('.json'))) {
+                const r = await ghGet(f.path, env);
+                if (r) { try { p_arr.push(JSON.parse(r.content)); } catch(e){} }
+              }
+           }
+           await saveProducts(p_arr, env);
+  
+           // Read posts
+           let po_arr = [];
+           const f_posts = await ghGet('_data/posts.json', env);
+           if (f_posts) {
+               const p = JSON.parse(f_posts.content);
+               po_arr = Array.isArray(p) ? p : (p.data || []);
+           } else {
+               const files2 = await ghList('_data/posts', env);
+               for (const f of files2.filter(x=>x.name.endsWith('.json'))) {
+                 const r = await ghGet(f.path, env);
+                 if (r) { try { po_arr.push(JSON.parse(r.content)); } catch(e){} }
+               }
+           }
+           await savePosts(po_arr, env);
+  
+           // Read Site
+           const f_site = await ghGet('_data/site.json', env);
+           const siteCfg = f_site ? JSON.parse(f_site.content) : DEFAULT_SITE;
+           await saveSiteConfig(siteCfg, env);
+  
+           return json({ ok: true, message: 'Migrated products, posts, and site completely to KV!' });
+         } catch (e) {
+           return json({ ok: false, error: e.message }, 500);
+         }
+      }
+
       return json({ ok: false, error: 'Not found' }, 404);
+    }
+
+    // ── Public Image Serving from R2 ──
+    if (pathname.startsWith('/images/products/') && request.method === 'GET') {
+      const objectName = pathname.replace('/images/', '');
+      const obj = await env.IMAGE_BUCKET.get(objectName);
+      if (!obj) return new Response('Not found', { status: 404 });
+      const headers = new Headers();
+      obj.writeHttpMetadata(headers);
+      headers.set('etag', obj.httpEtag);
+      return new Response(obj.body, { headers });
     }
 
     // ── Static Assets (HTML, CSS, JS, images, _data, etc.) ──
