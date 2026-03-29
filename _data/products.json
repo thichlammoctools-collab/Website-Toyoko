@@ -419,13 +419,13 @@
     {
       "id": "36",
       "slug": "khoan-ng-lc-750w",
-      "name": "KHOAN ĐỘNG LỰC 750W",
+      "name": "Máy khoan điện động lực 750W 13mm Toyoko T750ID",
       "category": "Máy khoan",
       "price": 980000,
       "unit": "máy",
       "description": "",
       "images": [
-        "/images/products/t750id_03_n.png"
+        "/images/products/t750id.png"
       ],
       "visible": true,
       "sku": "T750ID"
