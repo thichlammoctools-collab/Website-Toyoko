@@ -1140,9 +1140,16 @@ function slugify(str) {
 }
 
 function formatPrice(p) {
-  if (!p || p === 0) return 'Liên hệ';
-  return Number(p).toLocaleString('vi-VN') + ' ₫';
-}
+const fmtPrice = p => {
+  if (!p || p === 0 || p === '0') return 'Liên hệ';
+  let s = String(p).trim();
+  const f = v => {
+    let n = Number(String(v).replace(/[^\d]/g, ''));
+    return isNaN(n) ? v : n.toLocaleString('vi-VN');
+  };
+  if (s.includes('-')) return s.split('-').map(f).join(' - ') + ' ₫';
+  return f(s) + ' ₫';
+};
 
 function htmlWrapSelection(textarea, openTag, closeTag) {
   const start = textarea.selectionStart;
