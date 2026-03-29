@@ -228,10 +228,21 @@ export default {
 
     if (pathname === '/api/products') {
       try {
-        // Read directly from GitHub — _data/ is not served by Cloudflare ASSETS
+        // Try with GitHub token first
         const f = await ghGet('_data/products.json', env);
         if (f) {
           const p = JSON.parse(f.content);
+          const arr = Array.isArray(p) ? p : (p.data || []);
+          return json(arr);
+        }
+      } catch {}
+      // Fallback: public GitHub raw URL (works for public repos without a token)
+      try {
+        const cfg = getConfig(env);
+        const rawUrl = `https://raw.githubusercontent.com/${cfg.GITHUB_REPO}/${cfg.GITHUB_BRANCH}/_data/products.json`;
+        const res = await fetch(rawUrl);
+        if (res.ok) {
+          const p = await res.json();
           const arr = Array.isArray(p) ? p : (p.data || []);
           return json(arr);
         }
@@ -248,6 +259,16 @@ export default {
           return json(arr);
         }
       } catch {}
+      try {
+        const cfg = getConfig(env);
+        const rawUrl = `https://raw.githubusercontent.com/${cfg.GITHUB_REPO}/${cfg.GITHUB_BRANCH}/_data/posts.json`;
+        const res = await fetch(rawUrl);
+        if (res.ok) {
+          const p = await res.json();
+          const arr = Array.isArray(p) ? p : (p.data || []);
+          return json(arr);
+        }
+      } catch {}
       return json([]);
     }
 
@@ -256,6 +277,15 @@ export default {
         const f = await ghGet('_data/site.json', env);
         if (f) {
           const d = JSON.parse(f.content);
+          return json({ ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) });
+        }
+      } catch {}
+      try {
+        const cfg = getConfig(env);
+        const rawUrl = `https://raw.githubusercontent.com/${cfg.GITHUB_REPO}/${cfg.GITHUB_BRANCH}/_data/site.json`;
+        const res = await fetch(rawUrl);
+        if (res.ok) {
+          const d = await res.json();
           return json({ ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) });
         }
       } catch {}
