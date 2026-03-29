@@ -4,5 +4,15 @@
   "main": "worker.js",
   "assets": {
     "directory": "."
-  }
+  },
+  "routes": [
+    {
+      "pattern": "quangphugroup.com/*",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.quangphugroup.com/*",
+      "custom_domain": true
+    }
+  ]
 }
