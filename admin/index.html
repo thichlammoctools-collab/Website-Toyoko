@@ -990,8 +990,8 @@
         <label>Ảnh sản phẩm</label>
         <div class="img-upload-area" id="img-drop-zone">
           <input type="file" id="img-input" multiple accept="image/*">
-          <div>📷 Nhấn hoặc kéo thả ảnh vào đây</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">JPEG, PNG, WebP — tối đa 5MB mỗi file</div>
+          <div>📷 Nhấn, kéo thả hoặc <kbd style="background:#e2e8f0;padding:1px 6px;border-radius:4px;font-size:11px;font-family:monospace">Ctrl+V</kbd> dán ảnh</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">JPEG, PNG, WebP — tối đa 5MB mỗi file — hỗ trợ dán từ clipboard</div>
         </div>
         <div class="img-preview-list" id="img-preview"></div>
       </div>
@@ -1777,43 +1777,36 @@ document.getElementById('img-input').addEventListener('change', function() {
   this.value = '';
 });
 
-// ── Paste image from clipboard (Ctrl+V) ────────────────────────────
+// ── Paste image from clipboard (Ctrl+V) ────────
 document.addEventListener('paste', function(e) {
   // Only process paste when product modal is open
   const modal = document.getElementById('product-modal');
   if (!modal || modal.style.display === 'none') return;
-
   const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
   if (!items) return;
-
   let found = false;
   for (const item of items) {
     if (item.type.startsWith('image/')) {
       const file = item.getAsFile();
       if (!file) continue;
-      // Give pasted image a readable name with timestamp
       const ext = item.type.split('/')[1] || 'png';
       const namedFile = new File([file], `paste-${Date.now()}.${ext}`, { type: item.type });
       handleImageFile(namedFile);
       found = true;
     }
   }
-
   if (found) {
-    // Briefly flash the drop zone to give visual feedback
     const zone = document.getElementById('img-drop-zone');
     if (zone) {
       zone.style.borderColor = 'var(--primary)';
       zone.style.background = 'rgba(99,102,241,0.08)';
-      setTimeout(() => {
-        zone.style.borderColor = '';
-        zone.style.background = '';
-      }, 600);
+      setTimeout(() => { zone.style.borderColor=''; zone.style.background=''; }, 700);
     }
     showToast('✅ Đã dán ảnh từ clipboard!');
     e.preventDefault();
   }
 });
+
 
 function handleImageFile(file) {
   const reader = new FileReader();
