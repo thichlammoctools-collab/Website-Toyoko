@@ -1,14 +1,24 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "toyokoquangphu",
   "compatibility_date": "2025-09-27",
-  "observability": {
-    "enabled": true
-  },
+  "main": "worker.js",
   "assets": {
     "directory": "."
   },
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+  "routes": [
+    {
+      "pattern": "quangphugroup.com/*",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.quangphugroup.com/*",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "GITHUB_REPO": "thichlammoctools-collab/Website-Toyoko",
+    "GITHUB_BRANCH": "main",
+    "ADMIN_USERNAME": "quangphu"
+  }
 }
+
