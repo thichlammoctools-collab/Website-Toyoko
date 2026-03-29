@@ -1792,38 +1792,92 @@ document.getElementById('p-name').addEventListener('input', function() {
   }
 });
 
+document.getElementById('p-price').addEventListener('input', function(e) {
+  let val = this.value.replace(/[^\d]/g, '');
+  if (!val) {
+    this.value = '';
+    return;
+  }
+  this.value = Number(val).toLocaleString('vi-VN');
+});
+
 document.getElementById('img-input').addEventListener('change', function() {
   [...this.files].forEach(handleImageFile);
   this.value = '';
 });
 
 // ── Paste image from clipboard (Ctrl+V) ────────
+async function uploadAndSetImage(file, inputId, previewImgId, previewWrapId, dropZoneId) {
+  const zone = document.getElementById(dropZoneId);
+  if (zone) {
+    zone.style.borderColor = 'var(--primary)';
+    zone.style.background = 'rgba(99,102,241,0.08)';
+  }
+  showToast('Đang tải ảnh...', 'success');
+  
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const base64 = e.target.result.replace(/^data:[^;]+;base64,/, '');
+    try {
+      const r = await api('/api/admin/upload', 'POST', { filename: file.name, data: base64, type: file.type });
+      if (r.ok) {
+        document.getElementById(inputId).value = r.url;
+        const pImg = document.getElementById(previewImgId);
+        const pWrap = document.getElementById(previewWrapId);
+        if (pImg) pImg.src = r.url;
+        if (pWrap) pWrap.style.display = 'block';
+        showToast('✅ Đã tải ảnh lên!');
+        // Update previews
+        if (inputId.includes('hero')) renderHeroPreview();
+        if (inputId.includes('about')) renderAboutPreview();
+      } else throw new Error(r.error);
+    } catch (err) {
+      showToast('Lỗi upload: ' + err.message, 'error');
+    } finally {
+      if (zone) { zone.style.borderColor=''; zone.style.background=''; }
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
 document.addEventListener('paste', function(e) {
-  // Only process paste when product modal is open
-  const modal = document.getElementById('product-modal');
-  if (!modal || modal.style.display === 'none') return;
   const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
   if (!items) return;
-  let found = false;
+
+  // Find image in clipboard
+  let imageFile = null;
   for (const item of items) {
     if (item.type.startsWith('image/')) {
       const file = item.getAsFile();
-      if (!file) continue;
-      const ext = item.type.split('/')[1] || 'png';
-      const namedFile = new File([file], `paste-${Date.now()}.${ext}`, { type: item.type });
-      handleImageFile(namedFile);
-      found = true;
+      if (file) {
+        const ext = item.type.split('/')[1] || 'png';
+        imageFile = new File([file], `paste-${Date.now()}.${ext}`, { type: item.type });
+        break;
+      }
     }
   }
-  if (found) {
-    const zone = document.getElementById('img-drop-zone');
-    if (zone) {
-      zone.style.borderColor = 'var(--primary)';
-      zone.style.background = 'rgba(99,102,241,0.08)';
-      setTimeout(() => { zone.style.borderColor=''; zone.style.background=''; }, 700);
-    }
-    showToast('✅ Đã dán ảnh từ clipboard!');
+  if (!imageFile) return;
+
+  // Determine context
+  const productModal = document.getElementById('product-modal');
+  if (productModal && productModal.style.display !== 'none') {
+    handleImageFile(imageFile);
     e.preventDefault();
+    return;
+  }
+
+  const heroPage = document.getElementById('page-hero');
+  if (heroPage && heroPage.style.display !== 'none') {
+    uploadAndSetImage(imageFile, 'hero-image-input', 'hero-img-preview-img', 'hero-img-preview', 'hero-image-drop-area');
+    e.preventDefault();
+    return;
+  }
+
+  const aboutPage = document.getElementById('page-about');
+  if (aboutPage && aboutPage.style.display !== 'none') {
+    uploadAndSetImage(imageFile, 'about-image-input', 'about-img-preview-img', 'about-img-preview', 'about-image-drop-area');
+    e.preventDefault();
+    return;
   }
 });
 
