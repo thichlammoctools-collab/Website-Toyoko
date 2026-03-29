@@ -16,10 +16,27 @@ const slugify = (str = '') => String(str)
   .replace(/-+/g, '-');
 
 // Fetch JSON data – supports both array root and {data:[...]} wrapped
-const fetchJSON = url => fetch(url)
-  .then(r => r.ok ? r.json() : [])
-  .then(json => Array.isArray(json) ? json : (json.data || []))
-  .catch(() => []);
+const fetchJSON = url => {
+  window._apiCache = window._apiCache || {};
+  if (window._apiCache[url]) return Promise.resolve(window._apiCache[url]);
+  return fetch(url)
+    .then(r => r.ok ? r.json() : [])
+    .then(json => {
+       const res = Array.isArray(json) ? json : (json.data || []);
+       window._apiCache[url] = res;
+       return res;
+    }).catch(() => []);
+};
+
+const fetchSite = () => {
+  const url = '/api/site';
+  window._apiCache = window._apiCache || {};
+  if (window._apiCache[url]) return Promise.resolve(window._apiCache[url]);
+  return fetch(url).then(r => r.ok ? r.json() : null).then(data => {
+    window._apiCache[url] = data;
+    return data;
+  }).catch(() => null);
+};
 
 // Mark active nav link
 function setActiveNav() {
@@ -66,7 +83,7 @@ async function initHome() {
   const heroBadge = $('#hero-badge');
   if (heroBadge) {
     try {
-      site = await fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null);
+      site = await fetchSite();
       const hero = site?.hero || {};
       const titlePrefixEl = $('#hero-title-prefix');
       const titleRestEl = $('#hero-title-rest');
@@ -89,7 +106,7 @@ async function initHome() {
   if (aboutTitle) {
     try {
       if (!site) {
-        site = await fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null);
+        site = await fetchSite();
       }
       const about = site?.about || {};
       const aboutLabelEl = $('#about-section-label');
@@ -123,7 +140,7 @@ async function initHome() {
   if (whyGridEl) {
     try {
       if (!site) {
-        site = await fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null);
+        site = await fetchSite();
       }
       const why = site?.why || {};
       const whySectionLabelEl = $('#why-section-label');
@@ -166,7 +183,7 @@ async function initProducts() {
   try {
     const [products, site] = await Promise.all([
       fetchJSON('/api/products'),
-      fetch('/api/site').then(r => (r.ok ? r.json() : null)).catch(() => null)
+      fetchSite()
     ]);
     let allProducts = products.filter(p => p.visible);
     let currentCat = 'Tất cả';
@@ -438,7 +455,7 @@ async function initFooter() {
   const phoneEl = $('#footer-phone');
   if (!phoneEl) return;
   try {
-    const site = await fetch('/api/site').then(r => r.ok ? r.json() : null).catch(() => null);
+    const site = await fetchSite();
     const f = site?.footer || {};
     const descEl      = $('#footer-desc');
     const exploreTitleEl = $('#footer-explore-title');

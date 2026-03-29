@@ -133,7 +133,12 @@ const CORS = {
 function json(data, status = 200, extra = {}) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...CORS, 'Content-Type': 'application/json', ...extra },
+    headers: { 
+      ...CORS, 
+      'Content-Type': 'application/json',
+      'Cache-Control': 'public, max-age=15', 
+      ...extra 
+    },
   });
 }
 
@@ -436,7 +441,10 @@ export default {
       const { value, metadata } = await env.quangphu.getWithMetadata(`image:${safeName}`, { type: 'arrayBuffer' });
       if (!value) return new Response('Not found', { status: 404 });
       return new Response(value, { 
-        headers: { 'Content-Type': (metadata && metadata.contentType) ? metadata.contentType : 'image/png' } 
+        headers: { 
+          'Content-Type': (metadata && metadata.contentType) ? metadata.contentType : 'image/png',
+          'Cache-Control': 'public, max-age=86400, s-maxage=31536000'
+        } 
       });
     }
 
