@@ -241,6 +241,50 @@ async function initProducts() {
 }
 
 // ─── PRODUCT DETAIL PAGE ─────────────────────────────────────────
+function formatProductDescription(text) {
+  if (!text) return '';
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  let html = '';
+  let inTable = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    let isRow = false;
+    let k = '', v = '';
+
+    if (line.includes('\t')) {
+      const parts = line.split('\t').filter(Boolean);
+      if (parts.length >= 2) {
+        k = parts[0].trim(); v = parts.slice(1).join(' ').trim(); isRow = true;
+      }
+    } else if (line.match(/\s{2,}/)) {
+      const parts = line.split(/\s{2,}/);
+      if (parts.length >= 2) {
+        k = parts[0].trim(); v = parts.slice(1).join(' ').trim(); isRow = true;
+      }
+    } else if (line.indexOf(':') > 0 && !line.endsWith(':') && line.length < 150) {
+      const idx = line.indexOf(':');
+      k = line.substring(0, idx).trim();
+      v = line.substring(idx + 1).trim();
+      if (k && v) isRow = true;
+    }
+
+    if (isRow) {
+      if (!inTable) { html += '<table class="specs-table" style="margin-top:10px"><tbody>'; inTable = true; }
+      html += `<tr><td>${k}</td><td>${v}</td></tr>`;
+    } else {
+      if (inTable) { html += '</tbody></table>'; inTable = false; }
+      if (line.endsWith(':')) {
+        html += `<h3 style="font-size:16px; margin-top:24px; margin-bottom:12px;">${line}</h3>`;
+      } else {
+        html += `<p style="margin-bottom:8px; line-height:1.6;">${line}</p>`;
+      }
+    }
+  }
+  if (inTable) html += '</tbody></table>';
+  return html;
+}
+
 async function initProductDetail() {
   const container = $('#product-detail');
   if (!container) return;
@@ -283,8 +327,8 @@ async function initProductDetail() {
         <h1 class="product-info-name">${p.name}</h1>
         ${p.sku ? `<div class="product-info-sku">Mã hàng (SKU): <strong>${p.sku}</strong></div>` : ''}
         <div class="product-info-price">${fmtPrice(p.price)}</div>
-        <p class="product-info-desc">${p.description || ''}</p>
-        ${specsHTML ? `<table class="specs-table"><tbody>${specsHTML}</tbody></table>` : ''}
+        <div class="product-info-desc">${formatProductDescription(p.description)}</div>
+        ${specsHTML ? `<table class="specs-table" style="margin-top:10px"><tbody>${specsHTML}</tbody></table>` : ''}
         <div class="product-ctas">
           <a href="/contact.html?product=${encodeURIComponent(p.name)}" class="btn btn-primary">📞 Liên hệ đặt hàng</a>
           <a href="https://zalo\.me/0938895934" target="_blank" class="btn btn-outline">💬 Chat Zalo</a>
