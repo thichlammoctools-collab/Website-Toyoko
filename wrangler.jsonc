@@ -7,14 +7,22 @@
 	},
 	"routes": [
 		{
-			"pattern": "quangphugroup.com/*",
-			"custom_domain": true
+			"zone_name": "quangphugroup.com",
+			"pattern": "www.quangphugroup.com"
 		},
 		{
-			"pattern": "www.quangphugroup.com/*",
-			"custom_domain": true
+			"zone_name": "quangphugroup.com",
+			"pattern": "quangphugroup.com"
 		}
 	],
+	"workers_dev": true,
+	"preview_urls": true,
+	"observability": {
+		"enabled": true,
+		"logs": {
+			"enabled": true
+		}
+	},
 	"vars": {
 		"GITHUB_REPO": "thichlammoctools-collab/Website-Toyoko",
 		"GITHUB_BRANCH": "main",
@@ -22,7 +30,7 @@
 	},
 	"kv_namespaces": [
 		{
-			"binding": "DATA_KV",
+			"binding": "quangphu",
 			"id": "3695998216904885ae50bf188f279b6c",
 			"remote": true
 		}

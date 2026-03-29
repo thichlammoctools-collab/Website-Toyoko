@@ -169,29 +169,29 @@ function normalizeCats(cats) {
 // ── KV API Helpers ─────────────────────────────────────────────
 
 async function getProducts(env) {
-  try { return JSON.parse(await env.DATA_KV.get('products')) || []; }
+  try { return JSON.parse(await env.quangphu.get('products')) || []; }
   catch { return []; }
 }
 async function saveProducts(products, env) {
   const sorted = [...(products || [])].sort((a, b) => Number(a.id) - Number(b.id));
-  await env.DATA_KV.put('products', JSON.stringify(sorted));
+  await env.quangphu.put('products', JSON.stringify(sorted));
 }
 
 async function getPosts(env) {
-  try { return JSON.parse(await env.DATA_KV.get('posts')) || []; }
+  try { return JSON.parse(await env.quangphu.get('posts')) || []; }
   catch { return []; }
 }
 async function savePosts(posts, env) {
   const sorted = [...(posts || [])].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-  await env.DATA_KV.put('posts', JSON.stringify(sorted));
+  await env.quangphu.put('posts', JSON.stringify(sorted));
 }
 
 async function getSiteConfig(env) {
-  try { return JSON.parse(await env.DATA_KV.get('site')) || DEFAULT_SITE; }
+  try { return JSON.parse(await env.quangphu.get('site')) || DEFAULT_SITE; }
   catch { return DEFAULT_SITE; }
 }
 async function saveSiteConfig(config, env) {
-  await env.DATA_KV.put('site', JSON.stringify(config || DEFAULT_SITE));
+  await env.quangphu.put('site', JSON.stringify(config || DEFAULT_SITE));
 }
 
 // ── Main Export ───────────────────────────────────────────────────
@@ -374,7 +374,7 @@ export default {
               bytes[i] = binaryString.charCodeAt(i);
           }
           
-          await env.DATA_KV.put(`image:${safeName}`, bytes.buffer, {
+          await env.quangphu.put(`image:${safeName}`, bytes.buffer, {
              metadata: { contentType: type || 'image/png' }
           });
           
@@ -433,7 +433,7 @@ export default {
     // ── Public Image Serving from KV ──
     if (pathname.startsWith('/images/products/') && request.method === 'GET') {
       const safeName = pathname.replace('/images/products/', '');
-      const { value, metadata } = await env.DATA_KV.getWithMetadata(`image:${safeName}`, { type: 'arrayBuffer' });
+      const { value, metadata } = await env.quangphu.getWithMetadata(`image:${safeName}`, { type: 'arrayBuffer' });
       if (!value) return new Response('Not found', { status: 404 });
       return new Response(value, { 
         headers: { 'Content-Type': (metadata && metadata.contentType) ? metadata.contentType : 'image/png' } 
@@ -444,3 +444,4 @@ export default {
     return env.ASSETS.fetch(request);
   }
 };
+
