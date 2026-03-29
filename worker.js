@@ -144,10 +144,12 @@ const DEFAULT_SITE = {
   hero: { badge: '', titlePrefix: 'TOYOKO', titleRest: '', description: '', image: '/images/hero-machine.png', imageAlt: 'Máy cầm tay Toyoko' },
   about: { sectionLabel: 'Về chúng tôi', title: 'Toyoko – An tâm đồng hành cùng người thợ Việt', description1: '', description2: '', image: '/images/about.jpg', imageAlt: 'Kho hàng Quang Phú', badgeTitle: 'Chứng nhận nhập khẩu', badgeSubtitle: 'Toyoko Official Importer VN', primaryButtonText: 'Xem sản phẩm', primaryButtonHref: '/products.html', secondaryButtonText: 'Liên hệ', secondaryButtonHref: '/contact.html' },
   why: { sectionLabel: 'Tại sao chọn chúng tôi', title: 'Lợi ích khi mua hàng tại Quang Phú', cards: [
-    { icon: '🏆', title: 'Chính hãng 100%', description: 'Nhà nhập khẩu trực tiếp từ nhà máy Toyoko.' },
+    { icon: '🏆', title: 'Chính hãng 100%', description: 'Nhà nhập khẩu trực tiếp từ nhà máy Toyoko, cam kết hàng chính hãng.' },
     { icon: '🚚', title: 'Giao hàng nhanh', description: 'Giao hàng toàn quốc, TP.HCM giao trong ngày.' },
     { icon: '🔧', title: 'Bảo hành chính hãng', description: 'Bảo hành 6 tháng, trung tâm bảo hành chuyên nghiệp.' },
     { icon: '💰', title: 'Giá cạnh tranh', description: 'Nhập thẳng từ nhà máy, giá tốt nhất thị trường.' },
+    { icon: '📞', title: 'Hỗ trợ kỹ thuật', description: 'Đội ngũ kỹ thuật tư vấn miễn phí qua Zalo và điện thoại.' },
+    { icon: '🤝', title: 'Đại lý chính thức', description: 'Chính sách đại lý hấp dẫn, hỗ trợ trưng bày và marketing.' },
   ]},
   footer: { desc: 'Công ty TNHH Quang Phú - Nhà phân phối độc quyền thương hiệu Toyoko tại Việt Nam.', phone: '0938 895 934', email: 'info@quangphugroup.com', address: '234 Bình Thới, Phường 10, Quận 11, HCM', hours: 'T2-T6: 8h-17h, T7: 8h-12h', exploreTitle: 'Khám phá', contactTitle: 'Liên hệ', linkHomeText: 'Trang chủ', linkProductsText: 'Sản phẩm', linkBlogText: 'Tuyển dụng', linkContactText: 'Liên hệ', copyright: '© 2024 Công ty TNHH Quang Phú. Tất cả quyền được bảo lưu.', tagline: 'Thương hiệu Toyoko – An tâm đồng hành cùng thợ Việt' }
 };
@@ -226,10 +228,10 @@ export default {
 
     if (pathname === '/api/products') {
       try {
-        const url = new URL('/_data/products.json', request.url);
-        const res = await env.ASSETS.fetch(new Request(url));
-        if (res.ok) {
-          const p = await res.json();
+        // Read directly from GitHub — _data/ is not served by Cloudflare ASSETS
+        const f = await ghGet('_data/products.json', env);
+        if (f) {
+          const p = JSON.parse(f.content);
           const arr = Array.isArray(p) ? p : (p.data || []);
           return json(arr);
         }
@@ -239,10 +241,9 @@ export default {
 
     if (pathname === '/api/posts') {
       try {
-        const url = new URL('/_data/posts.json', request.url);
-        const res = await env.ASSETS.fetch(new Request(url));
-        if (res.ok) {
-          const p = await res.json();
+        const f = await ghGet('_data/posts.json', env);
+        if (f) {
+          const p = JSON.parse(f.content);
           const arr = Array.isArray(p) ? p : (p.data || []);
           return json(arr);
         }
@@ -252,10 +253,9 @@ export default {
 
     if (pathname === '/api/site') {
       try {
-        const url = new URL('/_data/site.json', request.url);
-        const res = await env.ASSETS.fetch(new Request(url));
-        if (res.ok) {
-          const d = await res.json();
+        const f = await ghGet('_data/site.json', env);
+        if (f) {
+          const d = JSON.parse(f.content);
           return json({ ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) });
         }
       } catch {}
