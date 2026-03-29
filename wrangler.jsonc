@@ -1,14 +1,8 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "toyokoquangphu",
   "compatibility_date": "2025-09-27",
-  "observability": {
-    "enabled": true
-  },
+  "main": "worker.js",
   "assets": {
     "directory": "."
-  },
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+  }
 }
