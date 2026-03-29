@@ -1,0 +1,3 @@
+/product/*  /product.html           200
+/post/*     /post.html              200
+/admin      /admin/index.html       302
