@@ -455,12 +455,15 @@ export default {
           if (!filename || !data) return json({ ok: false, error: 'filename and data required' }, 400);
           const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
           if (type && !allowed.includes(type.toLowerCase())) return json({ ok: false, error: 'File type not allowed' }, 400);
+          // Strip data:image/...;base64, prefix if present
+          const base64Data = data.includes(',') ? data.split(',')[1] : data;
           const safeName = filename.toLowerCase().replace(/[^a-z0-9._-]/g, '-').replace(/\.{2,}/g, '.').replace(/^\./, '');
           if (!safeName) return json({ ok: false, error: 'Invalid filename' }, 400);
-          if (Math.ceil((data.length * 3) / 4) > 5 * 1024 * 1024) return json({ ok: false, error: 'File too large (max 5MB)' }, 400);
-          const filePath = `public/images/products/${safeName}`;
+          if (Math.ceil((base64Data.length * 3) / 4) > 5 * 1024 * 1024) return json({ ok: false, error: 'File too large (max 5MB)' }, 400);
+          // Correct path: images/products/ (no 'public/' prefix)
+          const filePath = `images/products/${safeName}`;
           const existing = await ghGet(filePath, env);
-          await ghPut(filePath, data, `admin: upload image ${safeName}`, existing?.sha, true, env);
+          await ghPut(filePath, base64Data, `admin: upload image ${safeName}`, existing?.sha, true, env);
           return json({ ok: true, url: `/images/products/${safeName}` });
         } catch (e) { return json({ ok: false, error: e.message }, 500); }
       }
