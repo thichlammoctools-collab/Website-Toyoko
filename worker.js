@@ -374,8 +374,8 @@ export default {
               bytes[i] = binaryString.charCodeAt(i);
           }
           
-          await env.IMAGE_BUCKET.put(`products/${safeName}`, bytes, {
-             httpMetadata: { contentType: type || 'image/png' }
+          await env.DATA_KV.put(`image:${safeName}`, bytes.buffer, {
+             metadata: { contentType: type || 'image/png' }
           });
           
           return json({ ok: true, url: `/images/products/${safeName}` });
@@ -430,15 +430,14 @@ export default {
       return json({ ok: false, error: 'Not found' }, 404);
     }
 
-    // ── Public Image Serving from R2 ──
+    // ── Public Image Serving from KV ──
     if (pathname.startsWith('/images/products/') && request.method === 'GET') {
-      const objectName = pathname.replace('/images/', '');
-      const obj = await env.IMAGE_BUCKET.get(objectName);
-      if (!obj) return new Response('Not found', { status: 404 });
-      const headers = new Headers();
-      obj.writeHttpMetadata(headers);
-      headers.set('etag', obj.httpEtag);
-      return new Response(obj.body, { headers });
+      const safeName = pathname.replace('/images/products/', '');
+      const { value, metadata } = await env.DATA_KV.getWithMetadata(`image:${safeName}`, { type: 'arrayBuffer' });
+      if (!value) return new Response('Not found', { status: 404 });
+      return new Response(value, { 
+        headers: { 'Content-Type': (metadata && metadata.contentType) ? metadata.contentType : 'image/png' } 
+      });
     }
 
     // ── Static Assets (HTML, CSS, JS, images, _data, etc.) ──
