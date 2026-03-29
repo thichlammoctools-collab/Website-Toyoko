@@ -14,5 +14,11 @@
       "pattern": "www.quangphugroup.com/*",
       "custom_domain": true
     }
-  ]
+  ],
+  "vars": {
+    "GITHUB_REPO": "thichlammoctools-collab/Website-Toyoko",
+    "GITHUB_BRANCH": "main",
+    "ADMIN_USERNAME": "quangphu"
+  }
 }
+
