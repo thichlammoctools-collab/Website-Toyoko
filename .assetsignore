@@ -1,0 +1,14 @@
+node_modules/
+.git/
+*.log
+*.map
+.env
+.env.*
+deploy.js
+rewrite_worker.js
+extract_sku.js
+update_phone.js
+update_address.js
+update_widgets.js
+final_polish.js
+redo_footer.js

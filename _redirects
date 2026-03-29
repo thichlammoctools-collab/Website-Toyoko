@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
-=======
-/images/*   /public/images/:splat   200
->>>>>>> Stashed changes
 /product/*  /product.html           200
 /post/*     /post.html              200
 /admin      /admin/index.html       302
