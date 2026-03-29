@@ -14,7 +14,7 @@ const logoHTML = '<a href="/" class="logo"><img src="/images/logo.png" alt="Toyo
 const footerLogoHTML = '<div class="footer-logo"><img src="/images/logo.png" alt="Toyoko Logo" style="height:40px"></div>';
 // Use local zalo-icon.png we copied earlier
 const zaloIconPath = '/images/zalo-icon.png';
-const zaloUrl = 'https://zalo.me/0901234567';
+const zaloUrl = 'https://zalo.me/0938895934';
 
 files.forEach(file => {
   const filePath = path.join(__dirname, file);

@@ -202,17 +202,25 @@ async function saveSiteConfig(config, env) {
 // ── Main Export ───────────────────────────────────────────────────
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const { pathname } = new URL(request.url);
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: CORS });
     }
 
+    // ── Favicon (prevent 500 error) ──
+    if (pathname === '/favicon.ico') {
+      return Response.redirect(new URL('/images/favicon.svg', request.url).toString(), 301);
+    }
+
     // ── Public API ──
 
     if (pathname === '/api/products') {
-      return json(await getProducts(env));
+      const data = await getProducts(env);
+      // Warm up for next request in background
+      ctx.waitUntil(env.quangphu.get('products'));
+      return json(data);
     }
 
     if (pathname === '/api/posts') {

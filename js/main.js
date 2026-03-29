@@ -28,15 +28,31 @@ const fetchJSON = url => {
     }).catch(() => []);
 };
 
-const fetchSite = () => {
-  const url = '/api/site';
-  window._apiCache = window._apiCache || {};
-  if (window._apiCache[url]) return Promise.resolve(window._apiCache[url]);
-  return fetch(url).then(r => r.ok ? r.json() : null).then(data => {
-    window._apiCache[url] = data;
-    return data;
-  }).catch(() => null);
-};
+const fetchSite = (() => {
+  let _promise = null;
+  return () => {
+    if (_promise) return _promise;
+    // Try sessionStorage first (cached across SPA navigations)
+    try {
+      const stored = sessionStorage.getItem('_site_cache');
+      if (stored) {
+        const { ts, data } = JSON.parse(stored);
+        if (Date.now() - ts < 60000) { // 60s cache
+          _promise = Promise.resolve(data);
+          return _promise;
+        }
+      }
+    } catch {}
+    _promise = fetch('/api/site')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        try { sessionStorage.setItem('_site_cache', JSON.stringify({ ts: Date.now(), data })); } catch {}
+        return data;
+      })
+      .catch(() => null);
+    return _promise;
+  };
+})();
 
 // Mark active nav link
 function setActiveNav() {
