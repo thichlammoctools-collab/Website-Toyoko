@@ -19,18 +19,6 @@
     "GITHUB_REPO": "thichlammoctools-collab/Website-Toyoko",
     "GITHUB_BRANCH": "main",
     "ADMIN_USERNAME": "quangphu"
-  },
-  "kv_namespaces": [
-    {
-      "binding": "DATA_KV",
-      "id": ""
-    }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "IMAGE_BUCKET",
-      "bucket_name": ""
-    }
-  ]
+  }
 }
 
