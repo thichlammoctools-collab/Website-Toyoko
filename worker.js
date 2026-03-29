@@ -2,6 +2,31 @@
 // Cloudflare Workers - Single entry point for all API routes
 // Static assets served by env.ASSETS.fetch()
 
+// ── In-Memory & Edge Cache Helpers ──────────────────────────────
+const MEM_CACHE = new Map();
+const MEM_TTL = 30000; // 30 seconds local memory cache
+
+function memGet(key) {
+  const e = MEM_CACHE.get(key);
+  if (e && Date.now() - e.ts < MEM_TTL) return e.data;
+  if (e) MEM_CACHE.delete(key);
+  return null;
+}
+function memSet(key, data) {
+  MEM_CACHE.set(key, { data, ts: Date.now() });
+}
+
+/**
+ * Xóa cache cho một route API cụ thể trên Edge Cache
+ */
+async function invalidateCache(path, request) {
+  const cache = caches.default;
+  const url = new URL(request.url);
+  const target = `${url.origin}/api/${path}`;
+  await cache.delete(new Request(target));
+  MEM_CACHE.delete(path);
+}
+
 // ── GitHub API Helper ─────────────────────────────────────────────
 
 const BASE_GH = 'https://api.github.com';
@@ -131,15 +156,17 @@ const CORS = {
 };
 
 function json(data, status = 200, extra = {}) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 
-      ...CORS, 
-      'Content-Type': 'application/json',
-      'Cache-Control': 'public, max-age=15', 
-      ...extra 
-    },
-  });
+  // Default cache-control for public APIs
+  const cacheControl = extra['Cache-Control'] || 'public, max-age=15, s-maxage=60, stale-while-revalidate=120';
+  const headers = { 
+    ...CORS, 
+    'Content-Type': 'application/json',
+    'Cache-Control': cacheControl, 
+    ...extra 
+  };
+  delete headers['Cache-Control-Override']; // Cleanup if used internally
+
+  return new Response(JSON.stringify(data), { status, headers });
 }
 
 // ── Site Config Helpers ──────────────────────────────────────────
@@ -174,29 +201,47 @@ function normalizeCats(cats) {
 // ── KV API Helpers ─────────────────────────────────────────────
 
 async function getProducts(env) {
-  try { return JSON.parse(await env.quangphu.get('products')) || []; }
-  catch { return []; }
+  const cached = memGet('products');
+  if (cached) return cached;
+  try {
+    const data = JSON.parse(await env.quangphu.get('products')) || [];
+    memSet('products', data);
+    return data;
+  } catch { return []; }
 }
 async function saveProducts(products, env) {
   const sorted = [...(products || [])].sort((a, b) => Number(a.id) - Number(b.id));
   await env.quangphu.put('products', JSON.stringify(sorted));
+  MEM_CACHE.delete('products');
 }
 
 async function getPosts(env) {
-  try { return JSON.parse(await env.quangphu.get('posts')) || []; }
-  catch { return []; }
+  const cached = memGet('posts');
+  if (cached) return cached;
+  try {
+    const data = JSON.parse(await env.quangphu.get('posts')) || [];
+    memSet('posts', data);
+    return data;
+  } catch { return []; }
 }
 async function savePosts(posts, env) {
   const sorted = [...(posts || [])].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
   await env.quangphu.put('posts', JSON.stringify(sorted));
+  MEM_CACHE.delete('posts');
 }
 
 async function getSiteConfig(env) {
-  try { return JSON.parse(await env.quangphu.get('site')) || DEFAULT_SITE; }
-  catch { return DEFAULT_SITE; }
+  const cached = memGet('site');
+  if (cached) return cached;
+  try {
+    const data = JSON.parse(await env.quangphu.get('site')) || DEFAULT_SITE;
+    memSet('site', data);
+    return data;
+  } catch { return DEFAULT_SITE; }
 }
 async function saveSiteConfig(config, env) {
   await env.quangphu.put('site', JSON.stringify(config || DEFAULT_SITE));
+  MEM_CACHE.delete('site');
 }
 
 // ── Main Export ───────────────────────────────────────────────────
@@ -209,74 +254,84 @@ export default {
       return new Response(null, { status: 204, headers: CORS });
     }
 
+    // ── Edge Cache Lookup ───────────────────────────────────────────
+    const isPublicGet = request.method === 'GET' && !pathname.startsWith('/api/admin/');
+    const cache = caches.default;
+    if (isPublicGet) {
+      const cached = await cache.match(request);
+      if (cached) return cached;
+    }
+
     // ── Favicon (prevent 500 error) ──
     if (pathname === '/favicon.ico') {
       return Response.redirect(new URL('/images/favicon.svg', request.url).toString(), 301);
     }
 
+    let response;
+
     // ── Public API ──
 
     if (pathname === '/api/products') {
-      const data = await getProducts(env);
-      // Warm up for next request in background
-      ctx.waitUntil(env.quangphu.get('products'));
-      return json(data);
+      response = json(await getProducts(env));
     }
 
-    if (pathname === '/api/posts') {
-      return json(await getPosts(env));
+    else if (pathname === '/api/posts') {
+      response = json(await getPosts(env));
     }
 
-    if (pathname === '/api/site') {
+    else if (pathname === '/api/site') {
       const d = await getSiteConfig(env);
-      return json({ ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) });
+      response = json({ ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) });
     }
 
     // ── Admin API (requires auth) ──
 
-    if (pathname.startsWith('/api/admin/')) {
+    else if (pathname.startsWith('/api/admin/')) {
 
       // ── Login (NO auth required) ──
       if (pathname === '/api/admin/auth' && request.method === 'POST') {
         const { username, password } = await request.json();
         if (username === (env.ADMIN_USERNAME || 'quangphu') && password === (env.ADMIN_PASSWORD || '0938895934@')) {
           const token = await jwtSign({ sub: username, exp: Date.now() + TOKEN_TTL, iat: Date.now() }, env);
-          return json({ ok: true, token }, 200, { 'Set-Cookie': `admin_token=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=28800` });
+          return json({ ok: true, token }, 200, { 
+            'Set-Cookie': `admin_token=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=28800`,
+            'Cache-Control': 'no-store'
+          });
         }
-        return json({ ok: false, error: 'Sai tên đăng nhập hoặc mật khẩu' }, 401);
+        return json({ ok: false, error: 'Sai tên đăng nhập hoặc mật khẩu' }, 401, { 'Cache-Control': 'no-store' });
       }
 
       // All other admin routes require auth
       try { await verifyAuth(request, env); }
-      catch { return json({ ok: false, error: 'Unauthorized' }, 401); }
+      catch { return json({ ok: false, error: 'Unauthorized' }, 401, { 'Cache-Control': 'no-store' }); }
 
       // Admin Auth (GET - check session)
       if (pathname === '/api/admin/auth') {
         if (request.method === 'GET') {
           try {
             const p = await verifyAuth(request, env);
-            return json({ ok: true, user: p.sub });
-          } catch { return json({ ok: false, error: 'Unauthorized' }, 401); }
+            return json({ ok: true, user: p.sub }, 200, { 'Cache-Control': 'no-store' });
+          } catch { return json({ ok: false, error: 'Unauthorized' }, 401, { 'Cache-Control': 'no-store' }); }
         }
       }
 
       if (pathname === '/api/admin/products') {
         if (request.method === 'GET') {
-          try { return json({ ok: true, data: await getProducts(env) }); }
-          catch (e) { return json({ ok: false, error: e.message }, 500); }
+          try { return json({ ok: true, data: await getProducts(env) }, 200, { 'Cache-Control': 'no-store' }); }
+          catch (e) { return json({ ok: false, error: e.message }, 500, { 'Cache-Control': 'no-store' }); }
         }
         if (request.method === 'POST') {
           const body = await request.json();
           const { action } = body;
 
+          let resBody;
           if (action === 'delete') {
             const { slug } = body;
             const prods = await getProducts(env);
             await saveProducts(prods.filter(p => p.slug !== slug), env);
-            return json({ ok: true });
+            resBody = { ok: true };
           }
-
-          if (action === 'save') {
+          else if (action === 'save') {
             const data = body.data;
             if (!data?.slug) return json({ ok: false, error: 'data.slug required' }, 400);
             const slug = data.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/^-+|-+$/g, '');
@@ -287,10 +342,9 @@ export default {
             const idx = prods.findIndex(p => p.slug === slug);
             if (idx >= 0) prods[idx] = data; else prods.push(data);
             await saveProducts(prods, env);
-            return json({ ok: true, data });
+            resBody = { ok: true, data };
           }
-
-          if (action === 'bulk-category-replace') {
+          else if (action === 'bulk-category-replace') {
             const { oldCategory, newCategory } = body;
             const prods = await getProducts(env);
             const norm = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
@@ -303,31 +357,35 @@ export default {
                return p;
             });
             await saveProducts(merged, env);
-            return json({ ok: true, updated });
+            resBody = { ok: true, updated };
           }
-
-          return json({ ok: false, error: `Unknown action: ${action}` }, 400);
+          
+          if (resBody) {
+            ctx.waitUntil(invalidateCache('products', request));
+            return json(resBody, 200, { 'Cache-Control': 'no-store' });
+          }
+          return json({ ok: false, error: `Unknown action: ${action}` }, 400, { 'Cache-Control': 'no-store' });
         }
       }
 
       // Admin Posts
       if (pathname === '/api/admin/posts') {
         if (request.method === 'GET') {
-          try { return json({ ok: true, data: await getPosts(env) }); }
-          catch (e) { return json({ ok: false, error: e.message }, 500); }
+          try { return json({ ok: true, data: await getPosts(env) }, 200, { 'Cache-Control': 'no-store' }); }
+          catch (e) { return json({ ok: false, error: e.message }, 500, { 'Cache-Control': 'no-store' }); }
         }
         if (request.method === 'POST') {
           const body = await request.json();
           const { action } = body;
 
+          let resBody;
           if (action === 'delete') {
             const { slug } = body;
             const posts = await getPosts(env);
             await savePosts(posts.filter(p => p.slug !== slug), env);
-            return json({ ok: true });
+            resBody = { ok: true };
           }
-
-          if (action === 'save') {
+          else if (action === 'save') {
             const data = body.data;
             if (!data?.slug) return json({ ok: false, error: 'data.slug required' }, 400);
             const slug = data.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/^-+|-+$/g, '');
@@ -338,9 +396,14 @@ export default {
             const idx = posts.findIndex(p => p.slug === slug);
             if (idx >= 0) posts[idx] = data; else posts.push(data);
             await savePosts(posts, env);
-            return json({ ok: true, data });
+            resBody = { ok: true, data };
           }
-          return json({ ok: false, error: `Unknown action: ${action}` }, 400);
+          
+          if (resBody) {
+            ctx.waitUntil(invalidateCache('posts', request));
+            return json(resBody, 200, { 'Cache-Control': 'no-store' });
+          }
+          return json({ ok: false, error: `Unknown action: ${action}` }, 400, { 'Cache-Control': 'no-store' });
         }
       }
 
@@ -349,8 +412,8 @@ export default {
         if (request.method === 'GET') {
           try {
             const d = await getSiteConfig(env);
-            return json({ ok: true, data: { ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) } });
-          } catch (e) { return json({ ok: false, error: e.message }, 500); }
+            return json({ ok: true, data: { ...d, productCategories: normalizeCats(d.productCategories || DEFAULT_SITE.productCategories) } }, 200, { 'Cache-Control': 'no-store' });
+          } catch (e) { return json({ ok: false, error: e.message }, 500, { 'Cache-Control': 'no-store' }); }
         }
         if (request.method === 'POST') {
           try {
@@ -364,8 +427,9 @@ export default {
               footer: { ...DEFAULT_SITE.footer, ...(current.footer || {}), ...(data.footer || {}) },
             };
             await saveSiteConfig(merged, env);
-            return json({ ok: true, data: merged });
-          } catch (e) { return json({ ok: false, error: e.message }, 500); }
+            ctx.waitUntil(invalidateCache('site', request));
+            return json({ ok: true, data: merged }, 200, { 'Cache-Control': 'no-store' });
+          } catch (e) { return json({ ok: false, error: e.message }, 500, { 'Cache-Control': 'no-store' }); }
         }
       }
 
@@ -379,85 +443,61 @@ export default {
           
           const base64Data = data.includes(',') ? data.split(',')[1] : data;
           const safeName = filename.toLowerCase().replace(/[^a-z0-9._-]/g, '-').replace(/\.{2,}/g, '.').replace(/^\./, '');
-          if (!safeName) return json({ ok: false, error: 'Invalid filename' }, 400);
           
           const binaryString = atob(base64Data);
           const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-              bytes[i] = binaryString.charCodeAt(i);
-          }
+          for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
           
           await env.quangphu.put(`image:${safeName}`, bytes.buffer, {
              metadata: { contentType: type || 'image/png' }
           });
           
-          return json({ ok: true, url: `/images/products/${safeName}` });
+          return json({ ok: true, url: `/images/products/${safeName}` }, 200, { 'Cache-Control': 'no-store' });
         } catch (e) { return json({ ok: false, error: e.message }, 500); }
-      }
-
-      // ── API: Migrate to KV ──
-      // Call this once to move everything from Github repo to Cloudflare KV Setup
-      if (pathname === '/api/admin/migrate-to-kv') {
-         try {
-           // Read products
-           const f_prod = await ghGet('_data/products.json', env);
-           let p_arr = [];
-           if (f_prod) {
-              const p = JSON.parse(f_prod.content);
-              p_arr = Array.isArray(p) ? p : (p.data || []);
-           } else {
-              const files = await ghList('_data/products', env);
-              for (const f of files.filter(x=>x.name.endsWith('.json'))) {
-                const r = await ghGet(f.path, env);
-                if (r) { try { p_arr.push(JSON.parse(r.content)); } catch(e){} }
-              }
-           }
-           await saveProducts(p_arr, env);
-  
-           // Read posts
-           let po_arr = [];
-           const f_posts = await ghGet('_data/posts.json', env);
-           if (f_posts) {
-               const p = JSON.parse(f_posts.content);
-               po_arr = Array.isArray(p) ? p : (p.data || []);
-           } else {
-               const files2 = await ghList('_data/posts', env);
-               for (const f of files2.filter(x=>x.name.endsWith('.json'))) {
-                 const r = await ghGet(f.path, env);
-                 if (r) { try { po_arr.push(JSON.parse(r.content)); } catch(e){} }
-               }
-           }
-           await savePosts(po_arr, env);
-  
-           // Read Site
-           const f_site = await ghGet('_data/site.json', env);
-           const siteCfg = f_site ? JSON.parse(f_site.content) : DEFAULT_SITE;
-           await saveSiteConfig(siteCfg, env);
-  
-           return json({ ok: true, message: 'Migrated products, posts, and site completely to KV!' });
-         } catch (e) {
-           return json({ ok: false, error: e.message }, 500);
-         }
       }
 
       return json({ ok: false, error: 'Not found' }, 404);
     }
 
     // ── Public Image Serving from KV ──
-    if (pathname.startsWith('/images/products/') && request.method === 'GET') {
+    else if (pathname.startsWith('/images/products/') && request.method === 'GET') {
       const safeName = pathname.replace('/images/products/', '');
       const { value, metadata } = await env.quangphu.getWithMetadata(`image:${safeName}`, { type: 'arrayBuffer' });
-      if (!value) return new Response('Not found', { status: 404 });
-      return new Response(value, { 
-        headers: { 
-          'Content-Type': (metadata && metadata.contentType) ? metadata.contentType : 'image/png',
-          'Cache-Control': 'public, max-age=86400, s-maxage=31536000'
-        } 
-      });
+      if (!value) response = new Response('Not found', { status: 404 });
+      else {
+        response = new Response(value, { 
+          headers: { 
+            'Content-Type': (metadata && metadata.contentType) ? metadata.contentType : 'image/png',
+            'Cache-Control': 'public, max-age=86400, s-maxage=31536000, immutable'
+          } 
+        });
+      }
     }
 
     // ── Static Assets (HTML, CSS, JS, images, _data, etc.) ──
-    return env.ASSETS.fetch(request);
+    else {
+      const assetRes = await env.ASSETS.fetch(request);
+      const ext = pathname.split('.').pop()?.toLowerCase();
+      
+      const LONG_CACHE = ['js', 'css', 'png', 'jpg', 'jpeg', 'webp', 'gif', 'svg', 'woff', 'woff2', 'ttf'];
+      const cacheControl = LONG_CACHE.includes(ext)
+        ? 'public, max-age=86400, s-maxage=31536000, immutable' 
+        : 'public, max-age=60, s-maxage=300'; // 5 min edge cache for HTML/other
+
+      const newHeaders = new Headers(assetRes.headers);
+      newHeaders.set('Cache-Control', cacheControl);
+      
+      response = new Response(assetRes.body, {
+        status: assetRes.status,
+        headers: newHeaders
+      });
+    }
+
+    // Wrap and store in Edge Cache if it was a public GET and successful
+    if (isPublicGet && response.ok) {
+      ctx.waitUntil(cache.put(request, response.clone()));
+    }
+
+    return response;
   }
 };
-
