@@ -1777,6 +1777,44 @@ document.getElementById('img-input').addEventListener('change', function() {
   this.value = '';
 });
 
+// ── Paste image from clipboard (Ctrl+V) ────────────────────────────
+document.addEventListener('paste', function(e) {
+  // Only process paste when product modal is open
+  const modal = document.getElementById('product-modal');
+  if (!modal || modal.style.display === 'none') return;
+
+  const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+  if (!items) return;
+
+  let found = false;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile();
+      if (!file) continue;
+      // Give pasted image a readable name with timestamp
+      const ext = item.type.split('/')[1] || 'png';
+      const namedFile = new File([file], `paste-${Date.now()}.${ext}`, { type: item.type });
+      handleImageFile(namedFile);
+      found = true;
+    }
+  }
+
+  if (found) {
+    // Briefly flash the drop zone to give visual feedback
+    const zone = document.getElementById('img-drop-zone');
+    if (zone) {
+      zone.style.borderColor = 'var(--primary)';
+      zone.style.background = 'rgba(99,102,241,0.08)';
+      setTimeout(() => {
+        zone.style.borderColor = '';
+        zone.style.background = '';
+      }, 600);
+    }
+    showToast('✅ Đã dán ảnh từ clipboard!');
+    e.preventDefault();
+  }
+});
+
 function handleImageFile(file) {
   const reader = new FileReader();
   reader.onload = e => {
