@@ -433,13 +433,13 @@
     {
       "id": "37",
       "slug": "my-c-17mm-1680w",
-      "name": "MÁY ĐỤC 17mm 1680W",
+      "name": "Máy đục bê tông 17mm 1680w lực 25J Toyoko T1680DH (nòng 35mm)",
       "category": "Máy đục",
       "price": 2870000,
       "unit": "máy",
-      "description": "",
+      "description": "Xuất xứ\tTrung Quốc\nCông suất\t1680W\nLực đục\t25J\nNòng lớn\t35mm\nChống rung\tCó\nChu kỳ tác động\t4000 lần/phút\nĐiện áp\t220 - 240V\nTần số\t50 - 60Hz\nBảo hành\t6 tháng",
       "images": [
-        "/images/products/t1680dh_03_n.png"
+        "/images/products/t1680dh.png"
       ],
       "visible": true,
       "sku": "T1680DH"
