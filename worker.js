@@ -295,24 +295,28 @@ export default {
     // ── Admin API (requires auth) ──
 
     if (pathname.startsWith('/api/admin/')) {
+
+      // ── Login (NO auth required) ──
+      if (pathname === '/api/admin/auth' && request.method === 'POST') {
+        const { username, password } = await request.json();
+        if (username === (env.ADMIN_USERNAME || 'quangphu') && password === (env.ADMIN_PASSWORD || '0938895934@')) {
+          const token = await jwtSign({ sub: username, exp: Date.now() + TOKEN_TTL, iat: Date.now() }, env);
+          return json({ ok: true, token }, 200, { 'Set-Cookie': `admin_token=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=28800` });
+        }
+        return json({ ok: false, error: 'Sai tên đăng nhập hoặc mật khẩu' }, 401);
+      }
+
+      // All other admin routes require auth
       try { await verifyAuth(request, env); }
       catch { return json({ ok: false, error: 'Unauthorized' }, 401); }
 
-      // Admin Auth
+      // Admin Auth (GET - check session)
       if (pathname === '/api/admin/auth') {
         if (request.method === 'GET') {
           try {
             const p = await verifyAuth(request, env);
             return json({ ok: true, user: p.sub });
           } catch { return json({ ok: false, error: 'Unauthorized' }, 401); }
-        }
-        if (request.method === 'POST') {
-          const { username, password } = await request.json();
-          if (username === (env.ADMIN_USERNAME || 'quangphu') && password === (env.ADMIN_PASSWORD || '0938895934@')) {
-            const token = await jwtSign({ sub: username, exp: Date.now() + TOKEN_TTL, iat: Date.now() }, env);
-            return json({ ok: true, token }, 200, { 'Set-Cookie': `admin_token=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=28800` });
-          }
-          return json({ ok: false, error: 'Sai tên đăng nhập hoặc mật khẩu' }, 401);
         }
       }
 
